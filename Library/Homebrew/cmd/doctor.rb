@@ -907,6 +907,7 @@ def check_git_status
 end
 
 def check_git_ssl_verify
+  return unless MACOS
   if MacOS.version <= :leopard && !ENV['GIT_SSL_NO_VERIFY'] then <<-EOS.undent
     The version of libcurl provided with Mac OS X #{MacOS.version} has outdated
     SSL certificates.
