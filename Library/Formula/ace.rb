@@ -13,18 +13,22 @@ class Ace < Formula
 
     # First, we figure out the names of header files and make files
     # for this version of OSX.
-    ver = %x[sw_vers -productVersion].chomp.split(".")
-    ver = ver.slice(0).to_i*100 + ver.slice(1).to_i
-    name = { 1002 => 'macosx',
-             1003 => 'macosx_panther',
-             1004 => 'macosx_tiger',
-             1005 => 'macosx_leopard',
-             1006 => 'macosx_snowleopard',
-             1007 => 'macosx_lion',
-             # TODO: Fix for 6.1.4.
-             # There's no Mountain Lion file yet.
-             # Reported to d.schmidt@vanderbilt.edu
-             1008 => 'macosx_lion' }[ver]
+    if MACOS
+      ver = %x[sw_vers -productVersion].chomp.split(".")
+      ver = ver.slice(0).to_i*100 + ver.slice(1).to_i
+      name = { 1002 => 'macosx',
+               1003 => 'macosx_panther',
+               1004 => 'macosx_tiger',
+               1005 => 'macosx_leopard',
+               1006 => 'macosx_snowleopard',
+               1007 => 'macosx_lion',
+               # TODO: Fix for 6.1.4.
+               # There's no Mountain Lion file yet.
+               # Reported to d.schmidt@vanderbilt.edu
+               1008 => 'macosx_lion' }[ver]
+    else
+      name = 'linux'
+    end
     makefile = "platform_#{name}.GNU"
     header = "config-" + name.sub('_','-') + ".h"
 
