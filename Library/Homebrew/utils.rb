@@ -190,7 +190,7 @@ def exec_editor *args
 end
 
 def exec_browser *args
-  browser = ENV['HOMEBREW_BROWSER'] || ENV['BROWSER'] || "open"
+  browser = ENV['HOMEBREW_BROWSER'] || ENV['BROWSER'] || "xdg-open"
   safe_exec(browser, *args)
 end
 
