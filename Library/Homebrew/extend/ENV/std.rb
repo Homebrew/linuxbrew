@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 require 'hardware'
 require 'os/mac'
 require 'extend/ENV/shared'
@@ -15,13 +14,17 @@ module Stdenv
     end
   end
 
+  def isolate?
+    not ARGV.include? "--env=inherit"
+  end
+
   def setup_build_environment(formula=nil)
     # Clear CDPATH to avoid make issues that depend on changing directories
     delete('CDPATH')
     delete('GREP_OPTIONS') # can break CMake (lol)
     delete('CLICOLOR_FORCE') # autotools doesn't like this
     %w{CPATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH OBJC_INCLUDE_PATH}.each { |k| delete(k) }
-    remove_cc_etc if OS.mac?
+    remove_cc_etc if isolate?
 
     if MacOS.version >= :mountain_lion
       # Mountain Lion's sed is stricter, and errors out when
@@ -59,7 +62,7 @@ module Stdenv
     append 'LDFLAGS', '-Wl,-headerpad_max_install_names'
 
     # set us up for the user's compiler choice
-    self.send self.compiler if OS.mac?
+    self.send self.compiler if isolate?
 
     # we must have a working compiler!
     unless cc
@@ -71,7 +74,7 @@ module Stdenv
 
     validate_cc!(formula) unless formula.nil?
 
-    if OS.mac? && cc =~ GNU_GCC_REGEXP
+    if isolate? && cc =~ GNU_GCC_REGEXP
       warn_about_non_apple_gcc($1)
       gcc_name = 'gcc' + $1.delete('.')
       gcc = Formulary.factory(gcc_name)
