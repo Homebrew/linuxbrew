@@ -191,6 +191,7 @@ def check_for_broken_symlinks
 end
 
 def check_xcode_clt
+  return unless OS.mac?
   if MacOS.version >= :mavericks
     __check_clt_up_to_date
   elsif MacOS::Xcode.installed?

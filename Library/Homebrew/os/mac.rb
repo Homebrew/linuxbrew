@@ -246,6 +246,7 @@ module OS
     }
 
     def compilers_standard?
+      return true unless OS.mac?
       STANDARD_COMPILERS.fetch(Xcode.version.to_s).all? do |method, build|
         send(:"#{method}_version") == build
       end

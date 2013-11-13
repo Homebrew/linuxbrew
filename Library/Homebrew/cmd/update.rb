@@ -29,7 +29,7 @@ module Homebrew extend self
     report = Report.new
     master_updater = Updater.new
     begin
-      master_updater.pull!
+      master_updater.pull! (if OS.linux? then 'linuxbrew' else 'master' end)
     ensure
       link_tap_formula(tapped_formulae)
     end
@@ -94,8 +94,8 @@ end
 class Updater
   attr_reader :initial_revision, :current_revision
 
-  def pull!
-    safe_system "git checkout -q master"
+  def pull! branch = 'master'
+    safe_system "git checkout -q #{branch}"
 
     @initial_revision = read_current_revision
 
@@ -107,7 +107,7 @@ class Updater
     args << "-q" unless ARGV.verbose?
     args << "origin"
     # the refspec ensures that 'origin/master' gets updated
-    args << "refs/heads/master:refs/remotes/origin/master"
+    args << "refs/heads/#{branch}:refs/remotes/origin/#{branch}"
 
     reset_on_interrupt { safe_system "git", *args }
 

@@ -62,13 +62,15 @@ class Git < Formula
                    "LDFLAGS=#{ENV.ldflags}",
                    "install"
 
-    # Install the OS X keychain credential helper
-    cd 'contrib/credential/osxkeychain' do
-      system "make", "CC=#{ENV.cc}",
-                     "CFLAGS=#{ENV.cflags}",
-                     "LDFLAGS=#{ENV.ldflags}"
-      bin.install 'git-credential-osxkeychain'
-      system "make", "clean"
+    if OS.mac?
+        # Install the OS X keychain credential helper
+        cd 'contrib/credential/osxkeychain' do
+          system "make", "CC=#{ENV.cc}",
+                         "CFLAGS=#{ENV.cflags}",
+                         "LDFLAGS=#{ENV.ldflags}"
+          bin.install 'git-credential-osxkeychain'
+          system "make", "clean"
+        end
     end
 
     # Install git-subtree

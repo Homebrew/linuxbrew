@@ -15,13 +15,17 @@ module Stdenv
     end
   end
 
+  def inherit?
+    ARGV.include? "--env=inherit"
+  end
+
   def setup_build_environment(formula=nil)
     # Clear CDPATH to avoid make issues that depend on changing directories
     delete('CDPATH')
     delete('GREP_OPTIONS') # can break CMake (lol)
     delete('CLICOLOR_FORCE') # autotools doesn't like this
     %w{CPATH C_INCLUDE_PATH CPLUS_INCLUDE_PATH OBJC_INCLUDE_PATH}.each { |k| delete(k) }
-    remove_cc_etc
+    remove_cc_etc unless inherit?
 
     if MacOS.version >= :mountain_lion
       # Mountain Lion's sed is stricter, and errors out when
@@ -59,7 +63,7 @@ module Stdenv
     append 'LDFLAGS', '-Wl,-headerpad_max_install_names'
 
     # set us up for the user's compiler choice
-    self.send self.compiler
+    self.send self.compiler unless inherit?
 
     # we must have a working compiler!
     unless cc
@@ -71,7 +75,7 @@ module Stdenv
 
     validate_cc!(formula) unless formula.nil?
 
-    if cc =~ GNU_GCC_REGEXP
+    if !inherit? && cc =~ GNU_GCC_REGEXP
       warn_about_non_apple_gcc($1)
       gcc_name = 'gcc' + $1.delete('.')
       gcc = Formulary.factory(gcc_name)
@@ -154,12 +158,13 @@ module Stdenv
     # However they still provide a gcc symlink to llvm
     # But we don't want LLVM of course.
 
-    self.cc  = MacOS.locate("gcc-4.2")
-    self.cxx = MacOS.locate("g++-4.2")
+    ccname, cxxname = if OS.mac? then ['gcc-4.2', 'g++-4.2'] else ['gcc', 'g++'] end
+    self.cc  = MacOS.locate(ccname)
+    self.cxx = MacOS.locate(cxxname)
 
     unless cc
-      self.cc  = "#{HOMEBREW_PREFIX}/bin/gcc-4.2"
-      self.cxx = "#{HOMEBREW_PREFIX}/bin/g++-4.2"
+      self.cc  = "#{HOMEBREW_PREFIX}/bin/#{ccname}"
+      self.cxx = "#{HOMEBREW_PREFIX}/bin/#{cxxname}"
       raise "GCC could not be found" unless File.exist? cc
     end
 
@@ -303,10 +308,12 @@ module Stdenv
   end
 
   def m64
+    return unless OS.mac?
     append_to_cflags '-m64'
     append 'LDFLAGS', "-arch #{Hardware::CPU.arch_64_bit}"
   end
   def m32
+    return unless OS.mac?
     append_to_cflags '-m32'
     append 'LDFLAGS', "-arch #{Hardware::CPU.arch_32_bit}"
   end

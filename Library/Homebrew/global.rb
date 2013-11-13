@@ -22,8 +22,10 @@ def cache
   else
     # we do this for historic reasons, however the cache *should* be the same
     # directory whichever user is used and whatever instance of brew is executed
-    home_cache = Pathname.new("~/Library/Caches/Homebrew").expand_path
-    if home_cache.directory? and home_cache.writable_real?
+    home_cache = Pathname.new(if OS.mac? then "~/Library/Caches/Homebrew"
+        else "~/.cache/Homebrew" end).expand_path
+    if home_cache.directory? and home_cache.writable_real? \
+        or not Pathname.new('/Library/Caches').writable_real?
       home_cache
     else
       root_cache = Pathname.new("/Library/Caches/Homebrew")
