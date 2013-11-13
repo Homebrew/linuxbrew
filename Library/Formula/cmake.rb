@@ -40,12 +40,16 @@ class Cmake < Formula
   def install
     args = %W[
       --prefix=#{prefix}
-      --system-libs
-      --no-system-libarchive
       --datadir=/share/cmake
       --docdir=/share/doc/cmake
       --mandir=/share/man
     ]
+    if OS.mac?
+      args << "--system-libs"
+      args << "--no-system-libarchive"
+    elsif OS.linux?
+      args << "--no-system-libs"
+    end
 
     system "./bootstrap", *args
     system "make"

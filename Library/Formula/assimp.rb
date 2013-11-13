@@ -6,7 +6,7 @@ class Assimp < Formula
   sha1 'e80a3a4326b649ed6585c0ce312ed6dd68942834'
 
   depends_on 'cmake' => :build
-  depends_on 'boost'
+  depends_on 'boost' => :optional
 
   def patches
     #makes assimp3 compile with clang
@@ -16,7 +16,12 @@ class Assimp < Formula
   end
 
   def install
-    system "cmake", ".", *std_cmake_args
+
+    if not build.with? 'boost'
+      system "cmake", ".", "-DENABLE_BOOST_WORKAROUND=ON", *std_cmake_args
+    else
+      system "cmake", ".", *std_cmake_args
+    end
     system "make install"
   end
 end
