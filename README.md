@@ -7,11 +7,11 @@ Installation
 
 * Debian or Ubuntu: `sudo apt-get install build-essential curl git ruby`
 * `git clone https://github.com/Homebrew/linuxbrew.git ~/.linuxbrew`
-* Add to your `.bashrc`:
+* Add to your `.bashrc` or `.zshrc`:
 
  ```sh
- export PATH=~/.linuxbrew/bin:$PATH
- export LD_LIBRARY_PATH=~/.linuxbrew/lib
+ export PATH="$HOME/.linuxbrew/bin:$PATH"
+ export LD_LIBRARY_PATH="$HOME/.linuxbrew/lib:$LD_LIBRARY_PATH"
  ```
 
 * `brew install $WHATEVER_YOU_WANT`
@@ -20,8 +20,7 @@ What Packages Are Available?
 ----------------------------
 1. You can [browse the Formula directory on GitHub](https://github.com/Homebrew/linuxbrew/tree/linuxbrew/Library/Formula).
 2. Or type `brew search` for a list.
-3. Or run `brew server` to browse packages off of a local web server.
-4. Or visit [braumeister](http://braumeister.org) to browse packages online.
+3. Or visit [braumeister](http://braumeister.org) to browse packages online.
 
 Requirement
 -----------
