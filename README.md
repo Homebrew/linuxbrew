@@ -20,8 +20,7 @@ What Packages Are Available?
 ----------------------------
 1. You can [browse the Formula directory on GitHub](https://github.com/Homebrew/linuxbrew/tree/linuxbrew/Library/Formula).
 2. Or type `brew search` for a list.
-3. Or run `brew server` to browse packages off of a local web server.
-4. Or visit [braumeister](http://braumeister.org) to browse packages online.
+3. Or visit [braumeister](http://braumeister.org) to browse packages online.
 
 Requirement
 -----------
