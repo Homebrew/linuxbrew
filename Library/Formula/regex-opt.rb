@@ -6,7 +6,7 @@ class RegexOpt < Formula
   sha1 '18481500e8fed8ecf94f9738104594ef5a658456'
 
   def install
-    system "make", "CC=#{ENV.cc}", "CXX=#{ENV.cxx}"
+    system "make"
     bin.install 'regex-opt'
   end
 
