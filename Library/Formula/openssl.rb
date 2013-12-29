@@ -17,9 +17,7 @@ class Openssl < Formula
                shared
              ]
 
-    if OS.linux?
-      args << "linux-x86_64"
-    elsif MacOS.prefer_64_bit?
+    if MacOS.prefer_64_bit?
       args << "darwin64-x86_64-cc" << "enable-ec_nistp_64_gcc_128"
 
       # -O3 is used under stdenv, which results in test failures when using clang

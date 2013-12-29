@@ -5,16 +5,17 @@ class Libffi < Formula
   url 'http://mirrors.kernel.org/sources.redhat.com/libffi/libffi-3.0.13.tar.gz'
   mirror 'ftp://sourceware.org/pub/libffi/libffi-3.0.13.tar.gz'
   sha1 'f5230890dc0be42fb5c58fbf793da253155de106'
-  
+
   keg_only :provided_by_osx, "Some formulae require a newer version of libffi."
-  
+
   def install
     ENV.deparallelize # https://github.com/mxcl/homebrew/pull/19267
-    system "./configure", "--disable-debug", "--disable-dependency-tracking", 
+    ENV.universal_binary
+    system "./configure", "--disable-debug", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make install"
   end
-  
+
   test do
     (testpath/'closure.c').write <<-TEST_SCRIPT.undent
      #include <stdio.h>

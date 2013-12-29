@@ -7,7 +7,7 @@ class Gettext < Formula
   sha256 '0d8f9a33531b77776b3dc473e7940019ca19bfca5b4c06db6e96065eeb07245d'
 
   keg_only "OS X provides the BSD gettext library and some software gets confused if both are in the library path."
-  
+
   option 'with-examples', 'Keep example files'
 
   def patches

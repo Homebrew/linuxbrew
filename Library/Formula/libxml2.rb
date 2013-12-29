@@ -25,7 +25,17 @@ class Libxml2 < Formula
     depends_on :libtool
   end
 
+  keg_only :provided_by_osx
+
+  option :universal
+
+  fails_with :llvm do
+    build 2326
+    cause "Undefined symbols when linking"
+  end
+
   def install
+    ENV.universal_binary if build.universal?
     if build.head?
       inreplace 'autogen.sh', 'libtoolize', 'glibtoolize'
       system './autogen.sh'

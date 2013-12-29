@@ -8,7 +8,7 @@ class Mtools < Formula
 
   conflicts_with 'multimarkdown', :because => 'both install `mmd` binaries'
 
-  #depends_on :x11 => :optional
+  depends_on :x11 => :optional
 
   def install
     system "./configure", "LIBS=-liconv",
