@@ -10,18 +10,18 @@ class PkgConfig < Formula
     paths = %W[
         #{HOMEBREW_PREFIX}/lib/pkgconfig
         #{HOMEBREW_PREFIX}/share/pkgconfig
-        /home7/tvctopin//lib/pkgconfig
-        /home7/tvctopin/share/pkgconfig
         /root/share/pkgconfig
         /usr/share/pkgconfig
         #{HOMEBREW_LIBRARY}/ENV/pkgconfig/#{MacOS.version}
       ].uniq
 
     args = %W[
-        --disable-debug
+        --enable-debug
         --prefix=#{prefix}
-        --disable-host-tool
         --with-internal-glib
+        --with-system-expat
+        --with-system-ffi
+        --with-threads
         --with-pc-path=#{paths*':'}
       ]
     args << "CC=#{ENV.cc} #{ENV.cflags}" unless MacOS::CLT.installed?

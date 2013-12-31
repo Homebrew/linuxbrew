@@ -2,26 +2,19 @@ require 'formula'
 
 class Glib < Formula
   homepage 'http://developer.gnome.org/glib/'
-  url 'http://ftp.gnome.org/pub/gnome/sources/glib/2.38/glib-2.38.2.tar.xz'
-  sha256 '056a9854c0966a0945e16146b3345b7a82562a5ba4d5516fd10398732aea5734'
-
-  option :universal
-  option 'test', 'Build a debug build and run tests. NOTE: Not all tests succeed yet'
-
+  url 'http://ftp.gnome.org/pub/gnome/sources/glib/2.39/glib-2.39.2.tar.xz'
+  sha256 '01c354a054774c836c8ccd286b4d6082797b67368a46e5b4d529dd770106d2f7'
+  
   depends_on 'pkg-config' => :build
+  #depends_on 'libtool'
   depends_on 'gettext'
   depends_on 'libffi'
-
-  fails_with :llvm do
-    build 2334
-    cause "Undefined symbol errors while linking"
-  end
-
-  resource 'config.h.ed' do
-    url 'https://trac.macports.org/export/111532/trunk/dports/devel/glib2/files/config.h.ed'
-    version '111532'
-    sha1 '0926f19d62769dfd3ff91a80ade5eff2c668ec54'
-  end if build.universal?
+  #depends_on 'zlib'
+  #depends_on 'docbook'
+  #depends_on 'python'
+  #depends_on 'libxml2'
+  #depends_on 'openssl'
+  
 
   def patches
     p = {}
@@ -39,7 +32,6 @@ class Glib < Formula
   end
 
   def install
-    ENV.universal_binary if build.universal?
 
     # Disable dtrace; see https://trac.macports.org/ticket/30413
     args = %W[
@@ -54,11 +46,6 @@ class Glib < Formula
     ]
 
     system "./configure", *args
-
-    if build.universal?
-      buildpath.install resource('config.h.ed')
-      system "ed -s - config.h <config.h.ed"
-    end
 
     system "make"
     # the spawn-multithreaded tests require more open files

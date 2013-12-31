@@ -6,7 +6,7 @@ class Gettext < Formula
   mirror 'http://ftp.gnu.org/gnu/gettext/gettext-0.18.3.1.tar.gz'
   sha256 '0d8f9a33531b77776b3dc473e7940019ca19bfca5b4c06db6e96065eeb07245d'
 
-  keg_only "OS X provides the BSD gettext library and some software gets confused if both are in the library path."
+  #keg_only "OS X provides the BSD gettext library and some software gets confused if both are in the library path."
 
   option 'with-examples', 'Keep example files'
 
@@ -20,7 +20,6 @@ class Gettext < Formula
 
   def install
     ENV.libxml2
-
     system "./configure", "--disable-dependency-tracking",
                           "--disable-debug",
                           "--prefix=#{prefix}",

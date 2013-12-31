@@ -5,7 +5,12 @@ class Gdbm < Formula
   url 'http://ftpmirror.gnu.org/gdbm/gdbm-1.10.tar.gz'
   mirror 'http://ftp.gnu.org/gnu/gdbm/gdbm-1.10.tar.gz'
   sha1 '441201e9145f590ba613f8a1e952455d620e0860'
-
+  
+  depends_on 'pkg-config' => :build
+  depends_on 'libtool' => :build
+  depends_on 'gettext'
+  depends_on 'libffi'
+  
   option :universal
 
   def install

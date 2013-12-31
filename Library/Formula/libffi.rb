@@ -6,16 +6,35 @@ class Libffi < Formula
   mirror 'ftp://sourceware.org/pub/libffi/libffi-3.0.13.tar.gz'
   sha1 'f5230890dc0be42fb5c58fbf793da253155de106'
 
-  keg_only :provided_by_osx, "Some formulae require a newer version of libffi."
+
+  #depends_on 'dejagnu' # to enable make check
 
   def install
-    ENV.deparallelize # https://github.com/mxcl/homebrew/pull/19267
-    ENV.universal_binary
-    system "./configure", "--disable-debug", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}"
+    
+   # ENV.append 'CFLAGS', "--cflags libffi-3.0"
+   # ENV.append 'LDFLAGS', "--libs libffi-3.0"
+    
+    args = %W[
+             --prefix=#{prefix}
+             --disable-debug
+             --disable-dependency-tracking
+           ]
+
+  # cflags += "  --cflags lffi-3.0"
+   #ldflags += "  --libs lffi-3.0"
+  # args << cflags
+   #args << ldflags
+    
+   # args << "CFLAGS='pkg-config --cflags lffi-3.0'"
+   # args << "LDFLAG='pkg-config --libs lffi-3.0'"
+    
+    system "./configure", *args
+
+
+    
     system "make install"
   end
-
+  
   test do
     (testpath/'closure.c').write <<-TEST_SCRIPT.undent
      #include <stdio.h>
