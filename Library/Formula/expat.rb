@@ -6,13 +6,9 @@ class Expat < Formula
   sha1 'b08197d146930a5543a7b99e871cba3da614f6f0'
 
   def install
-    system "./configure", "--disable-debug", "--disable-dependency-tracking",
+    system "./configure", "--enable-debug", "--enable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--mandir=#{man}"
     system "make install"
-  end
-
-  def caveats
-    "Note that OS X has Expat 1.5 installed in /usr already."
   end
 end

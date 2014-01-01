@@ -6,15 +6,8 @@ class Sqlite < Formula
   version '3.8.1'
   sha1 '42464b07df2d6f8aa28f73ce4cc6d48b47be810e'
 
-  bottle do
-    sha1 '6b76c6c72549ac9e399523e50f2c65f2e36446df' => :mavericks
-    sha1 'e2791c264bae126ed9f5d4e2f0ebd39cff021e06' => :mountain_lion
-    sha1 '3df9bddc26a4f807f6d814beeed228bde6887f84' => :lion
-  end
+  #keg_only :provided_by_osx, "OS X provides an older sqlite3."
 
-  keg_only :provided_by_osx, "OS X provides an older sqlite3."
-
-  option :universal
   option 'with-docs', 'Install HTML documentation'
   option 'without-rtree', 'Disable the R*Tree index module'
   option 'with-fts', 'Enable the FTS module'
@@ -42,9 +35,7 @@ class Sqlite < Formula
     ENV.append 'CPPFLAGS', "-DSQLITE_ENABLE_COLUMN_METADATA"
     ENV.append 'CPPFLAGS', "-DSQLITE_ENABLE_STAT3"
 
-    ENV.universal_binary if build.universal?
-
-    system "./configure", "--prefix=#{prefix}", "--disable-dependency-tracking", "--enable-dynamic-extensions"
+    system "./configure", "--prefix=#{prefix}", "--enable-dependency-tracking", "--enable-dynamic-extensions"
     system "make install"
 
     if build.with? "functions"

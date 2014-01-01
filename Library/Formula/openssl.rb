@@ -6,17 +6,11 @@ class Openssl < Formula
   mirror 'http://mirrors.ibiblio.org/openssl/source/openssl-1.0.1e.tar.gz'
   sha256 'f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3'
 
-#  keg_only :provided_by_osx,
-#    "The OpenSSL provided by OS X is too old for some software."
-    
-  def ssl_lib_path_cellar
-    prefix/"lib"
-  end
-  
-  def ssl_lib_path
-    HOMEBREW_PREFIX/"ssl"
-  end
-  
+  #keg_only :provided_by_osx
+	
+	ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4 "
+	ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     args = %W[./Configure
                --prefix=#{prefix}
@@ -30,15 +24,15 @@ class Openssl < Formula
     system "perl", *args
 
     ENV.deparallelize
-    #system "make", "depend"
+    system "make", "depend" if MacOS.prefer_64_bit?
     system "make"
-    #system "make", "test"
+    system "make", "test"
     system "make", "install", "MANDIR=#{man}", "MANSUFFIX=ssl"
     
     # Create a SSLLIBPATH in HOMEBREW_PREFIX/ssl,and Symlink the prefix SSLLIBPATH into the cellar.
-    rm_rf Dir["#{HOMEBREW_PREFIX}/ssl"]
-    ssl_lib_path_cellar.mkpath
-    ln_s ssl_lib_path_cellar, ssl_lib_path
+    #rm_rf Dir["#{HOMEBREW_PREFIX}/ssl"]
+    #ssl_lib_path_cellar.mkpath
+    #ln_s ssl_lib_path_cellar, ssl_lib_path
     
     openssldir.mkpath
   end
@@ -85,8 +79,7 @@ class Openssl < Formula
   
   def caveats
     <<-EOS.undent
-      The SSLLIBPATH is Symlink in #{HOMEBREW_PREFIX}/ssl,
-        export SSLLIBPATH=#{HOMEBREW_PREFIX}/ssl
+      The openssldir is Symlink in etc/openssl 
     EOS
   end
 end

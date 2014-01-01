@@ -7,15 +7,12 @@ class Gdbm < Formula
   sha1 '441201e9145f590ba613f8a1e952455d620e0860'
   
   depends_on 'pkg-config' => :build
-  depends_on 'libtool' => :build
-  depends_on 'gettext'
-  depends_on 'libffi'
-  
-  option :universal
+	
+	ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
 
   def install
-    ENV.universal_binary if build.universal?
-    system "./configure", "--disable-dependency-tracking",
+    system "./configure", "--enable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--mandir=#{man}",
                           "--infodir=#{info}"

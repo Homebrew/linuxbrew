@@ -8,7 +8,7 @@ class Libxml2 < Formula
     mirror 'http://xmlsoft.org/sources/libxml2-2.9.1.tar.gz'
     sha256 'fd3c64cb66f2c4ea27e934d275904d92cec494a8e8405613780cbc8a71680fdb'
 
-    depends_on :python => ["2.7", :recommended]
+    depends_on :python => :recommended
     depends_on 'pkg-config' => :build
     depends_on 'libtool' => :build
   end
@@ -24,6 +24,9 @@ class Libxml2 < Formula
 
   option :universal
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     ENV.universal_binary if build.universal?
     if build.head?

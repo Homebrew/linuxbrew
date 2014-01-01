@@ -6,13 +6,11 @@ class Texinfo < Formula
   mirror 'http://ftp.gnu.org/gnu/texinfo/texinfo-5.2.tar.gz'
   sha1 'dc54edfbb623d46fb400576b3da181f987e63516'
 
-#  keg_only :provided_by_osx, <<-EOS.undent
-#    Software that uses TeX, such as lilypond and octave, require a newer version
-#    of these files.
-#  EOS
-
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
-    system "./configure", "--disable-dependency-tracking",
+    system "./configure", "--enable-dependency-tracking",
                           "--disable-install-warnings",
                           "--prefix=#{prefix}"
     system "make install"

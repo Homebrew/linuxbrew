@@ -24,6 +24,9 @@ class Wget < Formula
   depends_on "openssl" if MacOS.version <= :leopard
   depends_on "libidn" if build.include? "enable-iri"
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+
   def install
     system "./bootstrap" if build.head?
     args = ["--prefix=#{prefix}",

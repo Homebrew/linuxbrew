@@ -12,6 +12,9 @@ class DocbookXsl < Formula
     sha1 '6a0823039b22ae0e0e9bc5ecc0dc325acdc3218f'
   end
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     doc_files = %w[AUTHORS BUGS COPYING NEWS README RELEASE-NOTES.txt TODO VERSION VERSION.xsl]
     xsl_files = %w[assembly catalog.xml common docsrc eclipse epub epub3 extensions

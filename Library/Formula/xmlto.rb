@@ -8,7 +8,10 @@ class Xmlto < Formula
   depends_on 'docbook'
   depends_on 'docbook-xsl'
   depends_on 'gnu-getopt'
-
+	
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def patches
     # xmlto forces --no-net on xsltproc, which causes it to fail when
     # DTDs/entities aren't available locally.
@@ -22,7 +25,7 @@ class Xmlto < Formula
     ENV['XML_CATALOG_FILES'] = "#{etc}/xml/catalog"
 
     ENV.deparallelize
-    system "./configure", "--disable-dependency-tracking", "--prefix=#{prefix}"
+    system "./configure", "--enable-dependency-tracking", "--prefix=#{prefix}"
     system "make install"
   end
 end

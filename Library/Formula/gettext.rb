@@ -18,6 +18,9 @@ class Gettext < Formula
     end
   end
 
+	ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+
   def install
     ENV.libxml2
     system "./configure", "--disable-dependency-tracking",

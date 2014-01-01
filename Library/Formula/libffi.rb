@@ -6,32 +6,20 @@ class Libffi < Formula
   mirror 'ftp://sourceware.org/pub/libffi/libffi-3.0.13.tar.gz'
   sha1 'f5230890dc0be42fb5c58fbf793da253155de106'
 
-
-  #depends_on 'dejagnu' # to enable make check
-
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
-    
-   # ENV.append 'CFLAGS', "--cflags libffi-3.0"
-   # ENV.append 'LDFLAGS', "--libs libffi-3.0"
-    
+    ENV.deparallelize # https://github.com/mxcl/homebrew/pull/19267
     args = %W[
              --prefix=#{prefix}
-             --disable-debug
-             --disable-dependency-tracking
+             --libdir=#{prefix}/lib
+             --includedir=#{prefix}/include
+             --enable-debug
+             --enable-dependency-tracking
            ]
 
-  # cflags += "  --cflags lffi-3.0"
-   #ldflags += "  --libs lffi-3.0"
-  # args << cflags
-   #args << ldflags
-    
-   # args << "CFLAGS='pkg-config --cflags lffi-3.0'"
-   # args << "LDFLAG='pkg-config --libs lffi-3.0'"
-    
     system "./configure", *args
-
-
-    
     system "make install"
   end
   

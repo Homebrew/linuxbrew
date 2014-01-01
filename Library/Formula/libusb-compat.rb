@@ -9,10 +9,13 @@ class LibusbCompat < Formula
 
   depends_on 'pkg-config' => :build
   depends_on 'libusb'
-
+	
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     ENV.universal_binary if build.universal?
-    system "./configure", "--prefix=#{prefix}", "--disable-dependency-tracking"
+    system "./configure", "--prefix=#{prefix}", "--enable-dependency-tracking"
     system "make install"
   end
 end
