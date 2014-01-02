@@ -5,6 +5,9 @@ class Libyaml < Formula
   url 'http://pyyaml.org/download/libyaml/yaml-0.1.4.tar.gz'
   sha1 'e0e5e09192ab10a607e3da2970db492118f560f2'
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+
   depends_on 'pkg-config' => :build
   depends_on 'libtool'
   depends_on 'gettext'

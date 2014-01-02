@@ -17,14 +17,9 @@ class Mpfr < Formula
   depends_on 'gmp'
 
   option '32-bit'
-
-  fails_with :clang do
-    build 421
-    cause <<-EOS.undent
-      clang build 421 segfaults while building in superenv;
-      see https://github.com/mxcl/homebrew/issues/15061
-      EOS
-  end
+	
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
 
   def install
     args = ["--disable-dependency-tracking", "--prefix=#{prefix}"]

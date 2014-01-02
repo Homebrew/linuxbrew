@@ -117,10 +117,7 @@ class FormulaCreator
   def template; <<-EOS.undent
     require 'formula'
 
-    # Documentation: https://github.com/mxcl/homebrew/wiki/Formula-Cookbook
-    #                #{HOMEBREW_CONTRIB}/example-formula.rb
-    # PLEASE REMOVE ALL GENERATED COMMENTS BEFORE SUBMITTING YOUR PULL REQUEST!
-
+    # Create by Senny Chu,SPF
     class #{Formula.class_s name} < Formula
       homepage ''
       url '#{url}'
@@ -129,44 +126,20 @@ class FormulaCreator
     <% end %>
       sha1 '#{sha1}'
 
-    <% if mode == :cmake %>
-      depends_on 'cmake' => :build
-    <% elsif mode.nil? %>
-      # depends_on 'cmake' => :build
-    <% end %>
-      depends_on :x11 # if your formula requires any X11/XQuartz components
-
       def install
         # ENV.j1  # if your formula's build system can't parallelize
-
-    <% if mode == :cmake %>
-        system "cmake", ".", *std_cmake_args
-    <% elsif mode == :autotools %>
-        # Remove unrecognized options if warned by configure
-        system "./configure", "--disable-debug",
-                              "--disable-dependency-tracking",
-                              "--disable-silent-rules",
-                              "--prefix=\#{prefix}"
-    <% else %>
-        # Remove unrecognized options if warned by configure
-        system "./configure", "--disable-debug",
-                              "--disable-dependency-tracking",
-                              "--disable-silent-rules",
-                              "--prefix=\#{prefix}"
-        # system "cmake", ".", *std_cmake_args
-    <% end %>
-        system "make", "install" # if this fails, try separate make/make install steps
+        
+        system "./configure", "--enable-debug",
+                              "--enable-dependency-tracking",
+                              "--enable-silent-rules",
+                              "--prefix=\#{prefix}",
+                              "--enabile-shared"
+        system "make"
+        system "make install"
       end
 
       test do
-        # `test do` will create, run in and delete a temporary directory.
-        #
-        # This test will fail and we won't accept that! It's enough to just replace
-        # "false" with the main program this formula installs, but it'd be nice if you
-        # were more thorough. Run the test with `brew test #{name}`.
-        #
-        # The installed folder is not in the path, so use the entire path to any
-        # executables being tested: `system "\#{bin}/program", "--version"`.
+        system "\#{bin}/program", "--version"
         system "false"
       end
     end

@@ -10,6 +10,9 @@ class Ansible < Formula
   depends_on :python
   depends_on 'libyaml'
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+
   option 'with-accelerate', "Enable accelerated mode"
 
   resource 'pycrypto' do

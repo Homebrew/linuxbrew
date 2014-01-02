@@ -17,6 +17,9 @@ class Gmp < Formula
   option '32-bit'
   option :cxx11
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+
   # Patches gmp.h to remove the __need_size_t define, which
   # was preventing libc++ builds from getting the ptrdiff_t type
   # Applied upstream in http://gmplib.org:8000/gmp/raw-rev/6cd3658f5621
