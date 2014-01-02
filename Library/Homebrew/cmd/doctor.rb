@@ -298,8 +298,12 @@ def check_for_stray_developer_directory
 end
 
 def check_cc
-  if !MacOS::CLT.installed? && MacOS::Xcode.version < "4.3"
-    'No compiler found in /usr/bin!'
+  #if !MacOS::CLT.installed? && MacOS::Xcode.version < "4.3"
+  #  'No compiler found in /usr/bin!'
+  #end
+  ccpath = "which gcc"
+  if ccpath.empty?
+    'No compiler found in system path!'
   end
 end
 
@@ -405,11 +409,11 @@ def check_ruby_version
 end
 
 def check_homebrew_prefix
-  unless HOMEBREW_PREFIX.to_s == '/usr/local'
+  unless HOMEBREW_PREFIX.to_s == '$LFS'
     <<-EOS.undent
-      Your Homebrew is not installed to /usr/local
+      Your Homebrew is not installed to $LFS
       You can install Homebrew anywhere you want, but some brews may only build
-      correctly if you install in /usr/local. Sorry!
+      correctly if you install in $LFS. Sorry!
     EOS
   end
 end
@@ -447,13 +451,13 @@ def check_xcode_select_path
         sudo rm /usr/share/xcode-select/xcode_dir_*
     EOS
   elsif not MacOS::CLT.installed? and not File.file? "#{MacOS::Xcode.folder}/usr/bin/xcodebuild"
-    path = MacOS.app_with_bundle_id(MacOS::Xcode::V4_BUNDLE_ID) || MacOS.app_with_bundle_id(MacOS::Xcode::V3_BUNDLE_ID)
-    path = '/Developer' if path.nil? or not path.directory?
-    <<-EOS.undent
-      Your Xcode is configured with an invalid path.
-      You should change it to the correct path:
-        sudo xcode-select -switch #{path}
-    EOS
+    #path = MacOS.app_with_bundle_id(MacOS::Xcode::V4_BUNDLE_ID) || MacOS.app_with_bundle_id(MacOS::Xcode::V3_BUNDLE_ID)
+    #path = '/Developer' if path.nil? or not path.directory?
+    #<<-EOS.undent
+    #  Your Xcode is configured with an invalid path.
+    #  You should change it to the correct path:
+    #    sudo xcode-select -switch #{path}
+    #EOS
   end
 end
 
@@ -610,7 +614,7 @@ def check_for_config_scripts
 
   config_scripts = []
 
-  whitelist = %W[/usr/bin /usr/sbin /usr/X11/bin /usr/X11R6/bin /opt/X11/bin #{HOMEBREW_PREFIX}/bin #{HOMEBREW_PREFIX}/sbin]
+  whitelist = %W[/ramdisk/bin /usr/local/sbin /usr/local/sbin /usr/bin /usr/sbin /bin /sbin /usr/X11/bin /usr/X11R6/bin /opt/X11/bin #{HOMEBREW_PREFIX}/bin #{HOMEBREW_PREFIX}/sbin]
   whitelist.map! { |d| d.downcase }
 
   paths.each do |p|
@@ -726,10 +730,10 @@ def check_filesystem_case_sensitive
     dir.exist? && !(upcased.exist? && downcased.exist?)
   end.map { |case_sensitive_dir| volumes.get_mounts(case_sensitive_dir) }.uniq
   return if case_sensitive_vols.empty?
-  <<-EOS.undent
-    Your file-system on #{case_sensitive_vols} appears to be CaSe SeNsItIvE.
-    Homebrew is less tested with that - don't worry but please report issues.
-  EOS
+#  <<-EOS.undent
+#    Your file-system on #{case_sensitive_vols} appears to be CaSe SeNsItIvE.
+#    Homebrew is less tested with that - don't worry but please report issues.
+#  EOS
 end
 
 def __check_git_version
@@ -786,9 +790,9 @@ def check_git_origin
       Without a correctly configured origin, Homebrew won't update
       properly. You can solve this by adding the Homebrew remote:
         cd #{HOMEBREW_REPOSITORY}
-        git remote add origin https://github.com/mxcl/homebrew.git
+        git remote add origin https://github.com/sennychu/linuxbrew.git
       EOS
-    elsif origin !~ /mxcl\/homebrew(\.git)?$/ then <<-EOS.undent
+    elsif origin !~ /sennychu\/linuxbrew(\.git)?$/ then <<-EOS.undent
       Suspicious git origin remote found.
 
       With a non-standard origin, Homebrew won't pull updates from
@@ -797,7 +801,7 @@ def check_git_origin
 
       Unless you have compelling reasons, consider setting the
       origin remote to point at the main repository, located at:
-        https://github.com/mxcl/homebrew.git
+        https://github.com/sennychu/linuxbrew.git
       EOS
     end
   end
@@ -807,13 +811,13 @@ def check_for_autoconf
   return unless MacOS::Xcode.provides_autotools?
 
   autoconf = which('autoconf')
-  safe_autoconfs = %w[/usr/bin/autoconf /Developer/usr/bin/autoconf]
-  unless autoconf.nil? or safe_autoconfs.include? autoconf.to_s then <<-EOS.undent
-    An "autoconf" in your path blocks the Xcode-provided version at:
-      #{autoconf}
-
-    This custom autoconf may cause some Homebrew formulae to fail to compile.
-    EOS
+  #safe_autoconfs = %w[/usr/bin/autoconf /Developer/usr/bin/autoconf]
+  #unless autoconf.nil? or safe_autoconfs.include? autoconf.to_s then <<-EOS.undent
+  #  An "autoconf" in your path blocks the Xcode-provided version at:
+  #    #{autoconf}
+  #
+  #  This custom autoconf may cause some Homebrew formulae to fail to compile.
+  #  EOS
   end
 end
 
@@ -933,7 +937,7 @@ def check_git_status
 end
 
 def check_git_ssl_verify
-  if MacOS.version <= :leopard && !ENV['GIT_SSL_NO_VERIFY'] then <<-EOS.undent
+  if MacOS.version == 0 && !ENV['GIT_SSL_NO_VERIFY'] then <<-EOS.undent
     The version of libcurl provided with Mac OS X #{MacOS.version} has outdated
     SSL certificates.
 
