@@ -7,20 +7,11 @@ class Readline < Formula
   sha256 '79a696070a058c233c72dd6ac697021cc64abd5ed51e59db867d66d196a89381'
   version '6.2.4'
 
-  bottle do
-    cellar :any
-    revision 1
-    sha1 '82fb14c0c7671a6bb0490efc8b477df855eec093' => :mavericks
-    sha1 '8085cabc0f96bc0c3c36b8a73cf489f90f0d8683' => :mountain_lion
-    sha1 '9ac769748142d0d71a140939dd4a3d21d4c5b5de' => :lion
-  end
-
-  keg_only <<-EOS
-OS X provides the BSD libedit library, which shadows libreadline.
-In order to prevent conflicts when programs look for libreadline we are
-defaulting this GNU Readline installation to keg-only.
-EOS
-
+  depends_on 'pkg-config' => :build
+	
+	ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  
   # Vendor the patches.
   # The mirrors are unreliable for getting the patches, and the more patches
   # there are, the more unreliable they get. Pulling this patch inline to
@@ -32,14 +23,14 @@ EOS
   # Presumably when 10.9 comes out this patch will move upstream.
   # https://github.com/mxcl/homebrew/pull/21625
   def patches; DATA; end
-
+  
   def install
-    # Always build universal, per https://github.com/mxcl/homebrew/issues/issue/899
-    ENV.universal_binary
+    #ENV.universal_binary
     system "./configure", "--prefix=#{prefix}",
                           "--mandir=#{man}",
                           "--infodir=#{info}",
                           "--enable-multibyte"
+                   
     system "make install"
   end
 end

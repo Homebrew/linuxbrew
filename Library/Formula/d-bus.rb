@@ -5,25 +5,28 @@ class DBus < Formula
   url 'http://dbus.freedesktop.org/releases/dbus/dbus-1.6.18.tar.gz'
   sha256 '7085a0895a9eb11a952394cdbea6d8b4358e17cb991fed0e8fb85e2b9e686dcd'
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     # Fix the TMPDIR to one D-Bus doesn't reject due to odd symbols
-    ENV["TMPDIR"] = "/tmp"
+    ENV["TMPDIR"] = "/home7/tvctopin/gnu/tmp"
 
-    system "./configure", "--disable-dependency-tracking",
+    system "./configure", "--enable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--localstatedir=#{var}",
                           "--sysconfdir=#{etc}",
-                          "--disable-xml-docs",
+                          "--enable-xml-docs",
                           "--disable-doxygen-docs",
-                          "--enable-launchd",
-                          "--with-launchd-agent-dir=#{prefix}",
+                          "--disable-launchd",
+                          #"--with-launchd-agent-dir=#{prefix}",
                           "--without-x",
                           "--disable-tests"
     system "make"
     ENV.deparallelize
     system "make install"
 
-    (prefix+'org.freedesktop.dbus-session.plist').chmod 0644
+    #(prefix+'org.freedesktop.dbus-session.plist').chmod 0644
   end
 
   def post_install

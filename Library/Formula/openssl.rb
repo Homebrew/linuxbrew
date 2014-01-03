@@ -6,9 +6,11 @@ class Openssl < Formula
   mirror 'http://mirrors.ibiblio.org/openssl/source/openssl-1.0.1e.tar.gz'
   sha256 'f74f15e8c8ff11aa3d5bb5f276d202ec18d7246e95f961db76054199c69c1ae3'
 
-  keg_only :provided_by_osx,
-    "The OpenSSL provided by OS X is too old for some software."
-
+  #keg_only :provided_by_osx
+	
+	ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4 "
+	ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     args = %W[./Configure
                --prefix=#{prefix}
@@ -17,12 +19,11 @@ class Openssl < Formula
                shared
              ]
 
-    if OS.linux?
-      args << "linux-x86_64"
-    elsif MacOS.prefer_64_bit?
-      args << "darwin64-x86_64-cc" << "enable-ec_nistp_64_gcc_128"
-
-      # -O3 is used under stdenv, which results in test failures when using clang
+		if OS.linux?
+		      args << "linux-x86_64"
+		    elsif MacOS.prefer_64_bit?
+		      args << "darwin64-x86_64-cc" << "enable-ec_nistp_64_gcc_128"
+			      # -O3 is used under stdenv, which results in test failures when using clang
       inreplace 'Configure',
         %{"darwin64-x86_64-cc","cc:-arch x86_64 -O3},
         %{"darwin64-x86_64-cc","cc:-arch x86_64 -Os}
@@ -39,6 +40,13 @@ class Openssl < Formula
     system "make"
     system "make", "test"
     system "make", "install", "MANDIR=#{man}", "MANSUFFIX=ssl"
+    
+    # Create a SSLLIBPATH in HOMEBREW_PREFIX/ssl,and Symlink the prefix SSLLIBPATH into the cellar.
+    #rm_rf Dir["#{HOMEBREW_PREFIX}/ssl"]
+    #ssl_lib_path_cellar.mkpath
+    #ln_s ssl_lib_path_cellar, ssl_lib_path
+    
+    openssldir.mkpath
   end
 
   def setup_makedepend_shim
@@ -79,5 +87,11 @@ class Openssl < Formula
       write_pem_file
       openssldir.install_symlink 'osx_cert.pem' => 'cert.pem'
     end
+  end
+  
+  def caveats
+    <<-EOS.undent
+      The openssldir is Symlink in etc/openssl 
+    EOS
   end
 end

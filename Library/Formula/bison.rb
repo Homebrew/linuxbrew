@@ -6,10 +6,13 @@ class Bison < Formula
   mirror 'http://ftp.gnu.org/gnu/bison/bison-3.0.1.tar.gz'
   sha1 '0191d1679525b1e05bb35265a71e7475e7cb1432'
 
-  keg_only :provided_by_osx, 'Some formulae require a newer version of bison.'
+  #keg_only :provided_by_osx, 'Some formulae require a newer version of bison.'
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
-    system "./configure", "--disable-dependency-tracking",
+    system "./configure", "--enable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make", "install"
   end

@@ -6,7 +6,7 @@ class Md5sha1sum < Formula
   sha1 '84a46bfd2b49daa0a601a9c55b7d87c27e19ef87'
 
   conflicts_with 'polarssl', :because => 'both install conflicting binaries'
-
+    
   def install
     system "./configure", "--prefix=#{prefix}"
     system "make"

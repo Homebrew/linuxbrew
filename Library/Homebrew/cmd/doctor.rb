@@ -41,6 +41,16 @@ end
 class Checks
 
 ############# HELPERS
+  def paths
+    @paths ||= ENV['PATH'].split(':').collect do |p|
+      begin
+        File.expand_path(p).chomp('/')
+      rescue ArgumentError
+        onoe "The following PATH component is invalid: #{p}"
+      end
+    end.uniq.compact
+  end
+
   # Finds files in HOMEBREW_PREFIX *and* /usr/local.
   # Specify paths relative to a prefix eg. "include/foo.h".
   # Sets @found for your convenience.
@@ -58,7 +68,7 @@ class Checks
 # Sorry for the lack of an indent here, the diff would have been unreadable.
 # See https://github.com/mxcl/homebrew/pull/9986
 def check_path_for_trailing_slashes
-  bad_paths = ENV['PATH'].split(File::PATH_SEPARATOR).select { |p| p[-1..-1] == '/' }
+  bad_paths = ENV['PATH'].split(':').select { |p| p[-1..-1] == '/' }
   return if bad_paths.empty?
   s = <<-EOS.undent
     Some directories in your path end in a slash.
@@ -191,97 +201,54 @@ def check_for_broken_symlinks
 end
 
 def check_xcode_clt
-  return unless OS.mac?
-  if MacOS.version >= :mavericks
-    __check_clt_up_to_date
-  elsif MacOS::Xcode.installed?
+  return unless MACOS
+  if MacOS::Xcode.installed?
     __check_xcode_up_to_date
-  elsif MacOS.version >= :lion
+  elsif MacOS.version >= 10.7
     __check_clt_up_to_date
   else <<-EOS.undent
-      Xcode is not installed
-      Most formulae need Xcode to build.
-      It can be installed from https://developer.apple.com/downloads/
+    Xcode not installed
+    Most stuff needs Xcode to build: http://developer.apple.com/xcode/
     EOS
   end
 end
 
 def __check_xcode_up_to_date
-  if MacOS::Xcode.outdated?
-    message = <<-EOS.undent
-      Your Xcode (#{MacOS::Xcode.version}) is outdated
-      Please update to Xcode #{MacOS::Xcode.latest_version}.
+  if MacOS::Xcode.outdated? then <<-EOS.undent
+    Your Xcode (#{MacOS::Xcode.version}) is outdated
+    Please install Xcode #{MacOS::Xcode.latest_version}.
     EOS
-    if MacOS.version >= :lion
-      message += <<-EOS.undent
-      Xcode can be updated from the App Store.
-      EOS
-    else
-      message += <<-EOS.undent
-      Xcode can be updated from https://developer.apple.com/downloads/
-      EOS
-    end
-    message
   end
 end
 
 def __check_clt_up_to_date
-  if not MacOS::CLT.installed?
-    message = <<-EOS.undent
-      No developer tools installed.
-      You should install the Command Line Tools.
+  if not MacOS::CLT.installed? then <<-EOS.undent
+    No developer tools installed
+    You should install the Command Line Tools: http://connect.apple.com
     EOS
-    if MacOS.version >= :mavericks
-      message += <<-EOS.undent
-        Run `xcode-select --install` to install them.
-      EOS
-    else
-      message += <<-EOS.undent
-        The standalone package can be obtained from
-        https://developer.apple.com/downloads/,
-        or it can be installed via Xcode's preferences.
-      EOS
-    end
-    message
-  elsif MacOS::CLT.outdated?
-    message = <<-EOS.undent
-      A newer Command Line Tools release is available
+  elsif MacOS::CLT.outdated? then <<-EOS.undent
+    A newer Command Line Tools for Xcode release is available
+    You should install the latest version from: http://connect.apple.com
     EOS
-    if MacOS.version >= :mavericks
-      message += <<-EOS.undent
-        Update them from Software Update in the App Store.
-      EOS
-    else
-      message += <<-EOS.undent
-        The standalone package can be obtained from
-        https://developer.apple.com/downloads/,
-        or it can be installed via Xcode's preferences.
-      EOS
-    end
   end
 end
 
 def check_for_osx_gcc_installer
-  if (MacOS.version < "10.7" || MacOS::Xcode.version > "4.1") && \
-      MacOS.clang_version == "2.1"
-    message = <<-EOS.undent
-    You seem to have osx-gcc-installer installed.
-    Homebrew doesn't support osx-gcc-installer. It causes many builds to fail and
-    is an unlicensed distribution of really old Xcode files.
+  if (MacOS.version < 10.7 || MacOS::Xcode.version < "4.1") && \
+    MacOS.clang_version == "2.1" then <<-EOS.undent
+    You have osx-gcc-installer installed.
+    Homebrew doesn't support osx-gcc-installer, and it is known to cause
+    some builds to fail.
+    Please install Xcode #{MacOS::Xcode.latest_version}.
     EOS
-    if MacOS.version >= :mavericks
-      message += <<-EOS.undent
-        Please run `xcode-select --install` to install the CLT.
-      EOS
-    elsif MacOS.version >= :lion
-      message += <<-EOS.undent
-        Please install the CLT or Xcode #{MacOS::Xcode.latest_version}.
-      EOS
-    else
-      message += <<-EOS.undent
-        Please install Xcode #{MacOS::Xcode.latest_version}.
-      EOS
-    end
+  end
+end
+
+def check_for_unsupported_osx
+  if MacOS.version > 10.8 then <<-EOS.undent
+    You are using Mac OS X #{MacOS.version}.
+    We do not yet provide support for this (unreleased) version.
+    EOS
   end
 end
 
@@ -299,7 +266,7 @@ end
 
 def check_cc
   if !MacOS::CLT.installed? && MacOS::Xcode.version < "4.3"
-    'No compiler found in /usr/bin!'
+    return
   end
 end
 
@@ -382,21 +349,22 @@ end
 end
 
 def check_access_logs
-  if HOMEBREW_LOGS.exist? and not HOMEBREW_LOGS.writable_real?
+  folder = Pathname.new('~/Library/Logs/Homebrew')
+  if folder.exist? and not folder.writable_real?
     <<-EOS.undent
-      #{HOMEBREW_LOGS} isn't writable.
+      #{folder} isn't writable.
       This can happen if you "sudo make install" software that isn't managed
       by Homebrew.
 
       Homebrew writes debugging logs to this location.
 
-      You should probably `chown` #{HOMEBREW_LOGS}
+      You should probably `chown` #{folder}
     EOS
   end
 end
 
 def check_ruby_version
-  if RUBY_VERSION.to_f > 1.8 then <<-EOS.undent
+  if RUBY_VERSION.to_f > 2.0 then <<-EOS.undent
     Ruby version #{RUBY_VERSION} is unsupported.
     Homebrew is developed and tested on Ruby 1.8.x, and may not work correctly
     on other Rubies. Patches are accepted as long as they don't break on 1.8.x.
@@ -405,11 +373,11 @@ def check_ruby_version
 end
 
 def check_homebrew_prefix
-  unless HOMEBREW_PREFIX.to_s == '/usr/local'
+  unless HOMEBREW_PREFIX.to_s == '/home7/tvctopin/gnu'
     <<-EOS.undent
-      Your Homebrew is not installed to /usr/local
+      Your Homebrew is not installed to /home7/tvctopin/gnu
       You can install Homebrew anywhere you want, but some brews may only build
-      correctly if you install in /usr/local. Sorry!
+      correctly if you install in /home7/tvctopin/gnu. Sorry!
     EOS
   end
 end
@@ -460,12 +428,14 @@ end
 def check_user_path_1
   $seen_prefix_bin = false
   $seen_prefix_sbin = false
+  seen_usr_bin = false
 
   out = nil
 
   paths.each do |p|
     case p
     when '/usr/bin'
+      seen_usr_bin = true
       unless $seen_prefix_bin
         # only show the doctor message if there are any conflicts
         # rationale: a default install should not trigger any brew doctor messages
@@ -481,9 +451,8 @@ def check_user_path_1
 
                 #{conflicts * "\n                "}
 
-            Consider setting your PATH so that #{HOMEBREW_PREFIX}/bin
-            occurs before /usr/bin. Here is a one-liner:
-                echo export PATH='#{HOMEBREW_PREFIX}/bin:$PATH' >> ~/.bash_profile
+            Consider amending your PATH so that #{HOMEBREW_PREFIX}/bin
+            occurs before /usr/bin in your PATH.
           EOS
         end
       end
@@ -499,9 +468,9 @@ end
 def check_user_path_2
   unless $seen_prefix_bin
     <<-EOS.undent
-      Homebrew's bin was not found in your PATH.
-      Consider setting the PATH for example like so
-          echo export PATH="#{HOMEBREW_PREFIX}/bin:$PATH" >> ~/.bash_profile
+      Homebrew's bin was not found in your path.
+      Consider amending your PATH variable so it contains:
+        #{HOMEBREW_PREFIX}/bin
     EOS
   end
 end
@@ -512,10 +481,9 @@ def check_user_path_3
   if sbin.directory? and sbin.children.length > 0
     unless $seen_prefix_sbin
       <<-EOS.undent
-        Homebrew's sbin was not found in your PATH but you have installed
-        formulae that put executables in #{HOMEBREW_PREFIX}/sbin.
-        Consider setting the PATH for example like so
-            echo export PATH="#{HOMEBREW_PREFIX}/sbin:$PATH" >> ~/.bash_profile
+        Homebrew's sbin was not found in your path.
+        Consider amending your PATH variable so it contains:
+          #{HOMEBREW_PREFIX}/sbin
       EOS
     end
   end
@@ -610,7 +578,7 @@ def check_for_config_scripts
 
   config_scripts = []
 
-  whitelist = %W[/usr/bin /usr/sbin /usr/X11/bin /usr/X11R6/bin /opt/X11/bin #{HOMEBREW_PREFIX}/bin #{HOMEBREW_PREFIX}/sbin]
+  whitelist = %W[/usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/X11/bin /usr/X11R6/bin /opt/X11/bin /root/sbin  /root/sbin #{HOMEBREW_PREFIX}/bin #{HOMEBREW_PREFIX}/sbin]
   whitelist.map! { |d| d.downcase }
 
   paths.each do |p|
@@ -623,22 +591,7 @@ def check_for_config_scripts
   end
 
   unless config_scripts.empty?
-    s = <<-EOS.undent
-      "config" scripts exist outside your system or Homebrew directories.
-      `./configure` scripts often look for *-config scripts to determine if
-      software packages are installed, and what additional flags to use when
-      compiling and linking.
-
-      Having additional scripts in your path can confuse software installed via
-      Homebrew if the config script overrides a system or Homebrew provided
-      script of the same name. We found the following "config" scripts:
-
-    EOS
-
-    config_scripts.each do |dir, files|
-      files.each { |fn| s << "    #{dir}/#{fn}\n" }
-    end
-    s
+    return
   end
 end
 
@@ -691,7 +644,7 @@ def check_for_multiple_volumes
   real_cellar = HOMEBREW_CELLAR.realpath
 
   tmp_prefix = ENV['HOMEBREW_TEMP'] || '/tmp'
-  tmp = Pathname.new with_system_path { `mktemp -d #{tmp_prefix}/homebrew-brew-doctor-XXXX` }.strip
+  tmp = Pathname.new `/usr/bin/mktemp -d #{tmp_prefix}/homebrew-brew-doctor-XXXX`.strip
   real_temp = tmp.realpath.parent
 
   where_cellar = volumes.which real_cellar
@@ -726,17 +679,14 @@ def check_filesystem_case_sensitive
     dir.exist? && !(upcased.exist? && downcased.exist?)
   end.map { |case_sensitive_dir| volumes.get_mounts(case_sensitive_dir) }.uniq
   return if case_sensitive_vols.empty?
-  <<-EOS.undent
-    Your file-system on #{case_sensitive_vols} appears to be CaSe SeNsItIvE.
-    Homebrew is less tested with that - don't worry but please report issues.
-  EOS
+  
 end
 
 def __check_git_version
   # https://help.github.com/articles/https-cloning-errors
   `git --version`.chomp =~ /git version ((?:\d+\.?)+)/
 
-  if $1 and Version.new($1) < Version.new("1.7.10") then <<-EOS.undent
+  if Version.new($1) < Version.new("1.7.10") then <<-EOS.undent
     An outdated version of Git was detected in your PATH.
     Git 1.7.10 or newer is required to perform checkouts over HTTPS from GitHub.
     Please upgrade: brew upgrade git
@@ -786,9 +736,9 @@ def check_git_origin
       Without a correctly configured origin, Homebrew won't update
       properly. You can solve this by adding the Homebrew remote:
         cd #{HOMEBREW_REPOSITORY}
-        git remote add origin https://github.com/mxcl/homebrew.git
+        git remote add origin https://github.com/sennychu/linuxbrew.git
       EOS
-    elsif origin !~ /mxcl\/homebrew(\.git)?$/ then <<-EOS.undent
+    elsif origin !~ /sennychu\/linuxbrew(\.git)?$/ then <<-EOS.undent
       Suspicious git origin remote found.
 
       With a non-standard origin, Homebrew won't pull updates from
@@ -797,7 +747,7 @@ def check_git_origin
 
       Unless you have compelling reasons, consider setting the
       origin remote to point at the main repository, located at:
-        https://github.com/mxcl/homebrew.git
+        https://github.com/sennychu/linuxbrew.git
       EOS
     end
   end
@@ -870,12 +820,11 @@ def check_for_linked_keg_only_brews
 end
 
 def check_for_MACOSX_DEPLOYMENT_TARGET
-  target = ENV.fetch('MACOSX_DEPLOYMENT_TARGET') { return }
-
-  unless target == MacOS.version.to_s then <<-EOS.undent
-    MACOSX_DEPLOYMENT_TARGET was set to #{target.inspect}
+  target_var = ENV['MACOSX_DEPLOYMENT_TARGET']
+  if target_var and target_var != MACOS_VERSION.to_s then <<-EOS.undent
+    MACOSX_DEPLOYMENT_TARGET was set to #{target_var}
     This is used by Fink, but having it set to a value different from the
-    current system version (#{MacOS.version}) can cause problems, compiling
+    current system version (#{MACOS_VERSION}) can cause problems, compiling
     Git for instance, and should probably be removed.
     EOS
   end
@@ -918,35 +867,11 @@ def check_missing_deps
 end
 
 def check_git_status
-  return unless which "git"
-  HOMEBREW_REPOSITORY.cd do
-    unless `git status -s -- Library/Homebrew/ 2>/dev/null`.chomp.empty?
-      <<-EOS.undent_________________________________________________________72
-      You have uncommitted modifications to Homebrew
-      If this a surprise to you, then you should stash these modifications.
-      Stashing returns Homebrew to a pristine state but can be undone
-      should you later need to do so for some reason.
-          cd #{HOMEBREW_LIBRARY} && git stash && git clean -d -f
-      EOS
-    end
-  end
+  return
 end
 
 def check_git_ssl_verify
-  if MacOS.version <= :leopard && !ENV['GIT_SSL_NO_VERIFY'] then <<-EOS.undent
-    The version of libcurl provided with Mac OS X #{MacOS.version} has outdated
-    SSL certificates.
-
-    This can cause problems when running Homebrew commands that use Git to
-    fetch over HTTPS, e.g. `brew update` or installing formulae that perform
-    Git checkouts.
-
-    You can force Git to ignore these errors:
-      export GIT_SSL_NO_VERIFY=1
-    or
-      git config --global http.sslVerify false
-    EOS
-  end
+  return
 end
 
 def check_for_enthought_python
@@ -993,7 +918,7 @@ def check_for_bad_python_symlink
 end
 
 def check_for_non_prefixed_coreutils
-  gnubin = "#{Formula.factory('coreutils').prefix}/libexec/gnubin"
+  gnubin = Formula.factory('coreutils').prefix.to_s + "/libexec/gnubin"
   if paths.include? gnubin then <<-EOS.undent
     Putting non-prefixed coreutils in your path can cause gmp builds to fail.
     EOS
@@ -1001,15 +926,15 @@ def check_for_non_prefixed_coreutils
 end
 
 def check_for_non_prefixed_findutils
-  default_names = Tab.for_name('findutils').used_options.include? 'default-names'
-  if default_names then <<-EOS.undent
-    Putting non-prefixed findutils in your path can cause python builds to fail.
+  gnubin = Formula.factory('findutils').prefix.to_s + "/libexec/gnubin"
+  if paths.include? gnubin then <<-EOS.undent
+    Putting non-prefixed coreutils in your path can cause python builds to fail.
     EOS
   end
 end
 
 def check_for_pydistutils_cfg_in_home
-  if File.exist? "#{ENV['HOME']}/.pydistutils.cfg" then <<-EOS.undent
+  if File.exist? ENV['HOME']+'/.pydistutils.cfg' then <<-EOS.undent
     A .pydistutils.cfg file was found in $HOME, which may cause Python
     builds to fail. See:
       http://bugs.python.org/issue6138
@@ -1032,7 +957,7 @@ def check_for_outdated_homebrew
     timestamp = if File.directory? ".git"
       `git log -1 --format="%ct" HEAD`.to_i
     else
-      HOMEBREW_LIBRARY.mtime.to_i
+      (HOMEBREW_REPOSITORY/"Library").mtime.to_i
     end
 
     if Time.now.to_i - timestamp > 60 * 60 * 24 then <<-EOS.undent
@@ -1050,15 +975,15 @@ def check_for_unlinked_but_not_keg_only
     if not rack.directory?
       true
     elsif not (HOMEBREW_REPOSITORY/"Library/LinkedKegs"/rack.basename).directory?
-      begin
-        Formula.factory(rack.basename.to_s).keg_only?
-      rescue FormulaUnavailableError
-        false
-      end
+      Formula.factory(rack.basename).keg_only? rescue nil
     else
       true
     end
   end.map{ |pn| pn.basename }
+
+  # NOTE very old kegs will be linked without the LinkedKegs symlink
+  # this will trigger this warning but it's wrong, we could detect that though
+  # but I don't feel like writing the code.
 
   if not unlinked.empty? then <<-EOS.undent
     You have unlinked kegs in your Cellar
@@ -1082,21 +1007,22 @@ end
   end
 
   def check_for_latest_xquartz
-    return unless MacOS::XQuartz.installed?
+    quartz = MacOS::XQuartz.version
+    return unless quartz
     return if MacOS::XQuartz.provided_by_apple?
 
-    installed_version = Version.new(MacOS::XQuartz.version)
-    latest_version    = Version.new(MacOS::XQuartz.latest_version)
+    quartz = Version.new(quartz)
+    latest = Version.new(MacOS::XQuartz.latest_version)
 
-    return if installed_version >= latest_version
+    return if quartz >= latest
 
     <<-EOS.undent
-      Your XQuartz (#{installed_version}) is outdated
-      Please install XQuartz #{latest_version}:
-        https://xquartz.macosforge.org
+      Your XQuartz (#{quartz}) is outdated
+      Please install XQuartz #{latest}.
     EOS
   end
-end # end class Checks
+end 
+# end class Checks
 
 module Homebrew extend self
   def doctor

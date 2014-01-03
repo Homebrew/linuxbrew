@@ -15,6 +15,9 @@ class Libusb < Formula
 
   option :universal
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   conflicts_with 'libusbx',
     :because => 'both provide libusb compatible libraries'
 
