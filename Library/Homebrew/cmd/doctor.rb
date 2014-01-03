@@ -201,16 +201,7 @@ def check_for_broken_symlinks
 end
 
 def check_xcode_clt
-  return unless MACOS
-  if MacOS::Xcode.installed?
-    __check_xcode_up_to_date
-  elsif MacOS.version >= 10.7
-    __check_clt_up_to_date
-  else <<-EOS.undent
-    Xcode not installed
-    Most stuff needs Xcode to build: http://developer.apple.com/xcode/
-    EOS
-  end
+  return
 end
 
 def __check_xcode_up_to_date
