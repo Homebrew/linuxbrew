@@ -201,7 +201,16 @@ def check_for_broken_symlinks
 end
 
 def check_xcode_clt
-  return
+  return unless MACOS
+  if MacOS::Xcode.installed?
+    __check_xcode_up_to_date
+  elsif MacOS.version >= 10.7
+    __check_clt_up_to_date
+  else <<-EOS.undent
+    Xcode not installed
+    Most stuff needs Xcode to build: http://developer.apple.com/xcode/
+    EOS
+  end
 end
 
 def __check_xcode_up_to_date
@@ -256,15 +265,8 @@ def check_for_stray_developer_directory
 end
 
 def check_cc
-  unless MacOS::CLT.installed?
-    if MacOS::Xcode.version >= "4.3" then <<-EOS.undent
-      Experimental support for using Xcode without the "Command Line Tools".
-      You have only installed Xcode. If stuff is not building, try installing the
-      "Command Line Tools for Xcode" package provided by Apple.
-      EOS
-    else
-      'No compiler found in /usr/bin!'
-    end
+  if !MacOS::CLT.installed? && MacOS::Xcode.version < "4.3"
+    return
   end
 end
 
@@ -362,7 +364,7 @@ def check_access_logs
 end
 
 def check_ruby_version
-  if RUBY_VERSION.to_f > 1.8 then <<-EOS.undent
+  if RUBY_VERSION.to_f > 2.0 then <<-EOS.undent
     Ruby version #{RUBY_VERSION} is unsupported.
     Homebrew is developed and tested on Ruby 1.8.x, and may not work correctly
     on other Rubies. Patches are accepted as long as they don't break on 1.8.x.
@@ -371,11 +373,11 @@ def check_ruby_version
 end
 
 def check_homebrew_prefix
-  unless HOMEBREW_PREFIX.to_s == '/usr/local'
+  unless HOMEBREW_PREFIX.to_s == '/home7/tvctopin/gnu'
     <<-EOS.undent
-      Your Homebrew is not installed to /usr/local
+      Your Homebrew is not installed to /home7/tvctopin/gnu
       You can install Homebrew anywhere you want, but some brews may only build
-      correctly if you install in /usr/local. Sorry!
+      correctly if you install in /home7/tvctopin/gnu. Sorry!
     EOS
   end
 end
@@ -576,7 +578,7 @@ def check_for_config_scripts
 
   config_scripts = []
 
-  whitelist = %W[/usr/bin /usr/sbin /usr/X11/bin /usr/X11R6/bin /opt/X11/bin #{HOMEBREW_PREFIX}/bin #{HOMEBREW_PREFIX}/sbin]
+  whitelist = %W[/usr/bin /usr/sbin /usr/local/bin /usr/local/sbin /usr/X11/bin /usr/X11R6/bin /opt/X11/bin /root/sbin  /root/sbin #{HOMEBREW_PREFIX}/bin #{HOMEBREW_PREFIX}/sbin]
   whitelist.map! { |d| d.downcase }
 
   paths.each do |p|
@@ -589,22 +591,7 @@ def check_for_config_scripts
   end
 
   unless config_scripts.empty?
-    s = <<-EOS.undent
-      "config" scripts exist outside your system or Homebrew directories.
-      `./configure` scripts often look for *-config scripts to determine if
-      software packages are installed, and what additional flags to use when
-      compiling and linking.
-
-      Having additional scripts in your path can confuse software installed via
-      Homebrew if the config script overrides a system or Homebrew provided
-      script of the same name. We found the following "config" scripts:
-
-    EOS
-
-    config_scripts.each do |dir, files|
-      files.each { |fn| s << "    #{dir}/#{fn}\n" }
-    end
-    s
+    return
   end
 end
 
@@ -692,10 +679,7 @@ def check_filesystem_case_sensitive
     dir.exist? && !(upcased.exist? && downcased.exist?)
   end.map { |case_sensitive_dir| volumes.get_mounts(case_sensitive_dir) }.uniq
   return if case_sensitive_vols.empty?
-  <<-EOS.undent
-    Your file-system on #{case_sensitive_vols} appears to be CaSe SeNsItIvE.
-    Homebrew is less tested with that - don't worry but please report issues.
-  EOS
+  
 end
 
 def __check_git_version
@@ -752,9 +736,9 @@ def check_git_origin
       Without a correctly configured origin, Homebrew won't update
       properly. You can solve this by adding the Homebrew remote:
         cd #{HOMEBREW_REPOSITORY}
-        git remote add origin https://github.com/Homebrew/linuxbrew.git
+        git remote add origin https://github.com/sennychu/linuxbrew.git
       EOS
-    elsif origin !~ /Homebrew\/linuxbrew(\.git)?$/ then <<-EOS.undent
+    elsif origin !~ /sennychu\/linuxbrew(\.git)?$/ then <<-EOS.undent
       Suspicious git origin remote found.
 
       With a non-standard origin, Homebrew won't pull updates from
@@ -763,7 +747,7 @@ def check_git_origin
 
       Unless you have compelling reasons, consider setting the
       origin remote to point at the main repository, located at:
-        https://github.com/Homebrew/linuxbrew.git
+        https://github.com/sennychu/linuxbrew.git
       EOS
     end
   end
@@ -883,36 +867,11 @@ def check_missing_deps
 end
 
 def check_git_status
-  return unless which "git"
-  HOMEBREW_REPOSITORY.cd do
-    unless `git status -s -- Library/Homebrew/ 2>/dev/null`.chomp.empty?
-      <<-EOS.undent_________________________________________________________72
-      You have uncommitted modifications to Homebrew
-      If this a surprise to you, then you should stash these modifications.
-      Stashing returns Homebrew to a pristine state but can be undone
-      should you later need to do so for some reason.
-          cd #{HOMEBREW_REPOSITORY}/Library && git stash && git clean -d -f
-      EOS
-    end
-  end
+  return
 end
 
 def check_git_ssl_verify
-  return unless MACOS
-  if MacOS.version <= :leopard && !ENV['GIT_SSL_NO_VERIFY'] then <<-EOS.undent
-    The version of libcurl provided with Mac OS X #{MacOS.version} has outdated
-    SSL certificates.
-
-    This can cause problems when running Homebrew commands that use Git to
-    fetch over HTTPS, e.g. `brew update` or installing formulae that perform
-    Git checkouts.
-
-    You can force Git to ignore these errors:
-      export GIT_SSL_NO_VERIFY=1
-    or
-      git config --global http.sslVerify false
-    EOS
-  end
+  return
 end
 
 def check_for_enthought_python
@@ -967,9 +926,9 @@ def check_for_non_prefixed_coreutils
 end
 
 def check_for_non_prefixed_findutils
-  default_names = Tab.for_formula('findutils').used_options.include? 'default-names'
-  if default_names then <<-EOS.undent
-    Putting non-prefixed findutils in your path can cause python builds to fail.
+  gnubin = Formula.factory('findutils').prefix.to_s + "/libexec/gnubin"
+  if paths.include? gnubin then <<-EOS.undent
+    Putting non-prefixed coreutils in your path can cause python builds to fail.
     EOS
   end
 end
@@ -1062,7 +1021,8 @@ end
       Please install XQuartz #{latest}.
     EOS
   end
-end # end class Checks
+end 
+# end class Checks
 
 module Homebrew extend self
   def doctor

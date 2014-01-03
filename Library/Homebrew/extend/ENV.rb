@@ -1,5 +1,4 @@
 require 'hardware'
-<<<<<<< HEAD
 require 'extend/ENV/shared'
 require 'extend/ENV/std'
 require 'extend/ENV/super'
@@ -11,8 +10,6 @@ def superenv?
   return false if ARGV.include? "--env=inherit"
   true
 end
-=======
->>>>>>> 73e8945d65cc11baa5512ce53ecd755b747b3029
 
 module HomebrewEnvExtension
   SAFE_CFLAGS_FLAGS = "-w -pipe"
