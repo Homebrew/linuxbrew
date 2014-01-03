@@ -141,7 +141,7 @@ class Pathname
   def extname(path=to_s)
     BOTTLE_EXTNAME_RX.match(path)
     return $1 if $1
-    /(\.(tar|cpio)\.(gz|bz2|xz|Z))$/.match(path)
+    /(\.(tar|cpio|pax)\.(gz|bz2|xz|Z))$/.match(path)
     return $1 if $1
     return File.extname(path)
   end
@@ -418,8 +418,14 @@ class Pathname
   # Returns an empty array both for software that links against no libraries,
   # and for non-mach objects.
   def dynamically_linked_libraries
-    `#{MacOS.locate("otool")} -L "#{expand_path}"`.chomp.split("\n")[1..-1].map do |line|
-      line[/\t(.+) \([^(]+\)/, 1]
+    if OS.mac?
+      `#{MacOS.locate("otool")} -L "#{expand_path}"`.chomp.split("\n")[1..-1].map do |line|
+        line[/\t(.+) \([^(]+\)/, 1]
+      end
+    elsif OS.linux?
+      `#{MacOS.locate('ldd')} "#{expand_path}"`.chomp.split("\n").map do |line|
+        line[/^\t(.+) => /, 1]
+      end
     end
   end
 

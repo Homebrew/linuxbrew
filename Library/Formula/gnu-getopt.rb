@@ -7,8 +7,11 @@ class GnuGetopt < Formula
 
   depends_on 'gettext'
 
-  keg_only :provided_by_osx
+  #keg_only :provided_by_osx
 
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     inreplace 'Makefile' do |s|
       gettext = Formula.factory 'gettext'

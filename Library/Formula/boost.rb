@@ -14,44 +14,51 @@ end
 
 class Boost < Formula
   homepage 'http://www.boost.org'
-  url 'http://downloads.sourceforge.net/project/boost/boost/1.54.0/boost_1_54_0.tar.bz2'
-  sha1 '230782c7219882d0fab5f1effbe86edb85238bf4'
+  url 'http://downloads.sourceforge.net/project/boost/boost/1.55.0/boost_1_55_0.tar.bz2'
+  sha1 'cef9a0cc7084b1d639e06cd3bc34e4251524c840'
 
   head 'http://svn.boost.org/svn/boost/trunk'
 
   bottle do
     cellar :any
-    sha1 '767a67f4400e5273db3443e10a6e07704b4cbd0f' => :mountain_lion
-    sha1 '5f487b4a1d131722dd673d7ee2de418adf3b5322' => :lion
-    sha1 'cedd9bd34e6dbebc073beeb12fb3aa7a3cb5ecb6' => :snow_leopard
+    sha1 'f4fc12094f9aa754cc964a42907e4e808de5a98f' => :mavericks
+    sha1 '2e4a8f3acb057d641f5eec4fec9c686f09a833db' => :mountain_lion
+    sha1 '62aef45efb9d4247b99c2bca04ec29ac898e940f' => :lion
   end
 
   env :userpaths
 
   option :universal
   option 'with-icu', 'Build regexp engine with icu support'
-  option 'with-c++11', 'Compile using Clang, std=c++11 and stdlib=libc++' if MacOS.version >= :lion
   option 'without-single', 'Disable building single-threading variant'
   option 'without-static', 'Disable building static library variant'
+  option 'with-mpi', 'Build with MPI support'
+  option :cxx11
 
   depends_on :python => :recommended
   depends_on UniversalPython if build.universal? and build.with? "python"
-  depends_on "icu4c" if build.with? 'icu'
-  depends_on :mpi => [:cc, :cxx, :optional]
+
+  if build.with? 'icu'
+    if build.cxx11?
+      depends_on 'icu4c' => 'c++11'
+    else
+      depends_on 'icu4c'
+    end
+  end
+
+  if build.with? 'mpi'
+    if build.cxx11?
+      depends_on 'open-mpi' => 'c++11'
+    else
+      depends_on :mpi => [:cc, :cxx, :optional]
+    end
+  end
+
+  odie 'boost: --with-c++11 has been renamed to --c++11' if build.with? 'c++11'
 
   fails_with :llvm do
     build 2335
     cause "Dropped arguments to functions when linking with boost"
-  end
-
-  def patches
-    # upstream backported patches for 1.54.0: http://www.boost.org/patches
-    [
-      'http://www.boost.org/patches/1_54_0/001-coroutine.patch',
-      'http://www.boost.org/patches/1_54_0/002-date-time.patch',
-      'http://www.boost.org/patches/1_54_0/003-log.patch',
-      'http://www.boost.org/patches/1_54_0/004-thread.patch'
-    ] unless build.head?
   end
 
   def install
@@ -64,7 +71,16 @@ class Boost < Formula
       EOS
     end
 
+    if build.cxx11? and build.with? 'mpi' and python
+      raise <<-EOS.undent
+        Building MPI support for Python using C++11 mode results in
+        failure and hence disabled.  Please don't use this combination
+        of options.
+      EOS
+    end
+
     ENV.universal_binary if build.universal?
+    ENV.cxx11 if build.cxx11?
 
     # Adjust the name the libs are installed under to include the path to the
     # Homebrew lib directory so executables will work when installed to a
@@ -110,7 +126,7 @@ class Boost < Formula
     # The context library is implemented as x86_64 ASM, so it
     # won't build on PPC or 32-bit builds
     # see https://github.com/mxcl/homebrew/issues/17646
-    if Hardware::CPU.type == :ppc || Hardware::CPU.is_32_bit? || build.universal?
+    if Hardware::CPU.ppc? || Hardware::CPU.is_32_bit? || build.universal?
       without_libraries << "context"
       # The coroutine library depends on the context library.
       without_libraries << "coroutine"
@@ -145,11 +161,6 @@ class Boost < Formula
       args << "link=shared,static"
     end
 
-    if MacOS.version >= :lion and build.with? 'c++11'
-      args << "cxxflags=-std=c++11" << "cxxflags=-stdlib=libc++"
-      args << "linkflags=-stdlib=libc++"
-    end
-
     args << "address-model=32_64" << "architecture=x86" << "pch=off" if build.universal?
 
     system "./bootstrap.sh", *bargs
@@ -167,7 +178,7 @@ class Boost < Formula
       EOS
     end
 
-    if Hardware::CPU.type == :ppc || Hardware::CPU.is_32_bit? || build.universal?
+    if Hardware::CPU.ppc? || Hardware::CPU.is_32_bit? || build.universal?
       s += <<-EOS.undent
 
       Building of Boost.Context and Boost.Coroutine is disabled as they are

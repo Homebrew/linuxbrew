@@ -18,9 +18,9 @@ class Go < Formula
   option 'without-cgo', "Build without cgo"
 
   devel do
-    url 'https://go.googlecode.com/files/go1.2rc2.src.tar.gz'
-    version '1.2rc2'
-    sha1 '1fc3b39431551ffa69035ccffea18f4328dc2e8c'
+    url 'https://go.googlecode.com/files/go1.2rc5.src.tar.gz'
+    version '1.2rc5'
+    sha1 'f0cc813715d06a8e2febd580e126b7489b6a945d'
   end
 
   if build.with? 'cgo' and not build.devel?
@@ -34,12 +34,9 @@ class Go < Formula
   # Upstream patch for a switch statement that causes a clang error
   # Should be in the next release.
   # http://code.google.com/p/go/source/detail?r=000ecca1178d67c9b482d3fb0b6a1bc4aeef2472&path=/src/cmd/ld/lib.c
-  def patches; DATA; end unless build.devel?
+  def patches; DATA; end if build.stable?
 
   def install
-    # For Clang cgo support Go needs to be able to tell through CC.
-    ENV['CC'] = 'clang' if build.devel? and ENV.compiler == :clang
-
     # install the completion scripts
     bash_completion.install 'misc/bash/go' => 'go-completion.bash'
     zsh_completion.install 'misc/zsh/go' => 'go'
@@ -157,5 +154,5 @@ diff -r 02b673333fab -r 000ecca1178d src/cmd/ld/lib.c
 +		break;
  	}
  	if(!debug['s'] && !debug_s) {
- 		argv[argc++] = "-gdwarf-2"; 
+ 		argv[argc++] = "-gdwarf-2";
 

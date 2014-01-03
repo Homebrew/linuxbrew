@@ -7,6 +7,7 @@ class Ldns < Formula
 
   depends_on :python => :optional
   depends_on 'swig' if build.with? 'python'
+	depends_on 'openssl'
 
   def install
     # gost requires OpenSSL >= 1.0.0
@@ -14,7 +15,7 @@ class Ldns < Formula
       --prefix=#{prefix}
       --disable-gost
       --with-drill
-      --with-ssl=#{MacOS.sdk_path}/usr
+      --with-ssl=/home7/tvctopin/gnu/opt/openssl
     ]
 
     if build.with? 'python'

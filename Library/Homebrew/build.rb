@@ -46,6 +46,7 @@ def main
 rescue Exception => e
   unless error_pipe.nil?
     e.continuation = nil if ARGV.debug?
+    error_pipe.flush
     Marshal.dump(e, error_pipe)
     error_pipe.close
     exit! 1
@@ -100,6 +101,8 @@ class Build
         Dependency.prune
       elsif dep.build? && dependent != f
         Dependency.prune
+      elsif dep.build?
+        Dependency.keep_but_prune_recursive_deps
       end
     end
   end
@@ -141,17 +144,6 @@ class Build
       end
     end
 
-    # TODO Track user-selected stdlibs, such as boost in C++11 mode
-    stdlib = ENV.compiler == :clang ? MacOS.default_cxx_stdlib : :libstdcxx
-    stdlib_in_use = CxxStdlib.new(stdlib, ENV.compiler)
-
-    # This is a bad place for this check, but we don't have access to
-    # compiler selection within the formula installer, only inside the
-    # build instance.
-    # This is also awkward because we don't actually know yet if this package
-    # will link against a C++ stdlib, but we don't want to test after the build.
-    stdlib_in_use.check_dependencies(f, deps)
-
     f.brew do
       if ARGV.flag? '--git'
         system "git init"
@@ -174,7 +166,17 @@ class Build
 
         begin
           f.install
-          Tab.create(f, ENV.compiler,
+
+          stdlibs = Keg.new(f.prefix).detect_cxx_stdlibs
+          # It's technically possible for the same lib to link to multiple
+          # C++ stdlibs, but very bad news. Right now we don't track this
+          # woeful scenario.
+          stdlib_in_use = CxxStdlib.new(stdlibs.first, ENV.compiler)
+          # This will raise and fail the build if there's an
+          # incompatibility.
+          stdlib_in_use.check_dependencies(f, deps)
+
+          Tab.create(f, ENV.compiler, stdlibs.first,
             Options.coerce(ARGV.options_only)).write
         rescue Exception => e
           if ARGV.debug?

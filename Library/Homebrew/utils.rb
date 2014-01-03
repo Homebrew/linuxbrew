@@ -106,6 +106,17 @@ module Homebrew
   end
 end
 
+# Change the default external text encoding to ASCII-8BIT.
+def with_encoding_ascii_8bit
+  if RUBY_VERSION > '1.9'
+    prev_encoding = Encoding.default_external
+    Encoding.default_external = Encoding::ASCII_8BIT
+  end
+  yield
+ensure
+  Encoding.default_external = prev_encoding if RUBY_VERSION > '1.9'
+end
+
 def with_system_path
   old_path = ENV['PATH']
   ENV['PATH'] = '/usr/bin:/bin'
@@ -138,7 +149,7 @@ def curl *args
 
   args = [HOMEBREW_CURL_ARGS, HOMEBREW_USER_AGENT, *args]
   # See https://github.com/mxcl/homebrew/issues/6103
-  args << "--insecure" if MacOS.version < 10.6
+  args << "--insecure" if MacOS.version < "10.6"
   args << "--verbose" if ENV['HOMEBREW_CURL_VERBOSE']
   args << "--silent" unless $stdout.tty?
 
@@ -255,6 +266,9 @@ module GitHub extend self
   Error = Class.new(StandardError)
 
   def open url, headers={}, &block
+    # This is a no-op if the user is opting out of using the GitHub API.
+    return if ENV['HOMEBREW_NO_GITHUB_API']
+
     require 'net/https' # for exception classes below
 
     default_headers = {'User-Agent' => HOMEBREW_USER_AGENT}
@@ -297,6 +311,9 @@ module GitHub extend self
   end
 
   def find_pull_requests rx
+    return if ENV['HOMEBREW_NO_GITHUB_API']
+    puts "Searching open pull requests..."
+
     query = rx.source.delete('.*').gsub('\\', '')
 
     each_issue_matching(query) do |issue|

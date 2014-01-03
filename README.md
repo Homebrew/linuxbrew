@@ -5,13 +5,14 @@ An experimental fork of Homebrew for Linux.
 Installation
 ------------
 
-* Debian or Ubuntu: `sudo apt-get install build-essential curl git ruby`
+* Debian or Ubuntu: `sudo apt-get install build-essential curl git ruby libbz2-dev libexpat-dev`
+* Fedora: `sudo yum groupinstall 'Development Tools' && sudo yum install curl git ruby bzip2-devel expat-devel`
 * `git clone https://github.com/Homebrew/linuxbrew.git ~/.linuxbrew`
-* Add to your `.bashrc`:
+* Add to your `.bashrc` or `.zshrc`:
 
  ```sh
- export PATH=~/.linuxbrew/bin:$PATH
- export LD_LIBRARY_PATH=~/.linuxbrew/lib
+ export PATH="$HOME/.linuxbrew/bin:$PATH"
+ export LD_LIBRARY_PATH="$HOME/.linuxbrew/lib:$LD_LIBRARY_PATH"
  ```
 
 * `brew install $WHATEVER_YOU_WANT`

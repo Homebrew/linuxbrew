@@ -1,29 +1,13 @@
 require 'formula'
 
-# Xcode 4.3 provides the Apple libtool.
-# This is not the same so as a result we must install this as glibtool.
-
 class Libtool < Formula
   homepage 'http://www.gnu.org/software/libtool/'
   url 'http://ftpmirror.gnu.org/libtool/libtool-2.4.2.tar.gz'
   mirror 'http://ftp.gnu.org/gnu/libtool/libtool-2.4.2.tar.gz'
   sha1 '22b71a8b5ce3ad86e1094e7285981cae10e6ff88'
-
-  bottle do
-    sha1 'c8505f4e25f567555e0794c4aa000228e50d4b47' => :mountain_lion
-    sha1 'b8ed9137176e40333bb538cc464aa7da4456b8ed' => :lion
-    sha1 '5ce78673209a022b06a0d3d97e755d95d3d8b137' => :snow_leopard
-  end
-
-  if MacOS::Xcode.provides_autotools? or File.file? "/usr/bin/glibtoolize"
-    keg_only "Xcode 4.2 and below provide glibtool."
-  end
-
-  option :universal
-
+  
   def install
-    ENV.universal_binary if build.universal?
-    system "./configure", "--disable-dependency-tracking",
+    system "./configure", "--enable-dependency-tracking",
                           "--prefix=#{prefix}",
                           "--program-prefix=g",
                           "--enable-ltdl-install"
@@ -40,3 +24,22 @@ class Libtool < Formula
     system "#{bin}/glibtool", 'execute', '/usr/bin/true'
   end
 end
+
+__END__
+diff --git a/libltdl/config/ltmain.sh b/libltdl/config/ltmain.sh
+index 63ae69d..9ae038c 100644
+--- a/libltdl/config/ltmain.sh
++++ b/libltdl/config/ltmain.sh
+@@ -5851,9 +5851,10 @@ func_mode_link ()
+       # -tp=*                Portland pgcc target processor selection
+       # --sysroot=*          for sysroot support
+       # -O*, -flto*, -fwhopr*, -fuse-linker-plugin GCC link-time optimization
++      # -stdlib=*            select c++ std lib with clang
+       -64|-mips[0-9]|-r[0-9][0-9]*|-xarch=*|-xtarget=*|+DA*|+DD*|-q*|-m*| \
+       -t[45]*|-txscale*|-p|-pg|--coverage|-fprofile-*|-F*|@*|-tp=*|--sysroot=*| \
+-      -O*|-flto*|-fwhopr*|-fuse-linker-plugin)
++      -O*|-flto*|-fwhopr*|-fuse-linker-plugin|-stdlib=*)
+         func_quote_for_eval "$arg"
+ 	arg="$func_quote_for_eval_result"
+         func_append compile_command " $arg"
+Y

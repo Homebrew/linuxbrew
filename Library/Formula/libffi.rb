@@ -6,16 +6,23 @@ class Libffi < Formula
   mirror 'ftp://sourceware.org/pub/libffi/libffi-3.0.13.tar.gz'
   sha1 'f5230890dc0be42fb5c58fbf793da253155de106'
 
-  keg_only :provided_by_osx, "Some formulae require a newer version of libffi."
-
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+	
   def install
     ENV.deparallelize # https://github.com/mxcl/homebrew/pull/19267
-    ENV.universal_binary
-    system "./configure", "--disable-debug", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}"
+    args = %W[
+             --prefix=#{prefix}
+             --libdir=#{prefix}/lib
+             --includedir=#{prefix}/include
+             --enable-debug
+             --enable-dependency-tracking
+           ]
+
+    system "./configure", *args
     system "make install"
   end
-
+  
   test do
     (testpath/'closure.c').write <<-TEST_SCRIPT.undent
      #include <stdio.h>

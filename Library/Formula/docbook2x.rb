@@ -10,11 +10,14 @@ class Docbook2x < Formula
   depends_on 'XML::SAX' => :perl
   depends_on 'XML::Parser' => :perl
   depends_on 'XML::SAX::Expat' => :perl
-
+	
+  ENV['CFLAGS'] = "-fPIC -shared  -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+  ENV['CXXFLAGS'] = "-fPIC -shared -static -rpath -ldl -rdynamic -Os -w -pipe -march=core2 -msse4"
+		
   def install
     inreplace "perl/db2x_xsltproc.pl", "http://docbook2x.sf.net/latest/xslt", "#{share}/docbook2X/xslt"
     inreplace "configure", "${prefix}", prefix
-    system "./configure", "--disable-dependency-tracking",
+    system "./configure", "--enable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make install"
   end

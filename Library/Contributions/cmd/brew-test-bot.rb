@@ -19,7 +19,6 @@ require 'rexml/xmldecl'
 require 'rexml/cdata'
 
 EMAIL_SUBJECT_FILE = "brew-test-bot.#{MacOS.cat}.email.txt"
-HOMEBREW_CONTRIBUTED_CMDS = HOMEBREW_REPOSITORY + "Library/Contributions/cmd/"
 
 class Step
   attr_reader :command, :name, :status, :output, :time
@@ -231,7 +230,7 @@ class Test
       status, filename = line.split
       # Don't try and do anything to removed files.
       if (status == 'A' or status == 'M')
-        if filename.match /Formula\/\w+\.rb$/
+        if filename.match /Formula\/.+\.rb$/
           @formulae << File.basename(filename, '.rb')
         end
       end

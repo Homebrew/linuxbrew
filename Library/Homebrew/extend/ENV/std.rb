@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'hardware'
 require 'os/mac'
 require 'extend/ENV/shared'
@@ -44,7 +45,7 @@ module Stdenv
 
     unless HOMEBREW_PREFIX.to_s == '/usr/local'
       # /usr/local is already an -isystem and -L directory so we skip it
-      self['CPPFLAGS'] = "-isystem #{HOMEBREW_PREFIX}/include"
+      self['CPPFLAGS'] = "-isystem#{HOMEBREW_PREFIX}/include"
       self['LDFLAGS'] = "-L#{HOMEBREW_PREFIX}/lib"
       # CMake ignores the variables above
       self['CMAKE_PREFIX_PATH'] = "#{HOMEBREW_PREFIX}"
@@ -106,40 +107,14 @@ module Stdenv
   end
   alias_method :j1, :deparallelize
 
-  # recommended by Apple, but, eg. wget won't compile with this flag, so…
-  def fast
-    remove_from_cflags(/-O./)
-    append_to_cflags '-fast'
-  end
-  def O4
-    # LLVM link-time optimization
-    remove_from_cflags(/-O./)
-    append_to_cflags '-O4'
-  end
-  def O3
-    # Sometimes O4 just takes fucking forever
-    remove_from_cflags(/-O./)
-    append_to_cflags '-O3'
-  end
-  def O2
-    # Sometimes O3 doesn't work or produces bad binaries
-    remove_from_cflags(/-O./)
-    append_to_cflags '-O2'
-  end
-  def Os
-    # Sometimes you just want a small one
-    remove_from_cflags(/-O./)
-    append_to_cflags '-Os'
-  end
-  def Og
-    # Sometimes you want a debug build
-    remove_from_cflags(/-O./)
-    append_to_cflags '-g -O0'
-  end
-  def O1
-    # Sometimes even O2 doesn't work :(
-    remove_from_cflags(/-O./)
-    append_to_cflags '-O1'
+  # These methods are no-ops for compatibility.
+  %w{fast Og}.each { |opt| define_method(opt) {} }
+
+  %w{O4 O3 O2 O1 O0 Os}.each do |opt|
+    define_method opt do
+      remove_from_cflags(/-O./)
+      append_to_cflags "-#{opt}"
+    end
   end
 
   def gcc_4_0_1
@@ -200,7 +175,6 @@ module Stdenv
     replace_in_cflags(/-Xarch_#{Hardware::CPU.arch_32_bit} (-march=\S*)/, '\1')
     # Clang mistakenly enables AES-NI on plain Nehalem
     set_cpu_cflags '-march=native', :nehalem => '-march=native -Xclang -target-feature -Xclang -aes'
-    append_to_cflags '-Qunused-arguments'
     @compiler = :clang
   end
 
@@ -329,6 +303,29 @@ module Stdenv
     end
   end
 
+  def cxx11
+    if compiler == :clang
+      append 'CXX', '-std=c++11'
+      append 'CXX', '-stdlib=libc++'
+    elsif compiler =~ /gcc-4\.(8|9)/
+      append 'CXX', '-std=c++11'
+    else
+      raise "The selected compiler doesn't support C++11: #{compiler}"
+    end
+  end
+
+  def libcxx
+    if compiler == :clang
+      append 'CXX', '-stdlib=libc++'
+    end
+  end
+
+  def libstdcxx
+    if compiler == :clang
+      append 'CXX', '-stdlib=libstdc++'
+    end
+  end
+
   def replace_in_cflags before, after
     CC_FLAG_VARS.each do |key|
       self[key] = self[key].sub(before, after) if has_key?(key)
@@ -353,7 +350,7 @@ module Stdenv
 
     if ARGV.build_bottle?
       arch = ARGV.bottle_arch || Hardware.oldest_cpu
-      append flags, Hardware::CPU.optimization_flags[arch]
+      append flags, Hardware::CPU.optimization_flags.fetch(arch)
     else
       # Don't set -msse3 and older flags because -march does that for us
       append flags, map.fetch(Hardware::CPU.family, default)
