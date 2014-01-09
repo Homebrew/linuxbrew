@@ -2,15 +2,14 @@ require 'formula'
 
 class Git < Formula
   homepage 'http://git-scm.com'
-  url 'http://git-core.googlecode.com/files/git-1.8.4.3.tar.gz'
-  sha1 '43b1edc95b3ab77f9739d789b906ded0585fe7a2'
+  url 'https://git-core.googlecode.com/files/git-1.8.5.2.tar.gz'
+  sha1 '3a09d6d5d4e31c702f17e664a527b4c2f6e84faf'
   head 'https://github.com/git/git.git'
 
   bottle do
-    revision 1
-    sha1 'b30e3fbe6b8e4e3307c96b5924378ad302deb5ab' => :mavericks
-    sha1 '17d2cde9690251789672218a52113cfa8a702560' => :mountain_lion
-    sha1 'b5a0da40e046f706dc303cc853b8466e81e081ba' => :lion
+    sha1 '96d04727c003453524c76db9e62d06efa9c96cb5' => :mavericks
+    sha1 '041f911d683da52f2544299035836337e67417cd' => :mountain_lion
+    sha1 '27e3ca8f3005f8405daab4f66dfe6df0d6affcd3' => :lion
   end
 
   option 'with-blk-sha1', 'Compile with the block-optimized SHA1 implementation'
@@ -19,7 +18,6 @@ class Git < Formula
   option 'with-brewed-curl', "Use Homebrew's version of cURL library"
   option 'with-persistent-https', 'Build git-remote-persistent-https from "contrib" directory'
 
-  depends_on :python
   depends_on 'pcre' => :optional
   depends_on 'gettext' => :optional
   depends_on 'openssl' if build.with? 'brewed-openssl'
@@ -27,13 +25,13 @@ class Git < Formula
   depends_on 'go' => :build if build.with? 'persistent-https'
 
   resource 'man' do
-    url 'http://git-core.googlecode.com/files/git-manpages-1.8.4.3.tar.gz'
-    sha1 '3a7e9322a95e0743b902152083366fe97f322ab1'
+    url 'http://git-core.googlecode.com/files/git-manpages-1.8.5.2.tar.gz'
+    sha1 '54450c09138b8d65c5f9d2b19ca86fd63c645bb5'
   end
 
   resource 'html' do
-    url 'http://git-core.googlecode.com/files/git-htmldocs-1.8.4.3.tar.gz'
-    sha1 'eb4eb4991464f44deda19d1435d9721146587661'
+    url 'http://git-core.googlecode.com/files/git-htmldocs-1.8.5.2.tar.gz'
+    sha1 'eaf2e3cfd07c1b88eff688fc3ba79dd4f3f2bc43'
   end
 
   def patches
@@ -53,7 +51,7 @@ class Git < Formula
     ENV['NO_DARWIN_PORTS'] = '1'
     ENV['V'] = '1' # build verbosely
     ENV['NO_R_TO_GCC_LINKER'] = '1' # pass arguments to LD correctly
-    ENV['PYTHON_PATH'] = python.binary if python
+    ENV['PYTHON_PATH'] = which 'python'
     ENV['PERL_PATH'] = which 'perl'
 
     if MacOS.version >= :mavericks and MacOS.dev_tools_prefix
@@ -79,6 +77,8 @@ class Git < Formula
                    "CFLAGS=#{ENV.cflags}",
                    "LDFLAGS=#{ENV.ldflags}",
                    "install"
+
+    bin.install Dir["contrib/remote-helpers/git-remote-{hg,bzr}"]
 
     if OS.mac?
         # Install the OS X keychain credential helper
@@ -124,7 +124,7 @@ class Git < Formula
     man.install resource('man')
     (share+'doc/git-doc').install resource('html')
 
-    # Make html docs world-readable; check if this is still needed at 1.8.4.4
+    # Make html docs world-readable; check if this is still needed at 1.8.6
     chmod 0644, Dir["#{share}/doc/git-doc/**/*.{html,txt}"]
   end
 
