@@ -50,7 +50,9 @@ rsem-bam2wig
 rsem-get-unique
 rsem-bam2readdepth
 rsem-sam-validator
-rsem-scan-for-paired-end-reads}
+rsem-scan-for-paired-end-reads
+rsem_perl_utils.pm
+}
   end
 
   test do
