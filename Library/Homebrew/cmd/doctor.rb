@@ -226,7 +226,7 @@ def __check_xcode_up_to_date
 end
 
 def __check_clt_up_to_date
-  if not MacOS::CLT.installed?
+  if OS.mac? and not MacOS::CLT.installed?
     message = <<-EOS.undent
       No developer tools installed.
       You should install the Command Line Tools.
@@ -298,7 +298,7 @@ def check_for_stray_developer_directory
 end
 
 def check_cc
-  if !MacOS::CLT.installed? && MacOS::Xcode.version < "4.3"
+  if OS.mac? and !MacOS::CLT.installed? && MacOS::Xcode.version < "4.3"
     'No compiler found in /usr/bin!'
   end
 end
@@ -438,7 +438,7 @@ def check_xcode_prefix_exists
 end
 
 def check_xcode_select_path
-  if not MacOS::CLT.installed? and not File.file? "#{MacOS::Xcode.folder}/usr/bin/xcodebuild"
+  if OS.mac? and not MacOS::CLT.installed? and not File.file? "#{MacOS::Xcode.folder}/usr/bin/xcodebuild"
     path = MacOS.app_with_bundle_id(MacOS::Xcode::V4_BUNDLE_ID, MacOS::Xcode::V3_BUNDLE_ID)
     path = '/Developer' if path.nil? or not path.directory?
     <<-EOS.undent
@@ -768,6 +768,12 @@ def check_git_origin
   return unless which('git') && (HOMEBREW_REPOSITORY/'.git').exist?
 
   HOMEBREW_REPOSITORY.cd do
+    if OS.linux?
+      brewname = 'linuxbrew'
+    else
+      brewname = 'homebrew'
+    end
+
     origin = `git config --get remote.origin.url`.strip
 
     if origin.empty? then <<-EOS.undent
@@ -776,9 +782,9 @@ def check_git_origin
       Without a correctly configured origin, Homebrew won't update
       properly. You can solve this by adding the Homebrew remote:
         cd #{HOMEBREW_REPOSITORY}
-        git remote add origin https://github.com/Homebrew/homebrew.git
+        git remote add origin https://github.com/Homebrew/#{brewname}.git
       EOS
-    elsif origin !~ /(mxcl|Homebrew)\/homebrew(\.git)?$/ then <<-EOS.undent
+    elsif origin !~ /(mxcl|Homebrew)\/#{brewname}(\.git)?$/ then <<-EOS.undent
       Suspicious git origin remote found.
 
       With a non-standard origin, Homebrew won't pull updates from
@@ -787,7 +793,7 @@ def check_git_origin
 
       Unless you have compelling reasons, consider setting the
       origin remote to point at the main repository, located at:
-        https://github.com/Homebrew/homebrew.git
+        https://github.com/Homebrew/#{brewname}.git
       EOS
     end
   end
