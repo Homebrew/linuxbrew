@@ -179,12 +179,18 @@ class BottleSpecification
   def checksums
     checksums = {}
     os_versions = collector.keys
-    os_versions.map! {|osx| MacOS::Version.from_symbol osx rescue nil }.compact!
+    os_versions.map! {|os|
+      if (OS.linux? and os == :linux)
+        "linux"
+      else
+        MacOS::Version.from_symbol os rescue nil
+      end
+    }.compact!
     os_versions.sort.reverse_each do |os_version|
-      osx = os_version.to_sym
-      checksum = collector[osx]
+      os = os_version.to_sym
+      checksum = collector[os]
       checksums[checksum.hash_type] ||= []
-      checksums[checksum.hash_type] << { checksum => osx }
+      checksums[checksum.hash_type] << { checksum => os }
     end
     checksums
   end
