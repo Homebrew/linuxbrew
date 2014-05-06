@@ -35,6 +35,8 @@ class Vim < Formula
   conflicts_with 'ex-vi',
     :because => 'vim and ex-vi both install bin/ex and bin/view'
 
+  patch :DATA if OS.linux?
+
   def install
     ENV['LUA_PREFIX'] = HOMEBREW_PREFIX if build.with?('lua')
 
@@ -102,3 +104,24 @@ class Vim < Formula
     end
   end
 end
+
+__END__
+diff --git a/src/auto/configure b/src/auto/configure
+index 0b9ea5a..0632e82 100755
+--- a/src/auto/configure
++++ b/src/auto/configure
+@@ -13239,10 +13239,10 @@ fi
+ $as_echo_n "checking linker --as-needed support... " >&6; }
+ LINK_AS_NEEDED=
+ # Check if linker supports --as-needed and --no-as-needed options
+-if $CC -Wl,--help 2>/dev/null | grep as-needed > /dev/null; then
+-  LDFLAGS=`echo "$LDFLAGS" | sed -e 's/ *-Wl,--as-needed//g' | sed -e 's/$/ -Wl,--as-needed/'`
+-  LINK_AS_NEEDED=yes
+-fi
++#if $CC -Wl,--help 2>/dev/null | grep as-needed > /dev/null; then
++#  LDFLAGS=`echo "$LDFLAGS" | sed -e 's/ *-Wl,--as-needed//g' | sed -e 's/$/ -Wl,--as-needed/'`
++#  LINK_AS_NEEDED=yes
++#fi
+ if test "$LINK_AS_NEEDED" = yes; then
+   { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
