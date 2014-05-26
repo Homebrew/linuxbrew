@@ -5,7 +5,7 @@ class Feh < Formula
   url 'http://feh.finalrewind.org/feh-2.10.tar.bz2'
   sha1 '38b472f2a3222e287269a0719c7ead383f1cb8a5'
 
-  depends_on :x11
+  depends_on :x11 if OS.mac?
   depends_on 'giblib' => :build
 
   def install
