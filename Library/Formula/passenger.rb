@@ -12,7 +12,7 @@ class Passenger < Formula
   end
 
   depends_on 'pcre'
-  depends_on :macos => :mountain_lion
+  depends_on :macos => :mountain_lion if OS.mac?
 
   def install
     rake "apache2"
