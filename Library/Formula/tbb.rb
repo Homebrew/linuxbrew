@@ -8,14 +8,33 @@ class Tbb < Formula
 
   option :cxx11
 
-   def install
+  def install
     # Intel sets varying O levels on each compile command.
     ENV.no_optimization
 
     args = %W[tbb_build_prefix=BUILDPREFIX]
+    case ENV.compiler
+    when :clang
+      args << "compiler=clang"
+    else
+      args << "compiler=gcc"
+    end
 
-    args << "compiler=gcc"
-    args << "arch=intel64"
+    if OS.mac?
+      if MacOS.prefer_64_bit?
+        args << "arch=intel64"
+      else
+        args << "arch=ia32"
+      end
+    else
+      args << "compiler=gcc"
+      args << "arch=intel64"
+    end
+
+    if build.cxx11?
+      ENV.cxx11
+      args << "cpp0x=1" << "stdlib=libc++"
+    end
 
     if build.cxx11?
       ENV.cxx11
@@ -23,7 +42,7 @@ class Tbb < Formula
     end
 
     system "make", *args
-    lib.install Dir["build/BUILDPREFIX_release/*.so"]
+    lib.install Dir["build/BUILDPREFIX_release/*.{dylib,so}"]
     include.install "include/tbb"
   end
 end
