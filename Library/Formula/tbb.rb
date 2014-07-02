@@ -13,6 +13,7 @@ class Tbb < Formula
     ENV.no_optimization
 
     args = %W[tbb_build_prefix=BUILDPREFIX]
+
     case ENV.compiler
     when :clang
       args << "compiler=clang"
@@ -26,9 +27,6 @@ class Tbb < Formula
       else
         args << "arch=ia32"
       end
-    else
-      args << "compiler=gcc"
-      args << "arch=intel64"
     end
 
     if build.cxx11?
