@@ -36,11 +36,6 @@ class Tbb < Formula
       args << "cpp0x=1" << "stdlib=libc++"
     end
 
-    if build.cxx11?
-      ENV.cxx11
-      args << "cpp0x=1" << "stdlib=libc++"
-    end
-
     system "make", *args
     lib.install Dir["build/BUILDPREFIX_release/*.{dylib,so}"]
     include.install "include/tbb"
