@@ -21,10 +21,12 @@ class Tbb < Formula
       args << "compiler=gcc"
     end
 
-    if MacOS.prefer_64_bit?
-      args << "arch=intel64"
-    else
-      args << "arch=ia32"
+    if OS.mac?
+      if MacOS.prefer_64_bit?
+        args << "arch=intel64"
+      else
+        args << "arch=ia32"
+      end
     end
 
     if build.cxx11?
@@ -33,7 +35,7 @@ class Tbb < Formula
     end
 
     system "make", *args
-    lib.install Dir["build/BUILDPREFIX_release/*.dylib"]
+    lib.install Dir["build/BUILDPREFIX_release/*.{dylib,so}"]
     include.install "include/tbb"
   end
 end
