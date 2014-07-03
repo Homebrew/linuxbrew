@@ -20,10 +20,10 @@ class Poco < Formula
     arch << '-clang' if ENV.compiler == :clang
 
     system "./configure", "--prefix=#{prefix}",
-                          "--config=#{arch}",
                           "--omit=Data/MySQL,Data/ODBC",
                           "--no-samples",
-                          "--no-tests"
+                          "--no-tests",
+                          "--static"
     system "make", "install", "CC=#{ENV.cc}", "CXX=#{ENV.cxx}"
   end
 end
