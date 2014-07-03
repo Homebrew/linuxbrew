@@ -19,10 +19,10 @@ class Poco < Formula
     arch = Hardware.is_64_bit? ? 'Darwin64': 'Darwin32' if OS.mac?
 
     system "./configure", "--prefix=#{prefix}",
-                          "--config=#{arch}",
                           "--omit=Data/MySQL,Data/ODBC",
                           "--no-samples",
-                          "--no-tests"
+                          "--no-tests",
+                          "--static"
     system "make", "install", "CC=#{ENV.cc}", "CXX=#{ENV.cxx}"
   end
 end
