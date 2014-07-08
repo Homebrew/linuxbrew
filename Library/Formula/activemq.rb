@@ -8,8 +8,6 @@ class Activemq < Formula
   skip_clean 'libexec/webapps/admin/WEB-INF/jsp'
 
   def install
-    rm_rf Dir['bin/linux-x86-*']
-
     prefix.install_metafiles
     libexec.install Dir['*']
 
