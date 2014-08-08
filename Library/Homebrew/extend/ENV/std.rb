@@ -209,9 +209,9 @@ module Stdenv
 
   # Some configure scripts won't find libxml2 without help
   def libxml2
-    if MacOS::CLT.installed?
+    if OS.mac? and MacOS::CLT.installed?
       append 'CPPFLAGS', '-I/usr/include/libxml2'
-    else
+    elsif OS.mac?
       # Use the includes form the sdk
       append 'CPPFLAGS', "-I#{MacOS.sdk_path}/usr/include/libxml2"
     end
