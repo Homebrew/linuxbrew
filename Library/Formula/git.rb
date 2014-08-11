@@ -135,13 +135,19 @@ class Git < Formula
     chmod 0755, Dir["#{share}/doc/git-doc/{RelNotes,howto,technical}"]
   end
 
-  def caveats; <<-EOS.undent
-    The OS X keychain credential helper has been installed to:
-      #{HOMEBREW_PREFIX}/bin/git-credential-osxkeychain
-
-    The 'contrib' directory has been installed to:
-      #{HOMEBREW_PREFIX}/share/git-core/contrib
+  def caveats
+    s = <<-EOS.undent
+      The 'contrib' directory has been installed to:
+        #{HOMEBREW_PREFIX}/share/git-core/contrib
     EOS
+    if OS.mac?
+      s += <<-EOS.undent
+
+        The OS X keychain credential helper has been installed to:
+          #{HOMEBREW_PREFIX}/bin/git-credential-osxkeychain
+      EOS
+    end
+    return s
   end
 
   test do
