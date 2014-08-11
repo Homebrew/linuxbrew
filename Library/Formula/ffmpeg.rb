@@ -114,6 +114,8 @@ class Ffmpeg < Formula
 
     ENV["GIT_DIR"] = cached_download/".git" if build.head?
 
+    ENV.remove SharedEnvExtension::SANITIZED_VARS, '-Wl,-headerpad_max_install_names'
+
     system "./configure", *args
 
     if MacOS.prefer_64_bit?
