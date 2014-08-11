@@ -200,11 +200,15 @@ module Stdenv
 
   def minimal_optimization
     set_cflags "-Os #{SAFE_CFLAGS_FLAGS}"
-    macosxsdk unless MacOS::CLT.installed?
+    if OS.mac?
+        macosxsdk unless MacOS::CLT.installed?
+    end
   end
   def no_optimization
     set_cflags SAFE_CFLAGS_FLAGS
-    macosxsdk unless MacOS::CLT.installed?
+    if OS.mac?
+        macosxsdk unless MacOS::CLT.installed?
+    end
   end
 
   # Some configure scripts won't find libxml2 without help

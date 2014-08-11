@@ -233,7 +233,9 @@ class Python < Formula
     # the needed includes with "-I" here to avoid this err:
     #     building dbm using ndbm
     #     error: /usr/include/zlib.h: No such file or directory
-    ENV.append "CPPFLAGS", "-I#{MacOS.sdk_path}/usr/include" unless MacOS::CLT.installed?
+    if OS.mac?
+        ENV.append "CPPFLAGS", "-I#{MacOS.sdk_path}/usr/include" unless MacOS::CLT.installed?
+    end
 
     # Don't use optimizations other than "-Os" here, because Python's distutils
     # remembers (hint: `python-config --cflags`) and reuses them for C
