@@ -38,7 +38,6 @@ class Erlang < Formula
   depends_on "openssl"
   depends_on "unixodbc" if MacOS.version >= :mavericks
   depends_on "fop" => :optional # enables building PDF docs
-  depends_on "wxmac" => :recommended # for GUI apps like observer
 
   fails_with :llvm
 
@@ -67,10 +66,8 @@ class Erlang < Formula
       --enable-smp-support
     ]
 
-    args << "--enable-darwin-64bit" if MacOS.prefer_64_bit?
     args << "--enable-native-libs" if build.with? "native-libs"
     args << "--enable-dirty-schedulers" if build.with? "dirty-schedulers"
-    args << "--enable-wx" if build.with? "wxmac"
 
     if MacOS.version >= :snow_leopard and MacOS::CLT.installed?
       args << "--with-dynamic-trace=dtrace"
