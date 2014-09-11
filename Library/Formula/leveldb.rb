@@ -22,9 +22,15 @@ class Leveldb < Formula
     include.install 'include/leveldb'
     bin.install 'leveldbutil'
     lib.install 'libleveldb.a'
-    lib.install 'libleveldb.dylib.1.15' => 'libleveldb.1.15.dylib'
-    lib.install_symlink lib/'libleveldb.1.15.dylib' => 'libleveldb.dylib'
-    lib.install_symlink lib/'libleveldb.1.15.dylib' => 'libleveldb.1.dylib'
-    system "install_name_tool", "-id", "#{lib}/libleveldb.1.dylib", "#{lib}/libleveldb.1.15.dylib"
+    if OS.mac?
+      lib.install 'libleveldb.dylib.1.15' => 'libleveldb.1.15.dylib'
+      lib.install_symlink lib/'libleveldb.1.15.dylib' => 'libleveldb.dylib'
+      lib.install_symlink lib/'libleveldb.1.15.dylib' => 'libleveldb.1.dylib'
+      system "install_name_tool", "-id", "#{lib}/libleveldb.1.dylib", "#{lib}/libleveldb.1.15.dylib"
+    elsif OS.linux?
+      lib.install 'libleveldb.so.1.15'
+      lib.install 'libleveldb.so.1'
+      lib.install 'libleveldb.so'
+    end
   end
 end
