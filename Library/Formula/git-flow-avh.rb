@@ -18,17 +18,21 @@ class GitFlowAvh < Formula
     sha1 'e29b79629323dc9a10e7b8ddca1ec00d51f62929'
   end
 
-  depends_on 'gnu-getopt'
+  depends_on 'gnu-getopt' if OS.mac?
 
   conflicts_with 'git-flow'
 
   def install
-    system "make", "prefix=#{libexec}", "install"
-    (bin/'git-flow').write <<-EOS.undent
-      #!/bin/bash
-      export FLAGS_GETOPT_CMD=#{HOMEBREW_PREFIX}/opt/gnu-getopt/bin/getopt
-      exec "#{libexec}/bin/git-flow" "$@"
-    EOS
+    if OS.mac?
+      system "make", "prefix=#{libexec}", "install"
+      (bin/'git-flow').write <<-EOS.undent
+        #!/bin/bash
+        export FLAGS_GETOPT_CMD=#{HOMEBREW_PREFIX}/opt/gnu-getopt/bin/getopt
+        exec "#{libexec}/bin/git-flow" "$@"
+      EOS
+    else
+      system "make", "prefix=#{prefix}", "install"
+    end
 
     resource('completion').stage do
       bash_completion.install "git-flow-completion.bash"
