@@ -14,26 +14,19 @@ class Ghc < Formula
   option "32-bit"
   option "tests", "Verify the build using the testsuite."
 
-  # http://hackage.haskell.org/trac/ghc/ticket/6009
-  depends_on :macos => :snow_leopard
   depends_on "gmp"
-  depends_on "gcc" if MacOS.version == :mountain_lion
+  depends_on "ncurses" #Apparently not needed on MacOSX, but needed on Linux, at least for standalone
+  depends_on "gcc" #if MacOS.version == :mountain_lion
 
-  if build.build_32_bit? || !MacOS.prefer_64_bit?
+  if build.build_32_bit? 
     resource "binary" do
-      url "https://www.haskell.org/ghc/dist/7.4.2/ghc-7.4.2-i386-apple-darwin.tar.bz2"
-      sha256 "80c946e6d66e46ca5d40755f3fbe3100e24c0f8036b850fd8767c4f9efd02bef"
-    end
-  elsif MacOS.version <= :lion
-    # https://ghc.haskell.org/trac/ghc/ticket/9257
-    resource "binary" do
-      url "https://www.haskell.org/ghc/dist/7.6.3/ghc-7.6.3-x86_64-apple-darwin.tar.bz2"
-      sha256 "f7a35bea69b6cae798c5f603471a53b43c4cc5feeeeb71733815db6e0a280945"
+      url "https://www.haskell.org/ghc/dist/7.4.2/ghc-7.4.2-i386-unknown-linux.tar.bz2"
+      sha256 "b133da1d99d9ebe43a3c6b9124b7c4132d96e17ba14a9353031c680ded3cde3e"
     end
   else
     resource "binary" do
-      url "https://www.haskell.org/ghc/dist/7.8.3/ghc-7.8.3-x86_64-apple-darwin.tar.xz"
-      sha256 "dba74c4cfb3a07d243ef17c4aebe7fafe5b43804468f469fb9b3e5e80ae39e38"
+      url "https://www.haskell.org/ghc/dist/7.4.2/ghc-7.4.2-x86_64-unknown-linux.tar.bz2"
+      sha256 "da962575e2503dec250252d72a94b6bf69baef7a567b88e90fd6400ada527210"
     end
   end
 
@@ -98,7 +91,7 @@ class Ghc < Formula
       # https://github.com/Homebrew/homebrew/issues/13650
       ENV["LD"] = "ld"
 
-      if build.build_32_bit? || !MacOS.prefer_64_bit?
+      if build.build_32_bit? 
         ENV.m32 # Need to force this to fix build error on internal libgmp_ar.
         arch = "i386"
       else
@@ -107,7 +100,8 @@ class Ghc < Formula
 
       # ensure configure does not use Xcode 5 "gcc" which is actually clang
       system "./configure", "--prefix=#{prefix}",
-                            "--build=#{arch}-apple-darwin",
+                            "--build=#{arch}-unknown-linux",
+                            "--host=#{arch}-unknown-linux",
                             "--with-gcc=#{ENV.cc}"
       system "make"
 
