@@ -8,7 +8,7 @@ class GoAppEngine64 < Formula
   elsif OS.linux?
     url "https://storage.googleapis.com/appengine-sdks/featured/go_appengine_sdk_linux_amd64-1.9.12.zip"
     sha1 "400e43a1f8f600a41e9698108cdc9d0fbbf2aadb"
-  else 
+  else
       raise "Unknown operating system"
   end
   def install
