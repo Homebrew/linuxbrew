@@ -60,7 +60,11 @@ git clone https://github.com/Homebrew/linuxbrew.git ~/.linuxbrew
 Add to your `.bashrc` or `.zshrc`:
 
 ```sh
-export PATH="$HOME/.linuxbrew/bin:$PATH"
+BREW_PREFIX=~/.linuxbrew
+export PATH="$BREW_PREFIX/bin:$PATH"
+export MANPATH="$BREW_PREFIX/share/man:$MANPATH"
+export INFOPATH="$BREW_PREFIX/share/info:$INFOPATH"
+unset BREW_PREFIX
 ```
 
 You're done!
