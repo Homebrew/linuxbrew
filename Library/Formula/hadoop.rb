@@ -15,13 +15,13 @@ class Hadoop < Formula
 
     inreplace "#{libexec}/etc/hadoop/hadoop-env.sh",
       "export JAVA_HOME=${JAVA_HOME}",
-      "export JAVA_HOME=\"$(/usr/libexec/java_home)\""
+      "export JAVA_HOME=\"#{java_home}\""
     inreplace "#{libexec}/etc/hadoop/yarn-env.sh",
       "# export JAVA_HOME=/home/y/libexec/jdk1.6.0/",
-      "export JAVA_HOME=\"$(/usr/libexec/java_home)\""
+      "export JAVA_HOME=\"#{java_home}\""
     inreplace "#{libexec}/etc/hadoop/mapred-env.sh",
       "# export JAVA_HOME=/home/y/libexec/jdk1.6.0/",
-      "export JAVA_HOME=\"$(/usr/libexec/java_home)\""
+      "export JAVA_HOME=\"#{java_home}\""
   end
 
   def caveats; <<-EOS.undent
@@ -29,8 +29,17 @@ class Hadoop < Formula
       #{libexec}/etc/hadoop/hadoop-env.sh,
       #{libexec}/etc/hadoop/mapred-env.sh and
       #{libexec}/etc/hadoop/yarn-env.sh
-    $JAVA_HOME has been set to be the output of:
-      /usr/libexec/java_home
+    $JAVA_HOME has been set to #{java_home}
     EOS
+  end
+
+  private
+
+  def java_home
+    if OS.linux?
+      Dir["/usr/lib/jvm/java-*"].first
+    else
+      "$(/usr/libexec/java_home)"
+    end
   end
 end
