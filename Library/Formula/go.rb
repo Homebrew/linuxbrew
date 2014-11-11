@@ -43,7 +43,11 @@ class Go < Formula
         ['darwin',  ['386', 'amd64']],
       ]
     else
-      targets = [['darwin', ['']]]
+      if OS.linux? then
+        targets = [['linux', ['']]]
+      elsif OS.mac? then
+        targets = [['darwin'], ['']]
+      end
     end
 
     # The version check is due to:
