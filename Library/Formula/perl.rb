@@ -14,6 +14,8 @@ class Perl < Formula
     sha1 "3b76970b4fef0112a441473aaaceb817c05ed333" => :lion
   end
 
+  depends_on 'db'
+
   keg_only :provided_by_osx,
     "OS X ships Perl and overriding that can cause unintended issues"
 
