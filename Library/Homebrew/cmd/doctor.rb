@@ -953,6 +953,22 @@ def check_tmpdir
   "TMPDIR #{tmpdir.inspect} doesn't exist." unless tmpdir.nil? or File.directory? tmpdir
 end
 
+def check_access_homebrew_tmp
+  ex_checkfile = "#{HOMEBREW_TEMP}/_linux_brew_ex_check"
+  File.open(ex_checkfile, 'w') { |f| f.write("#!/bin/sh") }
+  File.chmod(0755, ex_checkfile)
+  re = system(ex_checkfile)
+  FileUtils.rm(ex_checkfile)
+
+  unless re then <<-EOS.undent
+    The #{HOMEBREW_TEMP} directory is not executable.
+
+    You should either set $HOMEBREW_TEMP environment variable to another
+    executable directory or remount #{HOMEBREW_TEMP} with exec.
+    EOS
+  end
+end
+
 def check_missing_deps
   return unless HOMEBREW_CELLAR.exist?
   missing = Set.new
