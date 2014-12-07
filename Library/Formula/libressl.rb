@@ -20,23 +20,25 @@ class Libressl < Formula
     depends_on "libtool" => :build
   end
 
-  keg_only "LibreSSL is not linked to prevent conflicts with the system OpenSSL."
+  option 'replace-ssl', 'Install LibreSSL under the name OpenSSL'
+  keg_only "LibreSSL is not linked to prevent conflicts with the system OpenSSL." unless build.include? 'replace-ssl'
 
   def install
+    install_name = build.include? 'replace-ssl' ? 'openssl' : 'libressl'
     system "./autogen.sh" if build.head?
 
     system "./configure", "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--prefix=#{prefix}",
-                          "--with-openssldir=#{etc}/libressl",
+                          "--with-openssldir=#{etc}/#{install_name}",
                           "--with-enginesdir=#{lib}/engines"
 
     system "make"
     system "make", "check"
     system "make", "install"
 
-    mkdir_p "#{etc}/libressl"
-    touch "#{etc}/libressl/openssl.cnf"
+    mkdir_p "#{etc}/#{install_name}"
+    touch "#{etc}/#{install_name}/openssl.cnf"
   end
 
   test do
