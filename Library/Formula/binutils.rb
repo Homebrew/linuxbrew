@@ -26,6 +26,7 @@ class Binutils < Formula
                           "--disable-werror",
                           "--enable-interwork",
                           "--enable-multilib",
+                          ("--with-lib-path=#{HOMEBREW_PREFIX}/lib" if OS.linux?),
                           "--enable-64-bit-bfd",
                           "--enable-targets=all"
     system "make"
