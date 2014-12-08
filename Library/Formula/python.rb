@@ -82,15 +82,17 @@ class Python < Formula
     # and not into some other Python the user has installed.
     ENV["PYTHONHOME"] = nil
     ENV["PYTHONPATH"] = nil
-    ENV["CFLAGS"] += " -fPIC"
+    ENV["CFLAGS"] += " -fPIC" if OS.linux?
 
     args = %W[
              --prefix=#{prefix}
              --enable-ipv6
              --datarootdir=#{share}
              --datadir=#{share}
-             --enable-shared
            ]
+
+
+    args << "--enable-shared" if OS.linux?
 
     args << "--without-gcc" if ENV.compiler == :clang
     args << "--with-dtrace" if build.with? "dtrace"
