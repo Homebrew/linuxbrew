@@ -82,12 +82,14 @@ class Python < Formula
     # and not into some other Python the user has installed.
     ENV["PYTHONHOME"] = nil
     ENV["PYTHONPATH"] = nil
+    ENV["CFLAGS"] += " -fPIC"
 
     args = %W[
              --prefix=#{prefix}
              --enable-ipv6
              --datarootdir=#{share}
              --datadir=#{share}
+             --enable-shared
            ]
 
     args << "--without-gcc" if ENV.compiler == :clang
