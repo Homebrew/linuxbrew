@@ -82,7 +82,6 @@ class Python < Formula
     # and not into some other Python the user has installed.
     ENV["PYTHONHOME"] = nil
     ENV["PYTHONPATH"] = nil
-    ENV["CFLAGS"] += " -fPIC" if OS.linux?
 
     args = %W[
              --prefix=#{prefix}
