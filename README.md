@@ -65,6 +65,11 @@ export PATH="$HOME/.linuxbrew/bin:$PATH"
 export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
 export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 ```
+Or to your config.fish:
+
+```sh
+set PATH $HOME/.linuxbrew/bin $PATH
+```
 
 You're done!
 
