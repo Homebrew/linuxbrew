@@ -27,7 +27,7 @@ class Libmagic < Formula
   patch :p1 do
     url 'https://gist.githubusercontent.com/kwilczynski/350e83c291b536ce9b5b/raw/1961a222d13cd3e010ecd7b0ebbc6909def27ad6/337-338.diff'
     sha1 'b220e2b0639cba97296e25c07c58a4d675104c8f'
-  end
+  end if OS.mac?
 
   def install
     ENV.universal_binary if build.universal?
