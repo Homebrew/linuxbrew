@@ -68,7 +68,7 @@ class Postgresql < Formula
     end
 
     args << "--enable-dtrace" if build.with? "dtrace"
-    args << "--with-uuid=e2fs"
+    args << "--with-uuid=e2fs" if OS.mac?
 
     if build.build_32_bit?
       ENV.append %w{CFLAGS LDFLAGS}, "-arch #{Hardware::CPU.arch_32_bit}"
