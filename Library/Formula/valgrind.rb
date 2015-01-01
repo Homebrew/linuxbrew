@@ -15,7 +15,9 @@ class Valgrind < Formula
     end
 
     # Revisit the below requirement with each release
-    depends_on MaximumMacOSRequirement => :mavericks
+    if OS.mac?
+      depends_on MaximumMacOSRequirement => :mavericks
+    end
   end
 
   bottle do
@@ -38,7 +40,9 @@ class Valgrind < Formula
     end
   end
 
-  depends_on :macos => :snow_leopard
+  if OS.mac?
+    depends_on :macos => :snow_leopard
+  end
 
   # Valgrind needs vcpreload_core-*-darwin.so to have execute permissions.
   # See #2150 for more information.
@@ -49,10 +53,14 @@ class Valgrind < Formula
       --disable-dependency-tracking
       --prefix=#{prefix}
     ]
-    if MacOS.prefer_64_bit?
-      args << "--enable-only64bit" << "--build=amd64-darwin"
-    else
-      args << "--enable-only32bit"
+
+    # if on a mac set build to darwin
+    if OS.mac?
+      if MacOS.prefer_64_bit?
+        args << "--enable-only64bit" << "--build=amd64-darwin"
+      else
+        args << "--enable-only32bit"
+      end
     end
 
     ext = build.head? ? "am" : "in"
