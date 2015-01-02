@@ -123,8 +123,13 @@ class JavaDependency < Requirement
   end
 
   def java_version
-    args = %w[/usr/libexec/java_home --failfast]
-    args << "--version" << "#{@version}+" if @version
+    if OS.mac?
+      args = %w[/usr/libexec/java_home --failfast]
+      args << "--version" << "#{@version}+" if @version
+    else
+      args = %w[java]
+      args << "-version" << "#{@version}+" if @version
+    end
     quiet_system(*args)
   end
 
