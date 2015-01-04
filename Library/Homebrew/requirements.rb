@@ -123,7 +123,8 @@ class JavaDependency < Requirement
   end
 
   def java_version
-    return quiet_system "java", "-version" if OS.linux?
+    args = %W[java -version 2>&1 | awk -F '"' '/version/ {print ($2 >= "#{@version}")?err=0:err=1} END{exit err}']
+    quiet_system(*args) if OS.linux?
     args = %w[/usr/libexec/java_home --failfast]
     args << "--version" << "#{@version}+" if @version
     quiet_system(*args)
