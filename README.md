@@ -37,7 +37,7 @@ Paste at a Terminal prompt:
 sudo apt-get install build-essential curl git m4 ruby texinfo libbz2-dev libcurl4-openssl-dev libexpat-dev libncurses-dev zlib1g-dev
 ```
 
-### Fedora
+### Fedora, CentOS, or RedHat
 
 ```sh
 sudo yum groupinstall 'Development Tools' && sudo yum install curl git m4 ruby texinfo bzip2-devel curl-devel expat-devel ncurses-devel zlib-devel
@@ -65,6 +65,16 @@ export PATH="$HOME/.linuxbrew/bin:$PATH"
 export MANPATH="$HOME/.linuxbrew/share/man:$MANPATH"
 export INFOPATH="$HOME/.linuxbrew/share/info:$INFOPATH"
 ```
+
+On Fedora, CentOS, or RedHat only (not Debian or Ubuntu) you need to create version specific symlinks for gcc/g++/gfortran, so that the 'brew' command can find them correctly. Paste at a terminal prompt:
+
+```sh
+ln -s $(which gcc) $HOME/.linuxbrew/bin/gcc-$(gcc -dumpversion |cut -d. -f1,2)
+ln -s $(which g++) $HOME/.linuxbrew/bin/g++-$(g++ -dumpversion |cut -d. -f1,2)
+ln -s $(which gfortran) $HOME/.linuxbrew/bin/gfortran-$(gfortran -dumpversion |cut -d. -f1,2)
+```
+*(If you do not have gfortran installed the last command will give an error)*
+
 
 You're done!
 
