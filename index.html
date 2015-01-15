@@ -72,7 +72,7 @@
 <div class="highlight highlight-sh"><pre>sudo apt-get install build-essential curl git m4 ruby texinfo libbz2-dev libcurl4-openssl-dev libexpat-dev libncurses-dev zlib1g-dev</pre></div>
 
 <h3>
-<a id="fedora" class="anchor" href="#fedora" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fedora</h3>
+<a id="fedora" class="anchor" href="#fedora" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fedora, CentOS or RedHat</h3>
 
 <div class="highlight highlight-sh"><pre>sudo yum groupinstall <span class="pl-s1"><span class="pl-pds">'</span>Development Tools<span class="pl-pds">'</span></span> <span class="pl-k">&amp;&amp;</span> sudo yum install curl git m4 ruby texinfo bzip2-devel curl-devel expat-devel ncurses-devel zlib-devel</pre></div>
 
@@ -92,6 +92,15 @@
 <div class="highlight highlight-sh"><pre><span class="pl-s">export</span> PATH=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-vo">$HOME</span>/.linuxbrew/bin:<span class="pl-vo">$PATH</span><span class="pl-pds">"</span></span>
 <span class="pl-s">export</span> MANPATH=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-vo">$HOME</span>/.linuxbrew/share/man:<span class="pl-vo">$MANPATH</span><span class="pl-pds">"</span></span>
 <span class="pl-s">export</span> INFOPATH=<span class="pl-s1"><span class="pl-pds">"</span><span class="pl-vo">$HOME</span>/.linuxbrew/share/info:<span class="pl-vo">$INFOPATH</span><span class="pl-pds">"</span></span></pre></div>
+
+<p>On Fedora, CentOS, or RedHat only (not Debian or Ubuntu) you need to create version specific symlinks for gcc/g++/gfortran, so that the 'brew' command can find them correctly. Paste at a terminal prompt:</p>
+
+<div class="highlight highlight-sh"><pre>ln -s <span class="pl-s1"><span class="pl-pds">$(</span>which gcc<span class="pl-pds">)</span></span> <span class="pl-vo">$HOME</span>/.linuxbrew/bin/gcc-<span class="pl-s1"><span class="pl-pds">$(</span>gcc -dumpversion <span class="pl-k">|</span>cut -d. -f1,2<span class="pl-pds">)</span></span>
+ln -s <span class="pl-s1"><span class="pl-pds">$(</span>which g++<span class="pl-pds">)</span></span> <span class="pl-vo">$HOME</span>/.linuxbrew/bin/g++-<span class="pl-s1"><span class="pl-pds">$(</span>g++ -dumpversion <span class="pl-k">|</span>cut -d. -f1,2<span class="pl-pds">)</span></span>
+ln -s <span class="pl-s1"><span class="pl-pds">$(</span>which gfortran<span class="pl-pds">)</span></span> <span class="pl-vo">$HOME</span>/.linuxbrew/bin/gfortran-<span class="pl-s1"><span class="pl-pds">$(</span>gfortran -dumpversion <span class="pl-k">|</span>cut -d. -f1,2<span class="pl-pds">)</span></span></pre></div>
+
+<p><em>(If you do not have gfortran installed the last command will give an error)</em></p>
+
 
 <p>You're done!</p>
 
