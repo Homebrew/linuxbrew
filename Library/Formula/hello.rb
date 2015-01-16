@@ -1,5 +1,3 @@
-require "formula"
-
 class Hello < Formula
   homepage "http://www.gnu.org/software/hello/"
   url "http://ftpmirror.gnu.org/hello/hello-2.10.tar.gz"
@@ -12,7 +10,8 @@ class Hello < Formula
                           "--prefix=#{prefix}"
     system "make", "install"
   end
+
   test do
-     system "#{bin}/hello", "--next-generation", "--greeting=brew"
+     system "#{bin}/hello", "--greeting=brew"
   end
 end
