@@ -11,6 +11,8 @@ class Pcre < Formula
     sha1 "4d48f013859cc1ca72467d4802d1d5d6b06ad542" => :mountain_lion
   end
 
+  depends_on "bzip2"
+
   option "without-check", "Skip build-time tests (not recommended)"
   option :universal
 
