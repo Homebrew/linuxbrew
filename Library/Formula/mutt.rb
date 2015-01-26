@@ -74,11 +74,11 @@ class Mutt < Formula
   end if build.with? "confirm-attachment-patch"
 
   def install
+    
     args = ["--disable-dependency-tracking",
             "--disable-warnings",
             "--prefix=#{prefix}",
             "--with-ssl=#{Formula['openssl'].opt_prefix}",
-            "--with-sasl",
             "--with-gss",
             "--enable-imap",
             "--enable-smtp",
@@ -89,6 +89,8 @@ class Mutt < Formula
             # the mutt_dotlock file (which we can't do if we're running as an
             # unpriviledged user)
             "--with-homespool=.mbox"]
+    args << "--with-sasl" if OS.mac?
+    args << "--with-sasl2" if OS.linux?
     args << "--with-slang" if build.with? "s-lang"
     args << "--enable-gpgme" if build.with? "gpgme"
 
