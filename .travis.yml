@@ -8,6 +8,8 @@ install:
  # Incorrect file permissions: chmod 644
  - chmod 644 Library/Formula/*.rb
  - PATH=$PWD/bin:$PATH
+ # Install pkg-config
+ - brew install pkg-config
 script:
  - brew test-bot --dry-run $TRAVIS_COMMIT |sed -n 's/^==> //p' |sh -ex
 notifications:
