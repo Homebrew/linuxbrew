@@ -3,16 +3,18 @@
 # work at all (e.g. CLT-only in the Xcode 4.3 era). This script emulates
 # it and attempts to avoid these issues.
 
-# Some build tools set DEVELOPER_DIR, so discard it
-unset DEVELOPER_DIR
+if [ `uname` == "Darwin" ]; then
+  # Some build tools set DEVELOPER_DIR, so discard it
+  unset DEVELOPER_DIR
 
-if [ $# -eq 0 ]; then
-  exec /usr/bin/xcrun "$@"
+  if [ $# -eq 0 ]; then
+    exec /usr/bin/xcrun "$@"
+  fi
+
+  case "$1" in
+    -*) exec /usr/bin/xcrun "$@" ;;
+  esac
 fi
-
-case "$1" in
-  -*) exec /usr/bin/xcrun "$@" ;;
-esac
 
 arg0=$1
 shift
