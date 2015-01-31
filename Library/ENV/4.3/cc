@@ -4,6 +4,7 @@ lpath = Dir["/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/lib/
 $:.unshift lpath unless lpath.nil?
 require "pathname"
 require "set"
+require "#{File.dirname(__FILE__)}/../../Homebrew/os"
 
 class Cmd
   attr_reader :config, :prefix, :cellar, :tmpdir, :sysroot
@@ -214,11 +215,13 @@ class Cmd
 
   def ldflags
     args = path_flags("-L", library_paths)
-    case mode
-    when :ld
-      args << "-headerpad_max_install_names"
-    when :ccld, :cxxld
-      args << "-Wl,-headerpad_max_install_names"
+    if OS.mac?
+      case mode
+      when :ld
+        args << "-headerpad_max_install_names"
+      when :ccld, :cxxld
+        args << "-Wl,-headerpad_max_install_names"
+      end
     end
     args
   end
