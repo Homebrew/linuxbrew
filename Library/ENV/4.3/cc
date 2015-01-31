@@ -215,13 +215,12 @@ class Cmd
 
   def ldflags
     args = path_flags("-L", library_paths)
-    if OS.mac?
-      case mode
-      when :ld
-        args << "-headerpad_max_install_names"
-      when :ccld, :cxxld
-        args << "-Wl,-headerpad_max_install_names"
-      end
+    case mode
+    when :ld
+      args << "-headerpad_max_install_names" if OS.mac?
+      args << "-rpath=#{ENV['HOMEBREW_PREFIX']}/lib" if OS.linux?
+    when :ccld, :cxxld
+      args << "-Wl,-headerpad_max_install_names" if OS.mac?
     end
     args
   end
