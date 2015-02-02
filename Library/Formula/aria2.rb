@@ -24,6 +24,7 @@ class Aria2 < Formula
   end
 
   depends_on "pkg-config" => :build
+  depends_on "openssl"
 
   needs :cxx11
 
@@ -31,8 +32,8 @@ class Aria2 < Formula
     args = %W[
       --disable-dependency-tracking
       --prefix=#{prefix}
-      --with-appletls
-      --without-openssl
+      --without-appletls
+      --with-openssl
       --without-gnutls
       --without-libgmp
       --without-libnettle
