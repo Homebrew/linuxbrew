@@ -60,6 +60,11 @@ class Python < Formula
     lib_cellar/"site-packages"
   end
 
+  def opt_libpython
+    opt_prefix/ (OS.mac? ? "Frameworks/Python.framework/Versions/2.7/Python" :
+                 "lib/libpython2.7.so")
+  end
+
   # The HOMEBREW_PREFIX location of site-packages.
   def site_packages
     HOMEBREW_PREFIX/"lib/python2.7/site-packages"
@@ -267,7 +272,7 @@ class Python < Formula
               # Assume Framework style build (default since months in brew)
               try:
                   from _sysconfigdata import build_time_vars
-                  build_time_vars['LINKFORSHARED'] = '-u _PyMac_Error #{opt_prefix}/Frameworks/Python.framework/Versions/2.7/Python'
+                  build_time_vars['LINKFORSHARED'] = '-u _PyMac_Error #{opt_libpython}'
               except:
                   pass  # remember: don't print here. Better to fail silently.
 
