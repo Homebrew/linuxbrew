@@ -5,6 +5,8 @@ class Intltool < Formula
   url "http://launchpad.net/intltool/trunk/0.50.2/+download/intltool-0.50.2.tar.gz"
   sha1 "7fddbd8e1bf94adbf1bc947cbf3b8ddc2453f8ad"
 
+  depends_on "XML::Parser"  => :perl if OS.linux?
+
   bottle do
     sha1 "88c0a273f4bb8c9df2e9250f7272117d55868b06" => :yosemite
     sha1 "36c951e99ec642add05e84acef83cf8c2bdb4b91" => :mavericks
