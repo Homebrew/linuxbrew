@@ -15,6 +15,7 @@ class A52dec < Formula
                           "--prefix=#{prefix}",
                           "--enable-shared",
                           "--mandir=#{man}"
-    system "make install"
+    system "make install CPPFLAGS=-fPIC" unless OS.mac?
+    system "make install" unless not OS.mac?
   end
 end
