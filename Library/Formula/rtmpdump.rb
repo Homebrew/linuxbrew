@@ -27,12 +27,20 @@ class Rtmpdump < Formula
   end
 
   def install
+    if OS.mac?
+      sys = 'darwin'
+    elsif OS.linux?
+      sys = 'posix'
+    else
+      raise 'Unknown operating system'
+    end
+
     ENV.deparallelize
     system "make", "CC=#{ENV.cc}",
                    "XCFLAGS=#{ENV.cflags}",
                    "XLDFLAGS=#{ENV.ldflags}",
                    "MANDIR=#{man}",
-                   "SYS=darwin",
+                   "SYS=#{sys}",
                    "prefix=#{prefix}",
                    "sbindir=#{bin}",
                    "install"
