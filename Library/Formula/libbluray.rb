@@ -19,13 +19,17 @@ class Libbluray < Formula
     depends_on "ant" => :build
   end
 
+  if OS.linux?
+    depends_on "libxml2" => :build
+  end
   depends_on "pkg-config" => :build
   depends_on "freetype" => :recommended
   depends_on "fontconfig"
 
   def install
-    # https://mailman.videolan.org/pipermail/libbluray-devel/2014-April/001401.html
-    ENV.append_to_cflags "-D_DARWIN_C_SOURCE"
+    if OS.mac?  # https://mailman.videolan.org/pipermail/libbluray-devel/2014-April/001401.html
+      ENV.append_to_cflags "-D_DARWIN_C_SOURCE"
+    end
     ENV.libxml2
 
     args = %W[--prefix=#{prefix} --disable-dependency-tracking]
