@@ -85,6 +85,8 @@ class Llvm < Formula
     depends_on :python => :optional
   end
   depends_on "swig" if build.with? "lldb"
+  # llvm requires <histedit.h>
+  depends_on "homebrew/dupes/libedit" if OS.linux?
 
   keg_only :provided_by_osx
 
