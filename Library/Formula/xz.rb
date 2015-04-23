@@ -17,6 +17,9 @@ class Xz < Formula
 
   def install
     ENV.universal_binary if build.universal?
+    if OS.linux? && Version.new(`uname -r`.chomp) < Version.new("2.6.27")
+      inreplace "configure", /posix_fadvise pipe2/, "posix_fadvise"
+    end
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
                           "--disable-silent-rules",
