@@ -26,7 +26,7 @@ class Lua51 < Formula
 
   # Be sure to build a dylib, or else runtime modules will pull in another static copy of liblua = crashy
   # See: https://github.com/Homebrew/homebrew/pull/5043
-  patch :DATA
+  patch :DATA if OS.mac?
 
   # sigaction provided by posix signalling power patch from
   # http://lua-users.org/wiki/LuaPowerPatches
@@ -50,7 +50,10 @@ class Lua51 < Formula
       s.remove_make_var! "CC"
       s.change_make_var! "CFLAGS", "#{ENV.cflags} $(MYCFLAGS)"
       s.change_make_var! "MYLDFLAGS", ENV.ldflags
-      s.sub! "MYCFLAGS_VAL", "-fno-common -DLUA_USE_LINUX"
+
+      if OS.mac?
+        s.sub! "MYCFLAGS_VAL", "-fno-common -DLUA_USE_LINUX"
+      end
     end
 
     # Fix path in the config header
@@ -65,7 +68,11 @@ class Lua51 < Formula
       s.gsub! "Libs: -L${libdir} -llua -lm", "Libs: -L${libdir} -llua5.1 -lm"
     end
 
-    system "make", "macosx", "INSTALL_TOP=#{prefix}", "INSTALL_MAN=#{man1}", "INSTALL_INC=#{include}/lua-5.1"
+    platform = 'posix'
+    platform = 'macosx' if OS.mac?
+    platform = 'linux' if OS.linux?
+
+    system "make", "#{platform}", "INSTALL_TOP=#{prefix}", "INSTALL_MAN=#{man1}", "INSTALL_INC=#{include}/lua-5.1"
     system "make", "install", "INSTALL_TOP=#{prefix}", "INSTALL_MAN=#{man1}", "INSTALL_INC=#{include}/lua-5.1"
 
     (lib+"pkgconfig").install "etc/lua.pc"
