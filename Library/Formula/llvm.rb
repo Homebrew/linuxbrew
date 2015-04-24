@@ -141,6 +141,11 @@ class Llvm < Formula
     system "make", "install"
 
     if build.with? "clang"
+      if OS.linux?
+        # Let's use clang to build libcxx. It fails with gcc.
+        ENV["CC"] = bin/"clang"
+        ENV["CXX"] = bin/"clang++"
+      end
       system "make", "-C", "projects/libcxx", "install",
         "DSTROOT=#{prefix}", "SYMROOT=#{buildpath}/projects/libcxx"
 
