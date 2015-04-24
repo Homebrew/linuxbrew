@@ -26,11 +26,13 @@ class Juise < Formula
 
   def install
     system "sh ./bin/setup.sh" if build.head?
-    system "./configure", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}",
-                          "--with-libssh2-prefix=#{HOMEBREW_PREFIX}",
-                          "--with-sqlite3-prefix=#{Formula["sqlite"].opt_prefix}",
-                          "--enable-libedit"
+    args = ["--disable-dependency-tracking",
+            "--prefix=#{prefix}",
+            "--with-libssh2-prefix=#{HOMEBREW_PREFIX}",
+            "--with-sqlite3-prefix=#{Formula["sqlite"].opt_prefix}"]
+    args << "--enable-libedit" if OS.mac?
+
+    system "./configure", *args
     system "make install"
   end
 end

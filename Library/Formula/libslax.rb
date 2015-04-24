@@ -31,9 +31,11 @@ class Libslax < Formula
   def install
     system "sh", "./bin/setup.sh" if build.head?
 
-    system "./configure", "--disable-dependency-tracking",
-                          "--prefix=#{prefix}",
-                          "--enable-libedit"
+    args = ["--disable-dependency-tracking",
+            "--prefix=#{prefix}"]
+    args << "--enable-libedit" if OS.mac?
+
+    system "./configure", *args
     system "make install"
   end
 end
