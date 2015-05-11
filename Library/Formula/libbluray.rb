@@ -26,7 +26,7 @@ class Libbluray < Formula
 
   def install
     # https://mailman.videolan.org/pipermail/libbluray-devel/2014-April/001401.html
-    ENV.append_to_cflags "-D_DARWIN_C_SOURCE"
+    ENV.append_to_cflags "-D_DARWIN_C_SOURCE" if OS.mac?
     ENV.libxml2
 
     args = %W[--prefix=#{prefix} --disable-dependency-tracking]
