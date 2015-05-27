@@ -18,9 +18,7 @@ class Cgdb < Formula
     depends_on "automake" => :build
   end
 
-  if OS.linux?
-    depends_on "flex" => :build
-  end
+  depends_on "flex" => :build unless OS.mac?
   depends_on "help2man" => :build
   depends_on "readline"
 
