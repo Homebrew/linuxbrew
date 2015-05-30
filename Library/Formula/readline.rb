@@ -33,6 +33,7 @@ class Readline < Formula
 
   def install
     ENV.universal_binary
+    # Add --with-curses to fix the error: CGDB requires GNU readline 5.1 or greater to link.
     system "./configure", "--prefix=#{prefix}", "--enable-multibyte", ("--with-curses" if OS.linux?)
     system "make", "install"
 
