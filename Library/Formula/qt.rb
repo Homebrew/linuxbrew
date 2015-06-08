@@ -37,6 +37,7 @@ class Qt < Formula
 
   def install
     ENV.universal_binary if build.universal?
+    ENV["LD_LIBRARY_PATH"] = buildpath/"lib" if OS.linux?
 
     args = ["-prefix", prefix,
             "-system-zlib",
