@@ -27,6 +27,8 @@ class Libtool < Formula
                           ("--program-prefix=g" if build.without? "default-names"),
                           "--enable-ltdl-install"
     system "make", "install"
+    bin.install_symlink "libtool" => "glibtool"
+    bin.install_symlink "libtoolize" => "glibtoolize"
   end
 
   def caveats; <<-EOS.undent
