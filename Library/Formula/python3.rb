@@ -124,7 +124,7 @@ class Python3 < Formula
     # superenv makes cc always find includes/libs!
     inreplace "setup.py" do |s|
       s.gsub! "do_readline = self.compiler.find_library_file(lib_dirs, 'readline')",
-              "do_readline = '#{Formula["readline"].opt_lib}/libhistory.dylib'"
+              "do_readline = '#{Formula["readline"].opt_lib}/libhistory.#{OS.mac? ? "dylib" : "so"}'"
       s.gsub! "/usr/local/ssl", Formula["openssl"].opt_prefix
     end
 
