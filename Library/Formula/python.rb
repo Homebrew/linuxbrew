@@ -94,7 +94,7 @@ class Python < Formula
     args << (OS.mac? ? "--enable-framework=#{frameworks}" : "--enable-shared")
     args << "--without-gcc" if ENV.compiler == :clang
 
-    unless MacOS::CLT.installed?
+    if OS.mac? && !MacOS::CLT.installed?
       # Help Python's build system (setuptools/pip) to build things on Xcode-only systems
       # The setup.py looks at "-isysroot" to get the sysroot (and not at --sysroot)
       cflags = "CFLAGS=-isysroot #{MacOS.sdk_path}"
@@ -106,6 +106,10 @@ class Python < Formula
       end
       args << cflags
       args << ldflags
+    elsif OS.linux?
+      cppflags = "CPPFLAGS=-I#{HOMEBREW_PREFIX}/include"
+      ldflags = "LDFLAGS=-L#{HOMEBREW_PREFIX}/lib"
+      args << cppflags << ldflags
     end
 
     # Avoid linking to libgcc https://code.activestate.com/lists/python-dev/112195/
