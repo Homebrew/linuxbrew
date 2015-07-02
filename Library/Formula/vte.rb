@@ -25,6 +25,9 @@ class Vte < Formula
     # pygobject-codegen-2.0, but the vte Makefile does not detect this.
     ENV["PYGTK_CODEGEN"] = Formula["pygobject"].bin/"pygobject-codegen-2.0"
 
+    ENV.append_path "PKG_CONFIG_LIBDIR", "/usr/lib/pkgconfig"
+    ENV.append_path "PKG_CONFIG_LIBDIR", "/usr/lib/x86_64-linux-gnu/pkgconfig"
+    ENV.append_path "PKG_CONFIG_LIBDIR", "/usr/share/pkgconfig"
     system "./configure", *args
     system "make", "install"
   end
@@ -49,6 +52,7 @@ class Vte < Formula
     libpng = Formula["libpng"]
     pango = Formula["pango"]
     pixman = Formula["pixman"]
+    backend = OS.mac? ? "quartz" : "x11"
     flags = (ENV.cflags || "").split + (ENV.cppflags || "").split + (ENV.ldflags || "").split
     flags += %W[
       -I#{atk.opt_include}/atk-1.0
@@ -77,12 +81,12 @@ class Vte < Formula
       -L#{pango.opt_lib}
       -latk-1.0
       -lcairo
-      -lgdk-quartz-2.0
+      -lgdk-#{backend}-2.0
       -lgdk_pixbuf-2.0
       -lgio-2.0
       -lglib-2.0
       -lgobject-2.0
-      -lgtk-quartz-2.0
+      -lgtk-#{backend}-2.0
       -lintl
       -lpango-1.0
       -lpangocairo-1.0

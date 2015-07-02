@@ -98,7 +98,6 @@ module Stdenv
     paths << "#{HOMEBREW_PREFIX}/lib/pkgconfig"
     paths << "#{HOMEBREW_PREFIX}/share/pkgconfig"
     paths << "#{HOMEBREW_LIBRARY}/ENV/pkgconfig/#{MacOS.version}"
-    paths << "/usr/lib/pkgconfig"
     paths.select { |d| File.directory? d }.join(File::PATH_SEPARATOR)
   end
 
