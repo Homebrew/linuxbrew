@@ -32,6 +32,7 @@ class Python3 < Formula
   depends_on "openssl"
   depends_on "xz" => :recommended  # for the lzma module added in 3.3
   depends_on "homebrew/dupes/tcl-tk" => :optional
+  depends_on "homebrew/dupes/ncurses" => :recommended if OS.linux?
   depends_on :x11 if build.with? "tcl-tk" and Tab.for_name("homebrew/dupes/tcl-tk").with? "x11"
 
   skip_clean "bin/pip3", "bin/pip-3.4", "bin/pip-3.5"
@@ -113,6 +114,7 @@ class Python3 < Formula
       args << ldflags
     elsif OS.linux?
       cppflags = "CPPFLAGS=-I#{HOMEBREW_PREFIX}/include"
+      cppflags << " -I#{Formula["ncurses"].opt_include}/ncursesw" if build.with?("ncurses")
       ldflags = "LDFLAGS=-L#{HOMEBREW_PREFIX}/lib"
       args << cppflags << ldflags
     end
