@@ -19,6 +19,11 @@ class GobjectIntrospection < Formula
   depends_on "libffi"
   depends_on "cairo" => :build if build.with? "tests"
 
+  if OS.linux?
+    depends_on "bison"
+    depends_on "flex"
+  end
+
   # Allow tests to execute on OS X (.so => .dylib)
   patch do
     url "https://gist.githubusercontent.com/krrk/6958869/raw/de8d83009d58eefa680a590f5839e61a6e76ff76/gobject-introspection-tests.patch"
