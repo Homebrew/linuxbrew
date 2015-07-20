@@ -32,6 +32,7 @@ class Python3 < Formula
   depends_on "openssl"
   depends_on "xz" => :recommended  # for the lzma module added in 3.3
   depends_on "homebrew/dupes/tcl-tk" => :optional
+  depends_on "homebrew/dupes/ncurses" => :recommended if OS.linux?
   depends_on :x11 if build.with? "tcl-tk" and Tab.for_name("homebrew/dupes/tcl-tk").with? "x11"
 
   skip_clean "bin/pip3", "bin/pip-3.4", "bin/pip-3.5"
@@ -106,7 +107,7 @@ class Python3 < Formula
     ]
     args << '--without-gcc' if ENV.compiler == :clang
 
-    unless MacOS::CLT.installed?
+    if OS.mac? && !MacOS::CLT.installed?
       # Help Python's build system (setuptools/pip) to build things on Xcode-only systems
       # The setup.py looks at "-isysroot" to get the sysroot (and not at --sysroot)
       cflags = "CFLAGS=-isysroot #{MacOS.sdk_path}"
@@ -117,7 +118,13 @@ class Python3 < Formula
       end
       args << cflags
       args << ldflags
+    elsif OS.linux?
+      cppflags = "CPPFLAGS=-I#{HOMEBREW_PREFIX}/include"
+      cppflags << " -I#{Formula["ncurses"].opt_include}/ncursesw" if build.with?("ncurses")
+      ldflags = "LDFLAGS=-L#{HOMEBREW_PREFIX}/lib"
+      args << cppflags << ldflags
     end
+
     # Avoid linking to libgcc http://code.activestate.com/lists/python-dev/112195/
     args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"
 
@@ -125,7 +132,7 @@ class Python3 < Formula
     # superenv makes cc always find includes/libs!
     inreplace "setup.py" do |s|
       s.gsub! "do_readline = self.compiler.find_library_file(lib_dirs, 'readline')",
-              "do_readline = '#{Formula["readline"].opt_lib}/libhistory.dylib'"
+              "do_readline = '#{Formula["readline"].opt_lib}/libhistory.#{OS.mac? ? "dylib" : "so"}'"
       s.gsub! "/usr/local/ssl", Formula["openssl"].opt_prefix
     end
 
