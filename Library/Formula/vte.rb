@@ -25,6 +25,9 @@ class Vte < Formula
     # pygobject-codegen-2.0, but the vte Makefile does not detect this.
     ENV["PYGTK_CODEGEN"] = Formula["pygobject"].bin/"pygobject-codegen-2.0"
 
+    ENV.append_path "PKG_CONFIG_LIBDIR", "/usr/lib/pkgconfig"
+    ENV.append_path "PKG_CONFIG_LIBDIR", "/usr/lib/x86_64-linux-gnu/pkgconfig"
+    ENV.append_path "PKG_CONFIG_LIBDIR", "/usr/share/pkgconfig"
     system "./configure", *args
     system "make", "install"
   end
