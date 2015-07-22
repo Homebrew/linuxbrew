@@ -19,14 +19,14 @@ class Gwenhywfar < Formula
   depends_on "gtk+" => :optional
   depends_on "qt" => :optional
 
-  option "without-cocoa", "Build without cocoa support"
+  option "without-cocoa", "Build without cocoa support" if OS.mac?
   option "with-check", "Run build-time check"
 
   def install
     guis = []
     guis << "gtk2" if build.with? "gtk+"
     guis << "qt4" if build.with? "qt"
-    guis << "cocoa" if build.with? "cocoa"
+    guis << "cocoa" if OS.mac? && build.with? "cocoa"
 
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
