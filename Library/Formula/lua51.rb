@@ -30,6 +30,14 @@ class Lua51 < Formula
   # See: https://github.com/Homebrew/homebrew/pull/5043
   patch :DATA if OS.mac?
 
+  # On linux, patch the makefiles to also build a shared library.
+  # http://lua-users.org/lists/lua-l/2006-10/msg00080.html
+  if OS.linux?                                                                                         patch do
+      url "https://gist.github.com/anonymous/152870ffa45f65a3fe84/raw/1700d8f365dfe05708c7b945ff3a00463d4c3272/lua-5.1.5-linux_build_shared.patch"
+      sha256 "935ffb75ea440c67490e51424708cfcc55e91858c3f86f6e33468c6f2e29b255"
+    end
+  end
+
   # sigaction provided by posix signalling power patch from
   # http://lua-users.org/wiki/LuaPowerPatches
   if build.with? "completion"
@@ -55,6 +63,9 @@ class Lua51 < Formula
 
   def install
     ENV.universal_binary if build.universal?
+
+    # On linux, add -fPIC to CFLAGS to enable building as a shared library
+    ENV["CFLAGS"] += " -fPIC" if OS.linux?
 
     # Use our CC/CFLAGS to compile.
     inreplace "src/Makefile" do |s|
