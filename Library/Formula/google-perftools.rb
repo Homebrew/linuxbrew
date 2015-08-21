@@ -16,8 +16,10 @@ class GooglePerftools < Formula
     cause "Segfault during linking"
   end
 
+  depends_on "libunwind" if OS.linux?
+
   def install
-    ENV.append_to_cflags "-D_XOPEN_SOURCE"
+    ENV.append_to_cflags "-D_XOPEN_SOURCE" if OS.mac?
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make"
