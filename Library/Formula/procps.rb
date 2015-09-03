@@ -19,6 +19,7 @@ class Procps < Formula
     system "make", "install",
       "SKIP=$(bin)kill $(man1)kill.1 $(bin)uptime $(man1)uptime.1",
       "install=install -D",
+      "ldconfig=ldconfig -N",
       "usr/bin=#{bin}/",
       "bin=#{bin}/",
       "sbin=#{sbin}/",
