@@ -14,6 +14,8 @@ class Ghc < Formula
   deprecated_option "tests" => "with-test"
   deprecated_option "with-tests" => "with-test"
 
+  depends_on "gmp" => :build if OS.linux?
+
   resource "gmp" do
     url "http://ftpmirror.gnu.org/gmp/gmp-6.1.0.tar.bz2"
     mirror "https://gmplib.org/download/gmp/gmp-6.1.0.tar.bz2"
@@ -81,14 +83,23 @@ class Ghc < Formula
       args << "--with-gcc-4.2=#{ENV.cc}"
     end
 
+    if OS.linux?
+      # Fix error while loading shared libraries: libgmp.so.3
+      ln_s Formula["gmp"].lib/"libgmp.so", gmp/"lib/libgmp.so.3"
+      ENV.prepend_path "LD_LIBRARY_PATH", gmp/"lib"
+      # Fix /usr/bin/ld: cannot find -lgmp
+      ENV.prepend_path "LIBRARY_PATH", gmp/"lib"
+    end
+
     resource("binary").stage do
       # Change the dynamic linker and RPATH of the binary executables.
       if OS.linux? && Formula["glibc"].installed?
         keg = Keg.new(prefix)
-        Dir["ghc/stage2/build/tmp/ghc-stage2", "libraries/*/dist-install/build/*.so", "rts/dist/build/*.so*", "utils/*/dist*/build/tmp/*"].each { |s|
+        Dir["ghc/stage2/build/tmp/ghc-stage2", "libraries/*/dist-install/build/*.so",
+            "rts/dist/build/*.so*", "utils/*/dist*/build/tmp/*"].each do |s|
           file = Pathname.new(s)
           keg.change_rpath(file, HOMEBREW_PREFIX.to_s) if file.mach_o_executable? || file.dylib?
-        }
+        end
       end
 
       binary = buildpath/"binary"
