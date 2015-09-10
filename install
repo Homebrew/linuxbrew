@@ -13,13 +13,13 @@ def linux?
 end
 
 if linux?
-  HOMEBREW_PREFIX = "#{ENV['HOME']}/.linuxbrew"
-  HOMEBREW_CACHE = "#{ENV['HOME']}/.cache/Homebrew"
-  REPOSITORY="https://github.com/Homebrew/linuxbrew"
+  HOMEBREW_PREFIX = ENV['HOMEBREW_PREFIX'] || "#{ENV['HOME']}/.linuxbrew"
+  HOMEBREW_CACHE = ENV['HOMEBREW_CACHE'] || "#{ENV['HOME']}/.cache/Homebrew"
+  REPOSITORY= ENV['REPOSITORY'] || "https://github.com/Homebrew/linuxbrew"
 else
-  HOMEBREW_PREFIX = "/usr/local"
-  HOMEBREW_CACHE = "/Library/Caches/Homebrew"
-  REPOSITORY="https://github.com/Homebrew/homebrew"
+  HOMEBREW_PREFIX = ENV['HOMEBREW_PREFIX'] || "/usr/local"
+  HOMEBREW_CACHE = ENV['HOMEBREW_CACHE'] || "/Library/Caches/Homebrew"
+  REPOSITORY= ENV['REPOSITORY'] || "https://github.com/Homebrew/homebrew"
 end
 
 module Tty extend self
