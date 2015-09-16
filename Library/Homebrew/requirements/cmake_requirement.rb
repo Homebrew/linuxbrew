@@ -17,7 +17,9 @@ class CmakeRequirement < Requirement
   end
 
   env do
-    ENV.prepend_path "PATH", which("cmake").dirname
+    # do append_path to avoid messing up with isolated build
+    # envirnoment when cmake is located in /usr/bin/ and alike
+    ENV.append_path "PATH", which("cmake").dirname
   end
 
   def message
