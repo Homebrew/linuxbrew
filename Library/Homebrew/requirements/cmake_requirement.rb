@@ -12,11 +12,7 @@ class CmakeRequirement < Requirement
 
   satisfy :build_env => false do
     next unless which "cmake"
-    cmake_version = Utils.popen_read("cmake", "--version")
-    words = cmake_version.split(" ")
-    cmake_version = words.last
-    # debug:
-    ohai "cmake_version: #{cmake_version} vs #{@version}"
+    cmake_version = Utils.popen_read("cmake", "--version").split(" ").last
     Version.new(cmake_version) >= Version.new(@version)
   end
 
