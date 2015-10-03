@@ -50,7 +50,11 @@ module LinuxCPUs
   end
 
   def flags
-    @flags ||= cpuinfo[/^flags.*/, 0].split
+    if intel?
+      @flags ||= cpuinfo[/^flags.*/, 0].split
+    elsif arm?
+      []
+    end
   end
 
   # Compatibility with Mac method, which returns lowercase symbols
