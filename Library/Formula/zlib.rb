@@ -4,7 +4,7 @@ class Zlib < Formula
   homepage 'http://www.zlib.net/'
   url 'http://zlib.net/zlib-1.2.8.tar.gz'
   mirror 'https://downloads.sourceforge.net/project/libpng/zlib/1.2.8/zlib-1.2.8.tar.gz'
-  sha1 'a4d316c404ff54ca545ea71a27af7dbc29817088'
+  sha1 '69d42045d87a5e7bff93ae28facb8f448b99b539'
 
   bottle do
     root_url "https://downloads.sf.net/project/machomebrew/Bottles/dupes"
@@ -41,5 +41,5 @@ index b77a8a8..54f33f7 100755
    *gcc*) gcc=1 ;;
 +  *clang*) gcc=1 ;;
  esac
- 
+
  show $cc -c $test.c
