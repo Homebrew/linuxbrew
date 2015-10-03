@@ -124,6 +124,9 @@ class Qt < Formula
   def caveats; <<-EOS.undent
     We agreed to the Qt opensource license for you.
     If this is unacceptable you should uninstall.
+
+    The following packages have to be installed:
+      sudo apt-get install libfontconfig1-dev libfreetype6-dev libx11-dev libxcursor-dev libxext-dev libxfixes-dev libxft-dev libxft-dev libxi-dev libxrandr-dev libxrender-dev
     EOS
   end
 end
