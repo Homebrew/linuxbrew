@@ -40,6 +40,13 @@ module Stdenv
       # /usr/local is already an -isystem and -L directory so we skip it
       self["CPPFLAGS"] = "-isystem#{HOMEBREW_PREFIX}/include"
       self["LDFLAGS"] = "-L#{HOMEBREW_PREFIX}/lib"
+      # software like Netcdf are built in several steps.
+      # In a single step one may need to link against the library build
+      # in the previous step. To make it work do:
+      ohai "Formula: #{formula}"
+      ohai "Formula lib: #{formula.lib}" if formula != nil
+      append "LD_LIBRARY_PATH", "-L#{formula.lib}" if formula != nil
+      ohai "#{ENV["LD_LIBRARY_PATH"]}"
       # CMake ignores the variables above
       self["CMAKE_PREFIX_PATH"] = HOMEBREW_PREFIX.to_s
     end
