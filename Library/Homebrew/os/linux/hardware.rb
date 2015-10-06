@@ -29,7 +29,7 @@ module LinuxCPUs
   def type
     @type ||= if cpuinfo =~ /Intel|AMD/
       :intel
-    elsif cpuinfo =~ /ARM/
+    elsif cpuinfo =~ /ARM/ || cpuinfo =~ /Marvell/
       :arm
     else
       :dunno
@@ -50,7 +50,7 @@ module LinuxCPUs
   end
 
   def flags
-    @flags ||= cpuinfo[/^flags.*/, 0].split
+    @flags ||= cpuinfo[/^(flags|Features).*/, 0].split
   end
 
   # Compatibility with Mac method, which returns lowercase symbols
