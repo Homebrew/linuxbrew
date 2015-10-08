@@ -25,12 +25,17 @@ class Go < Formula
   end
 
   resource "gobootstrap" do
-    if MacOS.version > :lion
-      url "https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.8.tar.gz"
-      sha256 "c2f53983fc8fe5159d811081022ebc401b8111759ce008f91193abdae82cdbc9"
+    if OS.mac?
+      if MacOS.version > :lion
+        url "https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.8.tar.gz"
+        sha256 "c2f53983fc8fe5159d811081022ebc401b8111759ce008f91193abdae82cdbc9"
+      else
+        url "https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.6.tar.gz"
+        sha256 "da40e85a2c9bda9d2c29755c8b57b8d5932440ba466ca366c2a667697a62da4c"
+      end
     else
-      url "https://storage.googleapis.com/golang/go1.4.2.darwin-amd64-osx10.6.tar.gz"
-      sha256 "da40e85a2c9bda9d2c29755c8b57b8d5932440ba466ca366c2a667697a62da4c"
+      url "https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz"
+      sha256 "141b8345932641483c2437bdbd65488a269282ac85f91170805c273f03dd223b"
     end
   end
 
@@ -49,7 +54,7 @@ class Go < Formula
 
     cd "src" do
       ENV["GOROOT_FINAL"] = libexec
-      ENV["GOOS"]         = "darwin"
+      ENV["GOOS"]         = OS.mac? ? "darwin" : "linux"
       ENV["CGO_ENABLED"]  = build.with?("cgo") ? "1" : "0"
       system "./make.bash", "--no-clean"
     end
