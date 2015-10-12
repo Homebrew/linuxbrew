@@ -1,6 +1,7 @@
 language: ruby
 rvm:
   - 2.0.0
+services: docker
 
 before_install:
   # Fix error: Incorrect file permissions (664)
@@ -9,13 +10,25 @@ before_install:
   - if [ -f ".git/shallow" ]; then
       travis_retry git fetch --unshallow;
     fi
+  - export TRAVIS_COMMIT=$(git rev-parse --verify -q HEAD)
+  - docker pull linuxbrew/linuxbrew;
+    docker run
+      -v $(pwd):/home/linuxbrew/linuxbrew
+      linuxbrew/linuxbrew
+      /bin/sh -c 'brew update && sudo apt-get update && sudo apt-get install git -y && cp -rf ~/linuxbrew/* ~/linuxbrew/.git $(brew --repo) && brew fetch openssl && brew install ruby';
+    docker commit $(docker ps -l -q) linuxbrew;
+  - env | grep TRAVIS | tee /tmp/travis.env
 
 install:
   - PATH=$PWD/bin:$PATH
   - export HOMEBREW_DEVELOPER="1"
 
 script:
-  - brew test-bot
+  - docker run
+      --env-file /tmp/travis.env
+      -t
+      linuxbrew
+      brew test-bot;
 
 notifications:
   email:
