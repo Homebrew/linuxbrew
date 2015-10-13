@@ -17,6 +17,7 @@ class Glibc < Formula
         "--disable-dependency-tracking",
         "--disable-silent-rules",
         "--prefix=#{prefix}",
+        "--enable-obsolete-rpc",
         "--without-selinux"] # Fix error: selinux/selinux.h: No such file or directory
       args << "--with-binutils=" +
         Formula["binutils"].bin if build.with? "binutils"
