@@ -42,7 +42,7 @@ class Qemu < Formula
     if build.with?("sdl") && build.head?
       args << "--disable-cocoa"
     else
-      args << "--enable-cocoa"
+      args << "--enable-cocoa" if OS.mac?
     end
 
     args << (build.with?("sdl") ? "--enable-sdl" : "--disable-sdl")
