@@ -145,6 +145,7 @@ class SoftwareSpec
   end
 
   def patch(strip = :p1, src = nil, &block)
+    dependency_collector.add("homebrew/dupes/gpatch") unless OS.mac?
     patches << Patch.create(strip, src, &block)
   end
 
