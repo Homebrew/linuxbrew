@@ -1,13 +1,26 @@
 class Emscripten < Formula
   desc "LLVM bytecode to JavaScript compiler"
   homepage "https://kripken.github.io/emscripten-site/"
-  url "https://github.com/kripken/emscripten/archive/1.34.4.tar.gz"
-  sha256 "d2a600bf68db41c6ae4d0689504ceca2ebf00c1cfe4263cf86c48a5330c16ad4"
+
+  stable do
+    url "https://github.com/kripken/emscripten/archive/1.34.11.tar.gz"
+    sha256 "4b2790279372ea016dbe64eda95cfde3f2a695e369c5f7cd9a62e2f69991ceb7"
+
+    resource "fastcomp" do
+      url "https://github.com/kripken/emscripten-fastcomp/archive/1.34.11.tar.gz"
+      sha256 "476b9b3bb6e88cf31c66a6618b1174a7b770b0c02703f8ddc37ba350c63f2f2e"
+    end
+
+    resource "fastcomp-clang" do
+      url "https://github.com/kripken/emscripten-fastcomp-clang/archive/1.34.11.tar.gz"
+      sha256 "4a453a90212eb8ae9ab90ea055f7072642aca4b5343ff9c33ff28d3f17759241"
+    end
+  end
 
   bottle do
-    sha256 "629a670f9cc330ee6509b27efe87e2435b424d49938f19b405f3bead59c393a4" => :yosemite
-    sha256 "176cc6a11fc6ab9b4d1158aab10cf382fc5365cfcdee7a0bef8ee085d8356718" => :mavericks
-    sha256 "c9a0612c153843c930c4b576961ca2d4b64a58e07617a7a747d5ba2cc8202e8f" => :mountain_lion
+    sha256 "1f68afc9af5550b9b82f2f9fc39c172b7f3ade64409f8e0e989b608c66551eea" => :el_capitan
+    sha256 "511dc2cd0d90a7a842dd5ad72e555c67b0a3c67913a267c1d52ff99ef7cde986" => :yosemite
+    sha256 "af8d33f9234d0a402c69b7d66b1560e5d89aa38e08bc6a7218073bf95b3b14ff" => :mavericks
   end
 
   head do
@@ -19,18 +32,6 @@ class Emscripten < Formula
 
     resource "fastcomp-clang" do
       url "https://github.com/kripken/emscripten-fastcomp-clang.git", :branch => "incoming"
-    end
-  end
-
-  stable do
-    resource "fastcomp" do
-      url "https://github.com/kripken/emscripten-fastcomp/archive/1.34.4.tar.gz"
-      sha256 "61769db5fc51f70b46a07f1efa095121b204ace4e8516401b09c68479aad99a9"
-    end
-
-    resource "fastcomp-clang" do
-      url "https://github.com/kripken/emscripten-fastcomp-clang/archive/1.34.4.tar.gz"
-      sha256 "70e77714380345ed2c175959f5f33198860f631baf95a88cce7358ccab017e5b"
     end
   end
 
@@ -63,7 +64,7 @@ class Emscripten < Formula
       "--enable-optimized",
       "--enable-targets=host,js",
       "--disable-assertions",
-      "--disable-bindings"
+      "--disable-bindings",
     ]
 
     cd "fastcomp" do
@@ -78,14 +79,14 @@ class Emscripten < Formula
     end
   end
 
-  test do
-    system "#{libexec}/llvm/bin/llvm-config", "--version"
-  end
-
   def caveats; <<-EOS.undent
     Manually set LLVM_ROOT to
       #{opt_libexec}/llvm/bin
     in ~/.emscripten after running `emcc` for the first time.
     EOS
+  end
+
+  test do
+    system "#{libexec}/llvm/bin/llvm-config", "--version"
   end
 end

@@ -1,8 +1,11 @@
 require "cmd/install"
 require "cmd/outdated"
+require "cmd/cleanup"
 
 module Homebrew
   def upgrade
+    FormulaInstaller.prevent_build_flags unless MacOS.has_apple_developer_tools?
+
     Homebrew.perform_preinstall_checks
 
     if ARGV.named.empty?
@@ -39,7 +42,10 @@ module Homebrew
       puts pinned.map { |f| "#{f.full_name} #{f.pkg_version}" } * ", "
     end
 
-    outdated.each { |f| upgrade_formula(f) }
+    outdated.each do |f|
+      upgrade_formula(f)
+      cleanup_formula(f) if ARGV.include?("--cleanup") && f.installed?
+    end
   end
 
   def upgrade_pinned?

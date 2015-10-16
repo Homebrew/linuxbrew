@@ -28,7 +28,9 @@ Dependencies
 
 * **Ruby** 1.8.6 or newer
 + **GCC** 4.2 or newer
-+ 64-bit x86 platform
+* **Git** 1.7.12.4 or newer
++ **Linux** 2.6.16 or newer
++ **64-bit x86** or **32-bit ARM** platform
 
 Paste at a Terminal prompt:
 
@@ -46,7 +48,7 @@ sudo yum groupinstall 'Development Tools' && sudo yum install curl git irb m4 ru
 
 ### 32-bit x86 platforms
 
-Linuxbrew does not currently support 32-bit x86 platforms nor platforms other than x86. It would be possible for Linuxbrew to work on 32-bit x86 platforms with some effort. Pull requests would be welcome if someone were to volunteer to maintain the 32-bit x86 support.
+Linuxbrew does not currently support 32-bit x86 platforms. It would be possible for Linuxbrew to work on 32-bit x86 platforms with some effort. Pull requests would be welcome if someone were to volunteer to maintain the 32-bit x86 support.
 
 Installation
 ------------
@@ -113,15 +115,6 @@ Homebrew was originally created by [Max Howell](https://github.com/mxcl).
 
 ## License
 Code is under the [BSD 2 Clause (NetBSD) license](https://github.com/Homebrew/homebrew/tree/master/LICENSE.txt).
-
-## Donations
-We accept tips through Gratipay.
-
-### Shaun Jackman for Linuxbrew
-[![Gratipay](https://img.shields.io/gratipay/sjackman.svg?style=flat)](https://gratipay.com/sjackman/)
-
-### Homebrew
-[![Gratipay](https://img.shields.io/gratipay/Homebrew.svg?style=flat)](https://gratipay.com/Homebrew/)
 
 ## Sponsors
 Our CI infrastructure was paid for by [our Kickstarter supporters](https://github.com/Homebrew/homebrew/blob/master/SUPPORTERS.md).

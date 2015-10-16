@@ -3,25 +3,30 @@ class Osquery < Formula
   homepage "https://osquery.io"
   # pull from git tag to get submodules
   url "https://github.com/facebook/osquery.git",
-      :tag => "1.5.0",
-      :revision => "ca09fdb9f80ed632b98a2a9c41a521309e14b611"
+      :tag => "1.5.3",
+      :revision => "2a71162b0cfb040a3606538857f512ea8894b9e7"
   revision 1
 
   bottle do
-    sha256 "2056d44c6b15b9e38619b457974d8b83f041701934743ddfeac19cacb5ffeb21" => :yosemite
+    sha256 "0bdeae28ccad6700cfd7c110aae01d81d8599503c8d3fcda4580274ed7049ca6" => :el_capitan
+    sha256 "7839a251603716bbb9f1f1bb4f618dbbc50de31f527e0f837139c58b5aa6bb9a" => :yosemite
+    sha256 "acf59c8f9d7bf625a9f96e289fb4bcc3d0dd94805e8d781194d5b28700c234bc" => :mavericks
   end
 
-  # osquery only support OS X Yosemite and above. Do not remove this.
-  depends_on :macos => :yosemite
+  # osquery only supports OS X 10.9 and above. Do not remove this.
+  depends_on :macos => :mavericks
 
   depends_on "cmake" => :build
-  depends_on "boost" => :build
   depends_on "doxygen" => :build
-  depends_on "rocksdb" => :build
-  depends_on "thrift" => :build
-  depends_on "yara" => :build
-  depends_on "openssl"
+  depends_on "boost"
+  depends_on "rocksdb"
+  depends_on "thrift"
+  depends_on "yara"
+  depends_on "libressl"
   depends_on "gflags"
+  depends_on "glog"
+  depends_on "libmagic"
+  depends_on "cpp-netlib"
 
   resource "markupsafe" do
     url "https://pypi.python.org/packages/source/M/MarkupSafe/MarkupSafe-0.23.tar.gz"
@@ -33,8 +38,22 @@ class Osquery < Formula
     sha256 "2e24ac5d004db5714976a04ac0e80c6df6e47e98c354cb2c0d82f8879d4f8fdb"
   end
 
+  resource "psutil" do
+    url "https://pypi.python.org/packages/source/p/psutil/psutil-2.2.1.tar.gz"
+    sha256 "a0e9b96f1946975064724e242ac159f3260db24ffa591c3da0a355361a3a337f"
+  end
+
   def install
-    ENV.prepend_create_path "PYTHONPATH", buildpath+"third-party/python/lib/python2.7/site-packages"
+    # Link dynamically against brew-installed libraries.
+    ENV["BUILD_LINK_SHARED"] = "1"
+
+    # Use LibreSSL instead of the system provided OpenSSL.
+    ENV["BUILD_USE_LIBRESSL"] = "1"
+
+    # Skip test and benchmarking.
+    ENV["SKIP_TESTS"] = "1"
+
+    ENV.prepend_create_path "PYTHONPATH", buildpath/"third-party/python/lib/python2.7/site-packages"
     ENV["THRIFT_HOME"] = Formula["thrift"].opt_prefix
 
     resources.each do |r|
@@ -54,11 +73,40 @@ class Osquery < Formula
   plist_options :startup => true, :manual => "osqueryd"
 
   test do
-    require "open3"
-    Open3.popen3("#{bin}/osqueryi") do |stdin, stdout, _|
-      stdin.write(".mode line\nSELECT count(version) as lines FROM osquery_info;")
-      stdin.close
-      assert_equal "lines = 1\n", stdout.read
-    end
+    (testpath/"test.cpp").write <<-EOS.undent
+      #include <osquery/sdk.h>
+
+      using namespace osquery;
+
+      class ExampleTablePlugin : public TablePlugin {
+       private:
+        TableColumns columns() const {
+          return {{"example_text", "TEXT"}, {"example_integer", "INTEGER"}};
+        }
+
+        QueryData generate(QueryContext& request) {
+          QueryData results;
+          Row r;
+
+          r["example_text"] = "example";
+          r["example_integer"] = INTEGER(1);
+          results.push_back(r);
+          return results;
+        }
+      };
+
+      REGISTER_EXTERNAL(ExampleTablePlugin, "table", "example");
+
+      int main(int argc, char* argv[]) {
+        Initializer runner(argc, argv, OSQUERY_EXTENSION);
+        runner.shutdown();
+        return 0;
+      }
+    EOS
+
+    system ENV.cxx, "test.cpp", "-o", "test", "-v", "-std=c++11",
+      "-losquery", "-lthrift", "-lboost_system", "-lboost_thread-mt",
+      "-lboost_filesystem", "-lglog", "-lgflags", "-lrocksdb"
+    system "./test"
   end
 end

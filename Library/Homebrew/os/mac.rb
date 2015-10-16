@@ -27,13 +27,40 @@ module OS
         @locate[key] = if File.executable?(path = "/usr/bin/#{tool}")
           Pathname.new path
         # Homebrew GCCs most frequently; much faster to check this before xcrun
-        elsif File.executable?(path = "#{HOMEBREW_PREFIX}/bin/#{tool}")
-          Pathname.new path
+        elsif (path = HOMEBREW_PREFIX/"bin/#{tool}").executable?
+          path
         elsif OS.mac?
           path = Utils.popen_read("/usr/bin/xcrun", "-no-cache", "-find", tool).chomp
           Pathname.new(path) if File.executable?(path)
         end
       end
+    end
+
+    # Locates a (working) copy of install_name_tool, guaranteed to function
+    # whether the user has developer tools installed or not.
+    def install_name_tool
+      if (path = HOMEBREW_PREFIX/"opt/cctools/bin/install_name_tool").executable?
+        path
+      else
+        locate("install_name_tool")
+      end
+    end
+
+    # Locates a (working) copy of otool, guaranteed to function whether the user
+    # has developer tools installed or not.
+    def otool
+      if (path = HOMEBREW_PREFIX/"opt/cctools/bin/otool").executable?
+        path
+      else
+        locate("otool")
+      end
+    end
+
+    # Checks if the user has any developer tools installed, either via Xcode
+    # or the CLT. Convenient for guarding against formula builds when building
+    # is impossible.
+    def has_apple_developer_tools?
+      Xcode.installed? || CLT.installed?
     end
 
     def active_developer_dir
@@ -214,7 +241,8 @@ module OS
       "6.3.1" => { :clang => "6.1", :clang_build => 602 },
       "6.3.2" => { :clang => "6.1", :clang_build => 602 },
       "6.4"   => { :clang => "6.1", :clang_build => 602 },
-      "7.0"   => { :clang => "7.0", :clang_build => 700 }
+      "7.0"   => { :clang => "7.0", :clang_build => 700 },
+      "7.0.1" => { :clang => "7.0", :clang_build => 700 },
     }
 
     def compilers_standard?
