@@ -76,7 +76,7 @@ class Gnutls < Formula
     openssldir = etc/"openssl"
     openssldir.mkpath
     (openssldir/"cert.pem").atomic_write(valid_certs.join("\n"))
-  end
+  end if OS.mac?
 
   test do
     system bin/"gnutls-cli", "--version"
