@@ -50,7 +50,7 @@ class Mono < Formula
       --enable-nls=no
     ]
 
-    args << "--build=" + (MacOS.prefer_64_bit? ? "x86_64": "i686") + "-apple-darwin"
+    args << "--build=" + (MacOS.prefer_64_bit? ? "x86_64": "i686") + "-apple-darwin" if OS.mac?
 
     system "./configure", *args
     system "make"
