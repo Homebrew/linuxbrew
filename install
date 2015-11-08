@@ -136,6 +136,18 @@ not intentional, please restore the default permissions and try running the
 installer again:
     sudo chmod 775 #{HOMEBREW_PREFIX}
 EOABORT
+# Make sure the irb is installed
+begin                                                                              
+  require 'irb'                                                                    
+rescue LoadError                                                                   
+  abort <<-EOABORT                                                                 
+It appears the Homebrew irb module does not exist. Either install it via gems:  
+    gem install irb                                                                
+or using your native package manager. Under Centos, this can be accomplished       
+via:                                                                               
+    sudo yum install ruby-irb                                                      
+EOABORT                                                                            
+end
 
 ohai "This script will install:"
 puts "#{HOMEBREW_PREFIX}/bin/brew"
