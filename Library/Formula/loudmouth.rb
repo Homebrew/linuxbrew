@@ -46,6 +46,7 @@ class Loudmouth < Formula
   end
 
   def install
+    ENV['LIBS'] = '-lgobject-2.0'
     system "./autogen.sh", "-n" if build.head?
     system "./configure", "--disable-debug", "--disable-dependency-tracking",
                           "--prefix=#{prefix}", "--with-ssl=gnutls"
