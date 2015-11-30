@@ -16,6 +16,7 @@ class Mysql < Formula
   depends_on "openssl"
   # Fix error: Cannot find system editline libraries.
   depends_on "libedit" unless OS.mac?
+  depends_on "boost"
 
   option :universal
   option "with-tests", "Build with unit tests"
@@ -29,11 +30,6 @@ class Mysql < Formula
   deprecated_option "enable-local-infile" => "with-local-infile"
   deprecated_option "enable-memcached" => "with-memcached"
   deprecated_option "enable-debug" => "with-debug"
-
-  depends_on "cmake" => :build
-  depends_on "pidof" unless MacOS.version >= :mountain_lion
-  depends_on "openssl"
-  depends_on "boost"
 
   conflicts_with "mysql-cluster", "mariadb", "percona-server",
     :because => "mysql, mariadb, and percona install the same binaries."
