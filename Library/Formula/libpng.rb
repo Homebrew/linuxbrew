@@ -12,7 +12,7 @@ class Libpng < Formula
     sha256 "643e1f885dace0091fb6c717f7d64d415f29dda1d97c2f94937ae8c0bf1a3f4c" => :mavericks
   end
 
-  keg_only :provided_pre_mountain_lion
+  keg_only :provided_pre_mountain_lion unless OS.linux?
 
   head do
     url "https://github.com/glennrp/libpng.git"
