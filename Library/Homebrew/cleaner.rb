@@ -87,7 +87,7 @@ class Cleaner
         path.unlink
       else
         # Set permissions for executables and non-executables
-        perms = if path.mach_o_executable? || path.text_executable?
+        perms = if path.mach_o_executable? || path.dylib? || path.text_executable?
           0555
         else
           0444
