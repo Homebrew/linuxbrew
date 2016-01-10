@@ -1,7 +1,7 @@
 class Bitlbee < Formula
   desc "IRC to other chat networks gateway"
   homepage "https://www.bitlbee.org/"
-  url "http://get.bitlbee.org/src/bitlbee-3.4.1.tar.gz"
+  url "https://get.bitlbee.org/src/bitlbee-3.4.1.tar.gz"
   sha256 "500a0b19943040d67458eb3beb0a63d004abb2aa54a777addeb2a895d4f5c0e1"
   head "https://github.com/bitlbee/bitlbee.git"
 
@@ -14,6 +14,7 @@ class Bitlbee < Formula
 
   option "with-pidgin", "Use finch/libpurple for all communication with instant messaging networks"
   option "with-libotr", "Build with otr (off the record) support"
+  option "with-libevent", "Use libevent for the event-loop handling rather than glib."
 
   deprecated_option "with-finch" => "with-pidgin"
 
@@ -24,6 +25,7 @@ class Bitlbee < Formula
   depends_on "libgcrypt"
   depends_on "pidgin" => :optional
   depends_on "libotr" => :optional
+  depends_on "libevent" => :optional
 
   def install
     args = %W[
@@ -37,6 +39,7 @@ class Bitlbee < Formula
 
     args << "--purple=1" if build.with? "pidgin"
     args << "--otr=1" if build.with? "libotr"
+    args << "--events=libevent" if build.with? "libevent"
 
     system "./configure", *args
 

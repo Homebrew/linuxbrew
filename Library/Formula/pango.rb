@@ -3,14 +3,15 @@ class Pango < Formula
   homepage "http://www.pango.org/"
 
   stable do
-    url "https://download.gnome.org/sources/pango/1.38/pango-1.38.0.tar.xz"
-    sha256 "1d4e75974bad853ee9ac5fc5caee5e7ab235abbd945d51d01f3806e04e7c226c"
+    url "https://download.gnome.org/sources/pango/1.38/pango-1.38.1.tar.xz"
+    sha256 "1320569f6c6d75d6b66172b2d28e59c56ee864ee9df202b76799c4506a214eb7"
   end
 
   bottle do
-    sha256 "35609b5fd72070c55965ff9ed2a2221e885c0c9901aa37005a92b223cc96d3b6" => :el_capitan
-    sha256 "4c45bd9bda3be814c8b89673360bc90ab444741023c980e8744fe218d94562ba" => :yosemite
-    sha256 "61049900a101f9dc393bb825a3a00378f57e925f55b904abcd5537f3c8c130f0" => :mavericks
+    revision 1
+    sha256 "171c0af90e6c519b65dbce8a3731ca1cb56a001cce9dc03bfae0e9cfcdd8442d" => :el_capitan
+    sha256 "c0a3065069a59fc1f2b130efed5874a8326d79801ab9c4b50aebda08e46089d9" => :yosemite
+    sha256 "cb66f05551ce2c348599417a5d0ae0acf43b4aeabfb7904b26c9bd5a8eb6c78e" => :mavericks
   end
 
   head do
@@ -47,6 +48,7 @@ class Pango < Formula
       --with-html-dir=#{share}/doc
       --enable-introspection=yes
       --without-xft
+      --enable-static
     ]
 
     system "./autogen.sh" if build.head?

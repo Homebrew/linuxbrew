@@ -18,8 +18,11 @@ class Gperftools < Formula
     cause "Segfault during linking"
   end
 
+  # Fix error: No frame pointers and no libunwind. The compilation will fail
+  depends_on "libunwind" unless OS.mac?
+
   def install
-    ENV.append_to_cflags "-D_XOPEN_SOURCE"
+    ENV.append_to_cflags "-D_XOPEN_SOURCE" if OS.mac?
     system "./configure", "--disable-dependency-tracking",
                           "--prefix=#{prefix}"
     system "make"

@@ -1,15 +1,14 @@
 class Node < Formula
   desc "Platform built on the V8 JavaScript runtime to build network applications"
   homepage "https://nodejs.org/"
-  url "https://nodejs.org/dist/v4.1.2/node-v4.1.2.tar.gz"
-  sha256 "febec3703a3fea9b64c46100a7b6a4408250027aa8259a2a815fd2275d502c49"
+  url "https://nodejs.org/dist/v5.3.0/node-v5.3.0.tar.gz"
+  sha256 "cc05ff06149c638345835788f448471d264a7e011bf083394f86d5be51975c7e"
   head "https://github.com/nodejs/node.git"
 
   bottle do
-    revision 1
-    sha256 "25665d1d882616e287b25a1e41007585e1a55c9b30bbe7ca96e7bbb5ea963372" => :el_capitan
-    sha256 "0b6ecc30a898e4ca9edfe4a431b9ccdb23f40bb7bc07472408e0298ae177e5a2" => :yosemite
-    sha256 "abb904dd19f9935448b858f42971a67d73b86851d930bfe033994ef021240263" => :mavericks
+    sha256 "cb9c05f9ecf2d79f3f17cef0fe41328cc05db6aa905ad4c75096f146de02b6e6" => :el_capitan
+    sha256 "93b56709932c37fe9abd02c8de83064bb6caa1ecceedbe00756bff7254a9f9cb" => :yosemite
+    sha256 "b13eac857fc25c40183b6760e1acc708ae62db73f28f3c3bc323e49696f64229" => :mavericks
   end
 
   option "with-debug", "Build with debugger hooks"
@@ -24,20 +23,28 @@ class Node < Formula
   depends_on "pkg-config" => :build
   depends_on "openssl" => :optional
 
-  fails_with :llvm do
-    build 2326
+  # Per upstream - "Need g++ 4.8 or clang++ 3.4".
+  fails_with :clang if MacOS.version <= :snow_leopard
+  fails_with :llvm
+  fails_with :gcc_4_0
+  fails_with :gcc
+  ("4.3".."4.7").each do |n|
+    fails_with :gcc => n
   end
 
+  # We track major/minor from upstream Node releases.
+  # We will accept *important* npm patch releases when necessary.
+  # https://github.com/Homebrew/homebrew/pull/46098#issuecomment-157802319
   resource "npm" do
-    url "https://registry.npmjs.org/npm/-/npm-2.14.6.tgz"
-    sha256 "bbe04a9d4f475c46541ac4a99c73db7afa63c2c60060781d0e737586243a0051"
+    url "https://registry.npmjs.org/npm/-/npm-3.3.12.tgz"
+    sha256 "09475d7096731d93c0aacd7dfe58794d67c52ee6562675aee6c1f734ddba8158"
   end
 
   resource "icu4c" do
-    url "https://ssl.icu-project.org/files/icu4c/55.1/icu4c-55_1-src.tgz"
-    mirror "https://fossies.org/linux/misc/icu4c-55_1-src.tgz"
-    version "55.1"
-    sha256 "e16b22cbefdd354bec114541f7849a12f8fc2015320ca5282ee4fd787571457b"
+    url "https://ssl.icu-project.org/files/icu4c/56.1/icu4c-56_1-src.tgz"
+    mirror "https://ftp.mirrorservice.org/sites/download.qt-project.org/development_releases/prebuilt/icu/src/icu4c-56_1-src.tgz"
+    version "56.1"
+    sha256 "3a64e9105c734dcf631c0b3ed60404531bce6c0f5a64bfe1a6402a4cc2314816"
   end
 
   def install
@@ -66,6 +73,14 @@ class Node < Formula
       cd buildpath/"npm_install" do
         system "./configure", "--prefix=#{libexec}/npm"
         system "make", "install"
+        # `package.json` has relative paths to the npm_install directory.
+        # This copies back over the vanilla `package.json` that is expected.
+        # https://github.com/Homebrew/homebrew/issues/46131#issuecomment-157845008
+        cp buildpath/"npm_install/package.json", libexec/"npm/lib/node_modules/npm"
+        # Remove manpage symlinks from the buildpath, they are breaking bottle
+        # creation. The real manpages are living in libexec/npm/lib/node_modules/npm/man/
+        # https://github.com/Homebrew/homebrew/pull/47081#issuecomment-165280470
+        rm_rf libexec/"npm/share/"
       end
 
       if build.with? "completion"
@@ -117,6 +132,14 @@ class Node < Formula
       EOS
     end
 
+    if build.without? "full-icu"
+      s += <<-EOS.undent
+        Please note by default only English locale support is provided. If you need
+        full locale support you should:
+          `brew reinstall node --with-full-icu`
+      EOS
+    end
+
     s
   end
 
@@ -124,12 +147,10 @@ class Node < Formula
     path = testpath/"test.js"
     path.write "console.log('hello');"
 
-    output = `#{bin}/node #{path}`.strip
+    output = shell_output("#{bin}/node #{path}").strip
     assert_equal "hello", output
-    assert_equal 0, $?.exitstatus
-    output = `#{bin}/node -e "console.log(new Date('2015-09-15').toLocaleDateString('en'))"`.strip
-    assert_match %r{^9/1[45]/2015$}, output # depends on system timezone
-    assert_equal 0, $?.exitstatus
+    output = shell_output("#{bin}/node -e 'console.log(new Intl.NumberFormat().format(1234.56))'").strip
+    assert_equal "1,234.56", output
 
     if build.with? "npm"
       # make sure npm can find node

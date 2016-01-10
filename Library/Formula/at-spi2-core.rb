@@ -1,13 +1,13 @@
 class AtSpi2Core < Formula
   desc "Protocol definitions and daemon for D-Bus at-spi"
   homepage "http://a11y.org"
-  url "https://download.gnome.org/sources/at-spi2-core/2.18/at-spi2-core-2.18.0.tar.xz"
-  sha256 "1aeec77db6eb8087049af39a07f55756c55319f739d2998030fe6f4ced03ca76"
+  url "https://download.gnome.org/sources/at-spi2-core/2.18/at-spi2-core-2.18.3.tar.xz"
+  sha256 "ada26add94155f97d0f601a20cb7a0e3fd3ba1588c3520b7288316494027d629"
 
   bottle do
-    sha256 "ead8cbf2ea672c497168af002f106a86b306b754740306644e91983f1ac7cc88" => :el_capitan
-    sha256 "e6145aac15a1bd1881b4d086f2beb16381a08c22cf7607ba23adaa142e6b23b3" => :yosemite
-    sha256 "f52c086290695db1f94d1b70c906eef92f54f615825ade5496efbea39ad55eaf" => :mavericks
+    sha256 "96b67926248f6950a20ea28fde034e9a91b6c4c4a14eb3cd54e0aead53224ce6" => :el_capitan
+    sha256 "2c413dbe96a387b290cdc2d9079f6c54be5f4409d3e5785779d5b7f3681bebd9" => :yosemite
+    sha256 "310fe864ee0b4e81fd58e901b02cc9cb16cd8ae21e4cb2438d6e2ff764986d04" => :mavericks
   end
 
   depends_on "pkg-config" => :build

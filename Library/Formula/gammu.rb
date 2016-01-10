@@ -1,10 +1,10 @@
 class Gammu < Formula
   desc "Command-line utility to control a phone"
-  homepage "http://wammu.eu/gammu/"
+  homepage "https://wammu.eu/gammu/"
   head "https://github.com/gammu/gammu.git"
 
   stable do
-    url "http://dl.cihar.com/gammu/releases/gammu-1.36.5.tar.xz"
+    url "https://dl.cihar.com/gammu/releases/gammu-1.36.5.tar.xz"
     mirror "https://mirrors.kernel.org/debian/pool/main/g/gammu/gammu_1.36.5.orig.tar.xz"
     sha256 "42e626f8f8b97c7a0afc5547a6056aa061725e8e3ace91dbcf9e83816a70ab86"
 

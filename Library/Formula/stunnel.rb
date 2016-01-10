@@ -1,15 +1,14 @@
 class Stunnel < Formula
   desc "SSL tunneling program"
   homepage "https://www.stunnel.org/"
-  url "https://www.stunnel.org/downloads/stunnel-5.23.tar.gz"
-  mirror "https://www.usenix.org.uk/mirrors/stunnel/stunnel-5.23.tar.gz"
-  sha256 "0fc4a702afd2e857bae8ad1f39c51546eb282c3d0ff4f4d55d62aece7328ddea"
+  url "https://www.stunnel.org/downloads/stunnel-5.28.tar.gz"
+  mirror "https://www.usenix.org.uk/mirrors/stunnel/stunnel-5.28.tar.gz"
+  sha256 "9a25b87b1ef0c08fa3d796edce07b4408e6a8acece23de2eb7ee9285b78852b5"
 
   bottle do
-    sha256 "a7c7556a6c17c2b5b131dcc8e5a66e3d7a7fdd5690bab34a009f359ffe59b9a2" => :el_capitan
-    sha256 "754cd51e26be1d898e0bfe861baef5eae6ad20c735f5b32356c0c95467b90dd0" => :yosemite
-    sha256 "fc4267fd40c4cae2f08283dd126a8c4daee78405b7574f196771fe0acfbcfccd" => :mavericks
-    sha256 "44c0bdbc5102a1259d4f4617d5a2c8b5c1043a0d4e32c2a1fc4767b09674c5cb" => :mountain_lion
+    sha256 "6f2c32372f1a3213877b08a88d1620a489277e0aac3ebadb0d75e0f5063b80ca" => :el_capitan
+    sha256 "1bd82fb6589a0feb5376d343bb7d987213d02e009e9827883d4895ebea27912c" => :yosemite
+    sha256 "08565d94901d4cc9a14cd92d29626988e7c2e036222a4bdd4e51069a523d0a24" => :mavericks
   end
 
   # Please revision me whenever OpenSSL is updated

@@ -1,8 +1,8 @@
 require "hardware"
-require "os/mac"
 require "extend/ENV/shared"
 
-# @deprecated
+# TODO: deprecate compiling related codes after it's only used by brew test.
+# @private
 module Stdenv
   include SharedEnvExtension
 
@@ -58,8 +58,8 @@ module Stdenv
 
     if OS.linux? && !["glibc", "glibc25"].include?(formula && formula.name)
       # Set the dynamic linker
-      glibc = Formula["glibc"]
-      if glibc.installed?
+      glibc = Formula["glibc"] rescue nil
+      if glibc && glibc.installed?
         ldso = glibc.opt_lib/"ld-linux-x86-64.so.2"
         if ldso.readable?
           append "LDFLAGS", "-Wl,--dynamic-linker=#{ldso}"
@@ -294,6 +294,8 @@ module Stdenv
   end
 
   def universal_binary
+    check_for_compiler_universal_support
+
     append_to_cflags Hardware::CPU.universal_archs.as_arch_flags
     append "LDFLAGS", Hardware::CPU.universal_archs.as_arch_flags
 

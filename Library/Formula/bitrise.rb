@@ -3,21 +3,21 @@ require "language/go"
 class Bitrise < Formula
   desc "Command-line automation tool"
   homepage "https://github.com/bitrise-io/bitrise"
-  url "https://github.com/bitrise-io/bitrise/archive/1.2.1.tar.gz"
-  sha256 "5fe71fc2461dd6c1aee10a3178c1c768848b638e21c29ff2ba6ade4c2a68a1b7"
+  url "https://github.com/bitrise-io/bitrise/archive/1.2.4.tar.gz"
+  sha256 "7cf365dca04ac2adadea1fbe286a117336460daa2488b0e62dc080b8ac868a09"
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "02e97bdddcfad400f40f41c16fd5fdf4b287c3dfb2295896ad4f70bc8bb287bd" => :el_capitan
-    sha256 "b5538582b62f5318562661e9c5514e9b310c7ff2d976d75239993a7e22f430b0" => :yosemite
-    sha256 "aae7506c85dc004abfd7eca52d3d3a4c8b3ddfe10c9b4d84eb57336fe86a16c4" => :mavericks
+    sha256 "3c9c6d4c4a135d79fe4dfabf93e33550e3fb3d207d366bcbe7cfe13d88a66fdc" => :el_capitan
+    sha256 "91723eb65af76465347356047ed7c38ce26b1e73bb578fc5e51d7c5336407a83" => :yosemite
+    sha256 "0f32b8a62ab83e509a2dfdfbc4df9eb333b0e7d4a0eb59ccb18e50760ed7343d" => :mavericks
   end
 
   depends_on "go" => :build
 
   resource "envman" do
-    url "https://github.com/bitrise-io/envman/archive/0.9.10.tar.gz"
-    sha256 "ca1912d53c495d1a5492c81df25591baae86126e6d9cf556f8d35f22a46ea95c"
+    url "https://github.com/bitrise-io/envman/archive/1.0.0.tar.gz"
+    sha256 "439d6c1732c3f2dbe121750ba1951df126576e393ce1028426a70dcaafcffe3a"
   end
 
   resource "stepman" do

@@ -3,22 +3,23 @@ class Eigen < Formula
   homepage "http://eigen.tuxfamily.org/"
   url "https://bitbucket.org/eigen/eigen/get/3.2.6.tar.bz2"
   sha256 "8a3352f9a5361fe90e451a7305fb1896fc7f771dc16cc0edd8e6b157f52c343e"
+  head "https://bitbucket.org/eigen/eigen", :using => :hg
 
   bottle do
     cellar :any_skip_relocation
-    sha256 "10492e31aa6f9b9764aae344198b0e1f55e644510a67d11e73ccdc685c8e32b4" => :el_capitan
-    sha256 "925c934e9215bfaa438d69723e0c785eb92761a70591b4c9038263ebf81afb90" => :yosemite
-    sha256 "964552d6a1463744bbdf26de9be97836f84b4f6fcf007559f0cfd913c0873847" => :mavericks
+    revision 1
+    sha256 "79253659ae74f1bcf2293be0ddb1a31c8d763b2ddaed75de3a69ac6e9b234c2e" => :el_capitan
+    sha256 "82ee2a1528e9d69a71bbf07d59f330dcbf067b5ec14553f4051cc69e52cb1d24" => :yosemite
+    sha256 "d0ba02c5d3c6e5ea89679cb85bdddd28fafcdcf65174e2c123e2407d7f7b1c34" => :mavericks
   end
-
-  head "https://bitbucket.org/eigen/eigen", :using => :hg
-
-  depends_on "cmake" => :build
 
   option :universal
 
+  depends_on "cmake" => :build
+
   def install
     ENV.universal_binary if build.universal?
+
     mkdir "eigen-build" do
       args = std_cmake_args
       args << "-Dpkg_config_libdir=#{lib}" << ".."
@@ -44,6 +45,6 @@ class Eigen < Formula
       }
     EOS
     system ENV.cxx, "test.cpp", "-I#{include}/eigen3", "-o", "test"
-    assert_equal `./test`.split, %w[3 -1 2.5 1.5]
+    assert_equal %w[3 -1 2.5 1.5], shell_output("./test").split
   end
 end
