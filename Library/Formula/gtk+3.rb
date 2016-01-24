@@ -23,6 +23,7 @@ class Gtkx3 < Formula
   depends_on "pango"
   depends_on "glib"
   depends_on "hicolor-icon-theme"
+  depends_on "cairo" => "with-x11" unless OS.mac?
 
   # Replace a keyword not supported by Snow Leopard's Objective-C compiler.
   # https://bugzilla.gnome.org/show_bug.cgi?id=756770
@@ -43,9 +44,13 @@ class Gtkx3 < Formula
       --disable-glibtest
       --enable-introspection=yes
       --disable-schemas-compile
-      --enable-quartz-backend
-      --disable-x11-backend
     ]
+
+    if OS.mac?
+      args << "--enable-quartz-backend" << "--disable-x11-backend"
+    else
+      args << "--disable-quartz-backend" << "--enable-x11-backend"
+    end
 
     args << "--enable-quartz-relocation" if build.with?("quartz-relocation")
 
