@@ -1,8 +1,8 @@
 class Pod2man < Formula
   desc "perl documentation generator"
   homepage "http://www.eyrie.org/~eagle/software/podlators/"
-  url "http://archives.eyrie.org/software/perl/podlators-4.04.tar.xz"
-  sha256 "22cd8f7b123e766465a4a186b852ab51cfeab325f6bdadf384825d6894b491ce"
+  url "http://archives.eyrie.org/software/perl/podlators-4.05.tar.xz"
+  sha256 "2eb8ef07720ad2f06451c1a1215c4777423c5c22ab7d05643f0155e344fd554c"
 
   bottle do
     cellar :any_skip_relocation
@@ -14,9 +14,7 @@ class Pod2man < Formula
   keg_only :provided_by_osx
 
   def install
-    system "perl", "Makefile.PL", "PREFIX=#{prefix}",
-                   "INSTALLSCRIPT=#{bin}",
-                   "INSTALLMAN1DIR=#{man1}", "INSTALLMAN3DIR=#{man3}"
+    system "perl", "Makefile.PL", "INSTALL_BASE=#{prefix}"
     system "make", "install"
   end
 
