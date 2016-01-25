@@ -16,7 +16,7 @@ class Cairo < Formula
   option :universal
 
   depends_on "pkg-config" => :build
-  depends_on :x11 => :optional if MacOS.version > :leopard
+  depends_on :x11 => :optional if MacOS.version > :leopard || OS.linux?
   depends_on "freetype"
   depends_on "fontconfig"
   depends_on "libpng"
@@ -38,7 +38,11 @@ class Cairo < Formula
     ] if OS.mac?
 
     if build.with? "x11"
-      args << "--enable-xcb=yes" << "--enable-xlib=yes" << "--enable-xlib-xrender=yes"
+      if OS.linux?
+        args << "--enable-xcb=no" << "--enable-xlib=yes" << "--enable-xlib-xrender=yes"
+      else
+        args << "--enable-xcb=yes" << "--enable-xlib=yes" << "--enable-xlib-xrender=yes"
+      end
     else
       args << "--enable-xcb=no" << "--enable-xlib=no" << "--enable-xlib-xrender=no"
     end
