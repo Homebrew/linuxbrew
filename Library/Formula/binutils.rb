@@ -9,6 +9,8 @@ class Binutils < Formula
   option "with-default-names", "Do not prepend 'g' to the binary" if OS.linux?
   deprecated_option "default-names" => "with-default-names"
 
+  depends_on "zlib" => :recommended unless OS.mac?
+
   bottle do
     sha256 "ab393fd01e8bb2f9ff697efa3e14765eb32468a46380ce8c2db0d5baf1b588b5" => :el_capitan
     sha256 "299f9bbdf522b68b803ce6cdb109a34b018459f3815771b3530ba95e06ee19f7" => :yosemite
