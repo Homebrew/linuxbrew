@@ -12,6 +12,8 @@ class Pigz < Formula
     sha256 "25a46ace5707f92497a6f1117161377ffaf2501a31dac34a7e4832bdda865759" => :mountain_lion
   end
 
+  depends_on "zlib" unless OS.mac?
+
   def install
     system "make", "CC=#{ENV.cc}", "CFLAGS=#{ENV.cflags}"
     bin.install "pigz", "unpigz"
