@@ -41,6 +41,8 @@ class Binutils < Formula
   end
 
   test do
-    assert_match /main/, shell_output("#{bin}/gnm #{bin}/gnm")
+    # Better to check with?("default-names"), but that doesn't work.
+    nm = OS.linux? ? "nm" : "gnm"
+    assert_match /main/, shell_output("#{bin}/#{nm} #{bin}/#{nm}")
   end
 end
