@@ -8,22 +8,32 @@ class Sonar < Formula
 
   def install
     # Delete native bin directories for other systems
-    rm_rf Dir["bin/{aix,hpux,linux,solaris,windows}-*"]
+    rm_rf Dir["bin/{aix,hpux,solaris,windows}-*"]
 
-    if MacOS.prefer_64_bit?
-      rm_rf "bin/macosx-universal-32"
+    # Linuxbrew doesn't support 32-bit at the moment
+    rm_rf "bin/linux-x86-32"
+
+    if OS.mac?
+      rm_rf "bin/linux-x86-64"
+      if MacOS.prefer_64_bit?
+        rm_rf "bin/macosx-universal-32"
+      else
+        rm_rf "bin/macosx-universal-64"
+      end
     else
-      rm_rf "bin/macosx-universal-64"
+      rm_rf Dir["bin/macosx-*"]
     end
 
     # Delete Windows files
     rm_f Dir["war/*.bat"]
     libexec.install Dir["*"]
 
-    if MacOS.prefer_64_bit?
+    if OS.mac? && MacOS.prefer_64_bit?
       bin.install_symlink "#{libexec}/bin/macosx-universal-64/sonar.sh" => "sonar"
-    else
+    elsif OS.mac?
       bin.install_symlink "#{libexec}/bin/macosx-universal-32/sonar.sh" => "sonar"
+    else
+      bin.install_symlink "#{libexec}/bin/linux-x86-64/sonar.sh" => "sonar"
     end
   end
 
