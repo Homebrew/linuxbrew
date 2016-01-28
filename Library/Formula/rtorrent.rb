@@ -11,6 +11,7 @@ class Rtorrent < Formula
   depends_on "cppunit" => :build
   depends_on "libtorrent"
   depends_on "xmlrpc-c" => :optional
+  depends_on "curl" => :build unless OS.mac?
 
   # https://github.com/Homebrew/homebrew/issues/24132
   fails_with :clang do
