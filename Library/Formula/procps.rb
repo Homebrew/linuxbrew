@@ -1,38 +1,31 @@
-require "formula"
-
 class Procps < Formula
-  homepage "http://procps.sourceforge.net/"
-  url "http://procps.sourceforge.net/procps-3.2.8.tar.gz"
-  sha1 "a0c86790569dec26b5d9037e8868ca907acc9829"
+  desc "Utilities for browsing procfs"
+  homepage "https://gitlab.com/procps-ng/procps"
+  url "https://gitlab.com/procps-ng/procps/repository/archive.tar.gz?ref=v3.3.11"
+  version "3.3.11"
+  sha256 "69e421cb07d5dfd38100b4b68714e9cb05d4fe58a7c5145c7b672d1ff08ca58b"
+  head "https://gitlab.com/procps-ng/procps.git"
+  # tag "linuxbrew"
+
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "gettext" => :build
 
   def install
-    # This first invocation of make fails.
-    # The subsequent invocation of make succeeds.
-    # ps/sortformat.o: In function `do_one_spec':
-    # sortformat.c: undefined reference to `get_pid_digits'
-    # collect2: error: ld returned 1 exit status
-    # ps/module.mk:23: recipe for target 'ps/ps' failed
-    system "make || true"
-    system "make"
+    system "./autogen.sh"
+    system "./configure",
+      "--disable-debug",
+      "--disable-dependency-tracking",
+      "--disable-silent-rules",
+      "--prefix=#{prefix}"
+    system "make", "install"
 
     # kill and uptime are also provided by coreutils
-    system "make", "install",
-      "SKIP=$(bin)kill $(man1)kill.1 $(bin)uptime $(man1)uptime.1",
-      "install=install -D",
-      "usr/bin=#{bin}/",
-      "bin=#{bin}/",
-      "sbin=#{sbin}/",
-      "usr/proc/bin=#{bin}/",
-      "man1=#{man1}/",
-      "man5=#{man5}/",
-      "man8=#{man8}/",
-      "lib=#{lib}/",
-      "usr/lib=#{lib}/",
-      "usr/include=#{include}/"
+    rm [bin/"kill", bin/"uptime", man1/"kill.1", man1/"uptime.1"]
   end
 
   test do
-    system "#{bin}/ps --version"
+    system "#{bin}/ps", "--version"
     system "#{bin}/ps"
   end
 end
