@@ -28,9 +28,6 @@ class Mcrypt < Formula
   def install
     ENV.universal_binary if build.universal?
 
-    # Fix configure: error: *** libmcrypt was not found
-    ENV["LD_LIBRARY_PATH"] = lib unless OS.mac?
-
     resource("libmcrypt").stage do
       system "./configure", "--prefix=#{prefix}",
                             "--mandir=#{man}"
