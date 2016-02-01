@@ -37,7 +37,7 @@ class Wget < Formula
   depends_on "pcre" => :optional
   depends_on "libmetalink" => :optional
   depends_on "gpgme" => :optional
-  depends_on "libuuid" unless OS.mac?
+  depends_on "util-linux" if OS.linux? # for libuuid
 
   def install
     args = %W[
