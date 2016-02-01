@@ -64,10 +64,11 @@ class Ghc < Formula
     # GMP *does not* use PIC by default without shared libs  so --with-pic
     # is mandatory or else you'll get "illegal text relocs" errors.
     resource("gmp").stage do
-      system "./configure", "--prefix=#{gmp}", "--with-pic", "--disable-shared"
+      system "./configure", "--prefix=#{gmp}", "--with-pic"
       system "make"
       system "make", "check"
       ENV.deparallelize { system "make", "install" }
+      ln_s Dir["#{gmp}/lib/libgmp.so.*"], "#{gmp}/lib/libgmp.so.3"
     end
 
     args = ["--with-gmp-includes=#{gmp}/include",
@@ -81,6 +82,7 @@ class Ghc < Formula
       args << "--with-gcc-4.2=#{ENV.cc}"
     end
 
+    ENV.prepend_path "LD_LIBRARY_PATH", "#{gmp}/lib"
     resource("binary").stage do
       # Change the dynamic linker and RPATH of the binary executables.
       if OS.linux? && Formula["glibc"].installed?
