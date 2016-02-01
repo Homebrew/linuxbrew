@@ -21,6 +21,6 @@ class Hello < Formula
     system "make", "install"
   end
   test do
-    system "#{bin}/hello", "--greeting=brew"
+    system "#{bin}/hello", "--greeting=linuxbrew"
   end
 end
