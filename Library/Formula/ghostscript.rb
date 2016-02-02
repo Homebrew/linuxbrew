@@ -31,7 +31,7 @@ class Ghostscript < Formula
     depends_on "libtool" => :build
   end
 
-  patch :DATA # Uncomment OS X-specific make vars
+  patch :DATA if OS.mac? # Uncomment OS X-specific make vars
 
   option "with-djvu", "Build drivers for DjVU file format"
 
