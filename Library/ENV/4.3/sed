@@ -4,4 +4,5 @@ if [[ $HOMEBREW_CCCFG == *s* ]]; then
   unset LC_ALL
   export LC_CTYPE='C'
 fi
+[ -e /bin/sed ] && exec /bin/sed "$@"
 exec /usr/bin/sed "$@"

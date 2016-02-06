@@ -29,6 +29,7 @@ module Superenv
     return unless MacOS.has_apple_developer_tools?
 
     bin = (HOMEBREW_REPOSITORY/"Library/ENV").subdirs.reject { |d| d.basename.to_s > MacOS::Xcode.version }.max
+    bin = (HOMEBREW_REPOSITORY/"Library/ENV/linux") if OS.linux?
     bin.realpath unless bin.nil?
   end
 

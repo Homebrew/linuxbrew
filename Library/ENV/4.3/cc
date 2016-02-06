@@ -1,8 +1,10 @@
-#!/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/bin/ruby -W0
+#!/usr/bin/ruby -W0
 
-$:.unshift Dir["/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/lib/ruby/{1.8,2.0.0}"].first
+lpath = Dir["/System/Library/Frameworks/Ruby.framework/Versions/Current/usr/lib/ruby/{1.8,2.0.0}"].first
+$:.unshift lpath unless lpath.nil?
 require "pathname"
 require "set"
+require "#{File.dirname(__FILE__)}/../../Homebrew/os"
 
 class Cmd
   attr_reader :config, :prefix, :cellar, :tmpdir, :sysroot
@@ -218,9 +220,10 @@ class Cmd
     args = path_flags("-L", library_paths)
     case mode
     when :ld
-      args << "-headerpad_max_install_names"
+      args << "-headerpad_max_install_names" if OS.mac?
+      args << "-rpath=#{ENV['HOMEBREW_PREFIX']}/lib" if OS.linux?
     when :ccld, :cxxld
-      args << "-Wl,-headerpad_max_install_names"
+      args << "-Wl,-headerpad_max_install_names" if OS.mac?
     end
     args
   end
