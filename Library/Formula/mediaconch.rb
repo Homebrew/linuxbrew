@@ -16,6 +16,7 @@ class Mediaconch < Formula
   depends_on "pkg-config" => :build
   depends_on "jansson"
   depends_on "libevent"
+  depends_on "libxslt"
   depends_on "sqlite"
   # fails to build against Leopard's older libcurl
   depends_on "curl" if MacOS.version < :snow_leopard
