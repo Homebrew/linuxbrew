@@ -4,6 +4,8 @@ class Glibc < Formula
   url "http://ftpmirror.gnu.org/glibc/glibc-2.19.tar.bz2"
   sha256 "2e293f714187044633264cd9ce0183c70c3aa960a2f77812a6390a3822694d15"
 
+  option "with-current-kernel", "Compile for compatibility with kernel not older than your current one"
+
   # binutils 2.20 or later is required
   depends_on "binutils" => [:build, :recommended]
 
@@ -19,6 +21,8 @@ class Glibc < Formula
         "--prefix=#{prefix}",
         "--enable-obsolete-rpc",
         "--without-selinux"] # Fix error: selinux/selinux.h: No such file or directory
+      args << "--enable-kernel=" +
+        `uname -r | cut -d. -f1,2,3 | cut -d- -f1` if build.with? "current-kernel"
       args << "--with-binutils=" +
         Formula["binutils"].bin if build.with? "binutils"
       args << "--with-headers=" +
