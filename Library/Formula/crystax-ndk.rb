@@ -4,12 +4,17 @@ class CrystaxNdk < Formula
 
   version "10.3.1"
 
-  if MacOS.prefer_64_bit?
-    url "https://www.crystax.net/download/crystax-ndk-#{version}-darwin-x86_64.tar.xz"
-    sha256 "6469c37e8fa107db51f9ada26fe3e27fddf3d6c3c51272a783fed36b110550ef"
-  else
-    url "https://www.crystax.net/download/crystax-ndk-#{version}-darwin-x86.tar.xz"
-    sha256 "a59218c0bfc477f0ef2dbd345f21cca4fb1f183b4e154ff7724ea0f6df8a7855"
+  if OS.mac?
+    if MacOS.prefer_64_bit?
+      url "https://www.crystax.net/download/crystax-ndk-#{version}-darwin-x86_64.tar.xz"
+      sha256 "6469c37e8fa107db51f9ada26fe3e27fddf3d6c3c51272a783fed36b110550ef"
+    else
+      url "https://www.crystax.net/download/crystax-ndk-#{version}-darwin-x86.tar.xz"
+      sha256 "a59218c0bfc477f0ef2dbd345f21cca4fb1f183b4e154ff7724ea0f6df8a7855"
+    end
+  elsif OS.linux?
+    url "https://www.crystax.net/download/crystax-ndk-#{version}-linux-x86_64.tar.xz"
+    sha256 "ebf4f55562bee27301954aac25d8a7ab03514f4aa20867a174950bf77ad2ba06"
   end
 
   bottle :unneeded
