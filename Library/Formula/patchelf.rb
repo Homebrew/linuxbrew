@@ -17,6 +17,12 @@ class Patchelf < Formula
     depends_on "automake" => :build
   end
 
+  def pour_bottle?
+    # Prevent installing the patchelf bottle on systems with an old glibc.
+    require "requirements/glibc_requirement"
+    GlibcRequirement.new.satisfied?
+  end
+
   option "with-static", "Link statically"
   option "without-static-libstdc++", "Link libstdc++ dynamically"
 
