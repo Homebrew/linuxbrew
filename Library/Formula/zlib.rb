@@ -21,7 +21,7 @@ class Zlib < Formula
   # configure script fails to detect the right compiler when "cc" is
   # clang, not gcc. zlib mantainers have been notified of the issue.
   # See: https://github.com/Homebrew/homebrew-dupes/pull/228
-  patch :DATA
+  patch :DATA if OS.mac?
 
   # http://zlib.net/zlib_how.html
   resource "test_artifact" do
