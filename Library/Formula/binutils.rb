@@ -23,7 +23,7 @@ class Binutils < Formula
   patch :p1 do
     url "https://gist.githubusercontent.com/mistydemeo/f14c03c0c9ddfce97cf7/raw/2107e53002c34e41ade9b54629e670184e438d80/binutils_10.6.diff"
     sha256 "5ff40b9d7ad174d3c24edd8381471b8f5c408703111f0c90135ad0fffba452c2"
-  end
+  end if OS.mac?
 
   def install
     system "./configure", "--disable-debug",
