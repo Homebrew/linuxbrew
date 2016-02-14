@@ -36,7 +36,7 @@ class Glibc < Formula
 
   def post_install
     # Fix permissions
-    chmod "+x", [lib/"ld-#{version}.so", lib/"libc-#{version}.so"]
+    chmod 0755, [lib/"ld-#{version}.so", lib/"libc-#{version}.so"]
 
     # Compile locale definition files
     mkdir_p lib/"locale"
