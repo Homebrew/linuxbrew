@@ -41,6 +41,7 @@ class Emacs < Formula
   depends_on "imagemagick" => :optional
   depends_on "mailutils" => :optional
   depends_on "glib" => :optional
+  depends_on "homebrew/dupes/ncurses" unless OS.mac?
 
   # https://github.com/Homebrew/homebrew/issues/37803
   if build.with? "x11"
