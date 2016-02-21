@@ -22,6 +22,7 @@ class Ansible < Formula
   depends_on :python if MacOS.version <= :snow_leopard
   depends_on "libyaml"
   depends_on "openssl"
+  depends_on "libffi" unless OS.mac?
 
   #
   # ansible (core dependencies)
@@ -215,6 +216,11 @@ class Ansible < Formula
   #
   # pyrax (for Rackspace support)
   #
+  resource "pytz" do
+    url "https://pypi.python.org/packages/source/p/pytz/pytz-2015.7.tar.bz2"
+    sha256 "fbd26746772c24cb93c8b97cbdad5cb9e46c86bbdb1b9d8a743ee00e2fb1fc5d"
+  end
+
   resource "Babel" do
     url "https://pypi.python.org/packages/source/B/Babel/Babel-2.2.0.tar.gz"
     sha256 "d8cb4c0e78148aee89560f9fe21587aa57739c975bb89ff66b1e842cc697428f"
@@ -334,11 +340,6 @@ class Ansible < Formula
   resource "python-novaclient" do
     url "https://pypi.python.org/packages/source/p/python-novaclient/python-novaclient-3.2.0.tar.gz"
     sha256 "b00a70ba72b068adb6aaca19b14ed4bde9c950ef4f24234d095f9f9985073179"
-  end
-
-  resource "pytz" do
-    url "https://pypi.python.org/packages/source/p/pytz/pytz-2015.7.tar.bz2"
-    sha256 "fbd26746772c24cb93c8b97cbdad5cb9e46c86bbdb1b9d8a743ee00e2fb1fc5d"
   end
 
   resource "rackspace-auth-openstack" do
