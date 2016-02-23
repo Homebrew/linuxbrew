@@ -62,18 +62,8 @@ class Glibc < Formula
     brew_localtime = Pathname.new prefix/"etc/localtime"
     (prefix/"etc").install_symlink sys_localtime if sys_localtime.exist? && !brew_localtime.exist?
 
-    # Fix up previously installed executables.
-    if Formula["patchelf"].installed?
-      %w[patchelf binutils].each do |s|
-        f = Formula[s]
-        if f.installed?
-          ohai "Fixing up #{f.full_name}..."
-          keg = Keg.new f.prefix
-          keg.relocate_install_names Keg::PREFIX_PLACEHOLDER, HOMEBREW_PREFIX,
-            Keg::CELLAR_PLACEHOLDER, HOMEBREW_CELLAR
-        end
-      end
-    end
+    # Install ld.so symlink.
+    ln_sf lib/"ld-linux-x86-64.so.2", HOMEBREW_PREFIX/"lib/ld.so"
   end
 
   test do

@@ -35,6 +35,7 @@ class Patchelf < Formula
 
   def post_install
     # Fix up binutils after glibc and patchelf are installed.
+    # Fix ld: liblto_plugin.so: error loading plugin: /lib64/libc.so.6: version `GLIBC_2.7' not found
     binutils = Formula["binutils"]
     if binutils.installed? && Formula["glibc"].installed?
       ohai "Fixing up #{binutils.full_name}..."

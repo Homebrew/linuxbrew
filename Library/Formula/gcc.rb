@@ -261,7 +261,6 @@ class Gcc < Formula
       # Set the library search path
       glibc = Formula["glibc"]
       libgcc = lib/"gcc/x86_64-unknown-linux-gnu"/version
-      ld_so = glibc.opt_lib/"ld-linux-x86-64.so.2"
       specs.write specs_string + <<-EOS.undent
         *cpp_unique_options:
         + -isystem #{HOMEBREW_PREFIX}/include
@@ -270,7 +269,7 @@ class Gcc < Formula
         #{glibc.installed? ? "-nostdlib -L#{libgcc}" : "+"} -L#{HOMEBREW_PREFIX}/lib
 
         *link:
-        + -rpath #{HOMEBREW_PREFIX}/lib#{" --dynamic-linker #{ld_so}" if glibc.installed?}
+        + --dynamic-linker #{HOMEBREW_PREFIX}/lib/ld.so -rpath #{HOMEBREW_PREFIX}/lib
 
       EOS
     end
