@@ -20,7 +20,7 @@ class Coreutils < Formula
   conflicts_with "aardvark_shell_utils", :because => "both install `realpath` binaries"
 
   head do
-    url "git://git.sv.gnu.org/coreutils"
+    url "http://git.savannah.gnu.org/r/coreutils.git"
 
     depends_on "autoconf" => :build
     depends_on "automake" => :build
