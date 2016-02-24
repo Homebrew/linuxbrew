@@ -30,6 +30,7 @@ class Subversion < Formula
 
   depends_on "pkg-config" => :build
   depends_on :apr => :build
+  depends_on "krb5" => :build unless OS.mac?
 
   # Always build against Homebrew versions instead of system versions for consistency.
   depends_on "sqlite"
