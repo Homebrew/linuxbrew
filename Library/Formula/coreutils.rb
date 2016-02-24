@@ -29,6 +29,7 @@ class Coreutils < Formula
     depends_on "texinfo" => :build
     depends_on "xz" => :build
     depends_on "wget" => :build
+    depends_on "homebrew/dupes/gperf" => :build unless OS.mac?
   end
 
   depends_on "gmp" => :optional
