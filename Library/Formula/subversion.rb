@@ -49,6 +49,7 @@ class Subversion < Formula
   unless OS.mac?
     depends_on "apr"
     depends_on "apr-util"
+    depends_on "zlib"
   end
 
   # Other optional dependencies
@@ -123,7 +124,7 @@ class Subversion < Formula
     args = %W[
       --disable-debug
       --prefix=#{prefix}
-      --with-zlib=/usr
+      #{"--with-zlib=/usr" if OS.mac?}
       --with-sqlite=#{Formula["sqlite"].opt_prefix}
       #{"--with-serf=#{serf_prefix}" if build.with? "serf"}
       --disable-mod-activation
