@@ -21,7 +21,6 @@ class Curl < Formula
   option "with-libmetalink", "Build with libmetalink support."
   option "with-libressl", "Build with LibreSSL instead of Secure Transport or OpenSSL"
   option "with-nghttp2", "Build with HTTP/2 support (requires OpenSSL or LibreSSL)"
-  option "without-ldap", "Build without LDAP support"
 
   deprecated_option "with-idn" => "with-libidn"
   deprecated_option "with-rtmp" => "with-rtmpdump"
@@ -45,6 +44,8 @@ class Curl < Formula
   depends_on "libmetalink" => :optional
   depends_on "libressl" => :optional
   depends_on "nghttp2" => :optional
+
+  depends_on "Homebrew/dupes/openldap" => :optional unless OS.mac?
 
   def install
     # Throw an error if someone actually tries to rock both SSL choices.
