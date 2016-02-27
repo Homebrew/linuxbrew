@@ -19,7 +19,7 @@ class GnuTar < Formula
   patch do
     url "https://gist.githubusercontent.com/mistydemeo/10fbae8b8441359ba86d/raw/e5c183b72036821856f9e82b46fba6185e10e8b9/gnutar-configure-xattrs.patch"
     sha256 "f2e56bb8afd1c641a7e5b81e35fdbf36b6fb66434b1e35caa8b55196b30c3ad9"
-  end
+  end if OS.mac?
 
   def install
     # Work around unremovable, nested dirs bug that affects lots of
