@@ -33,7 +33,7 @@ class OpenshiftCli < Formula
     system "make", "-C", "src/github.com/openshift/origin", "all", "WHAT=cmd/openshift", "GOFLAGS=-v"
 
     arch = MacOS.prefer_64_bit? ? "amd64" : "x86"
-    bin.install real_buildpath/"_output/local/bin/darwin/#{arch}/openshift"
+    bin.install real_buildpath/"_output/local/bin/#{OS::NAME}/#{arch}/openshift"
     bin.install_symlink "openshift" => "oc"
     bin.install_symlink "openshift" => "oadm"
 
