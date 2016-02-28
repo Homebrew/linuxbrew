@@ -18,7 +18,7 @@ class Fibjs < Formula
 
   def install
     system "./build", "Release", "-j#{ENV.make_jobs}"
-    bin.install "bin/Darwin_Release/fibjs"
+    bin.install "bin/#{OS::NAME.capitalize}_Release/fibjs"
   end
 
   test do
