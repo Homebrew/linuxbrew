@@ -19,6 +19,7 @@ class Wxmac < Formula
   depends_on "jpeg"
   depends_on "libpng"
   depends_on "libtiff"
+  depends_on "gtk+" unless OS.mac?
 
   # Various fixes related to Yosemite. Revisit in next stable release.
   # Please keep an eye on http://trac.wxwidgets.org/ticket/16329 as well
@@ -34,7 +35,6 @@ class Wxmac < Formula
       "--enable-std_string",
       "--enable-display",
       "--with-opengl",
-      "--with-osx_cocoa",
       "--with-libjpeg",
       "--with-libtiff",
       # Otherwise, even in superenv, the internal libtiff can pick
@@ -56,10 +56,14 @@ class Wxmac < Formula
       "--enable-dataviewctrl",
       "--with-expat",
       "--disable-precomp-headers",
-      "--with-macosx-version-min=#{MacOS.version}",
       # This is the default option, but be explicit
       "--disable-monolithic",
     ]
+
+    if OS.mac?
+      args << "--with-osx_cocoa"
+      args << "--with-macosx-version-min=#{MacOS.version}"
+    end
 
     if build.universal?
       ENV.universal_binary
