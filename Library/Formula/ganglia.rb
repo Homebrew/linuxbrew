@@ -42,7 +42,9 @@ class Ganglia < Formula
                           "--sysconfdir=#{etc}",
                           "--mandir=#{man}",
                           "--with-gmetad",
-                          "--with-libpcre=#{Formula["pcre"].opt_prefix}"
+                          "--with-libpcre=#{Formula["pcre"].opt_prefix}",
+                          "--with-libapr=#{Formula["apr"].opt_prefix}/bin/apr-1-config"
+
     system "make", "install"
 
     # Generate the default config file
