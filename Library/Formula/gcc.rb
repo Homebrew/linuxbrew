@@ -118,7 +118,6 @@ class Gcc < Formula
         "--with-native-system-header-dir=#{HOMEBREW_PREFIX}/include",
         "--with-local-prefix=#{HOMEBREW_PREFIX}/local",
         "--with-build-time-tools=#{binutils}",
-        "--with-boot-ldflags=-static-libstdc++ -static-libgcc #{ENV["LDFLAGS"]}",
       ]
       # Set the search path for glibc libraries and objects.
       ENV["LIBRARY_PATH"] = Formula["glibc"].lib
@@ -126,6 +125,7 @@ class Gcc < Formula
     args += [
       "--prefix=#{prefix}",
       ("--libdir=#{lib}/gcc/#{version_suffix}" if OS.mac?),
+      "--with-boot-ldflags=-static-libstdc++ -static-libgcc #{ENV["LDFLAGS"]}",
       "--enable-languages=#{languages.join(",")}",
       # Make most executables versioned to avoid conflicts.
       "--program-suffix=-#{version_suffix}",
