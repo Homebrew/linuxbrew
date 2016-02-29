@@ -13,6 +13,8 @@ class Mercurial < Formula
     sha256 "53036c632fdfd35d7ccdb85756660e8eeb01437afa6ce68ea35291361bf941ea" => :mavericks
   end
 
+  depends_on "python" if OS.linux?
+
   def install
     ENV.minimal_optimization if MacOS.version <= :snow_leopard
 

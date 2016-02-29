@@ -88,8 +88,13 @@ class Caddy < Formula
 
   def install
     ENV["GOPATH"] = buildpath
-    ENV["GOOS"] = "darwin"
-    ENV["GOARCH"] = MacOS.prefer_64_bit? ? "amd64" : "386"
+    if OS.mac? then
+      ENV["GOOS"] = "darwin"
+      ENV["GOARCH"] = MacOS.prefer_64_bit? ? "amd64" : "386"
+    else
+      ENV["GOOS"] = "linux"
+      ENV["GOARCH"] = "amd64"
+    end
 
     mkdir_p buildpath/"src/github.com/mholt/"
     ln_s buildpath, buildpath/"src/github.com/mholt/caddy"
