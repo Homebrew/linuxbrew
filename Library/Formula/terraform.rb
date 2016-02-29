@@ -66,11 +66,7 @@ class Terraform < Formula
       system "go", "test", *terraform_files
 
       mkdir "bin"
-      if OS.mac? then
-        arch = MacOS.prefer_64_bit? ? "amd64" : "386"
-      else
-        arch = "amd64"
-      end
+      arch = MacOS.prefer_64_bit? ? "amd64" : "386"
       system "gox",
         "-arch", arch,
         "-os", OS::NAME,
