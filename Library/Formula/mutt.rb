@@ -70,7 +70,11 @@ class Mutt < Formula
   end
 
   def install
-    user_admin = Etc.getgrnam("admin").mem.include?(ENV["USER"])
+    begin
+        user_admin = Etc.getgrnam("admin").mem.include?(ENV["USER"])
+    rescue
+        user_admin = false
+    end
 
     args = %W[
       --disable-dependency-tracking
