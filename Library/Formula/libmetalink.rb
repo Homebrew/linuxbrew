@@ -12,6 +12,7 @@ class Libmetalink < Formula
   end
 
   depends_on "pkg-config" => :build
+  depends_on "libxml2" => :build unless OS.mac?
 
   def install
     system "./configure", "--disable-dependency-tracking",
