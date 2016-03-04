@@ -37,6 +37,7 @@ class Curl < Formula
   end
 
   depends_on "pkg-config" => :build
+  depends_on "homebrew/dupes/krb5" => :build if build.with?("gssapi") unless OS.mac?
   depends_on "libidn" => :optional
   depends_on "rtmpdump" => :optional
   depends_on "libssh2" => :optional
@@ -81,7 +82,7 @@ class Curl < Formula
     args << (build.with?("libssh2") ? "--with-libssh2" : "--without-libssh2")
     args << (build.with?("libidn") ? "--with-libidn" : "--without-libidn")
     args << (build.with?("libmetalink") ? "--with-libmetalink" : "--without-libmetalink")
-    args << (build.with?("gssapi") ? "--with-gssapi" : "--without-gssapi")
+    args << (build.with?("gssapi") ? "--with-gssapi" + (OS.mac? ? "" : "=#{Formula["homebrew/dupes/krb5"].opt_prefix}") : "--without-gssapi")
     args << (build.with?("rtmpdump") ? "--with-librtmp" : "--without-librtmp")
 
     if build.with? "c-ares"
