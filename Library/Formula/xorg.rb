@@ -1,6 +1,6 @@
 class Xorg < Formula
   desc "Xorg Libraries"
-  homepage "http://www.linuxfromscratch.org/blfs/view/svn/x/x7lib.html"
+  homepage "http://www.x.org/" ### http://www.linuxfromscratch.org/blfs/view/svn/x/x7lib.html
   version "7"
 
   url "http://ftp.x.org/pub/individual/lib/libFS-1.0.7.tar.bz2"
@@ -17,12 +17,25 @@ class Xorg < Formula
 # depends_on "libxcb"      # built as a resource here
 
 # Xorg: optional dependencies
-  if build.with?("docs") 
-    depends_on "xmlto"
-    depends_on "fop"        =>  :optional # needs update to 2.1
-    depends_on "Links"      =>  :optional
-    depends_on "lynx"       =>  :optional
-    depends_on "w3m"        =>  :optional
+  if build.with?("docs")
+    depends_on "xmlto"      =>  :build
+
+    option "with-fop",   "Use fop to build documentation"
+    option "with-Links", "Use Links to build documentation"
+    option "with-lynx",  "Use lynx to build documentation"
+    option "with-w3m",   "Use w3m to build documentation"
+
+    if !build.with?("fop")  and !build.with?("Links") and !build.with?("lynx")  and !build.with?("w3m")
+      depends_on "fop"        =>  :optional
+      depends_on "Links"      =>  :optional
+      depends_on "lynx"       =>  :optional
+      depends_on "w3m"        =>  :optional
+    end
+
+    depends_on "fop"        =>  :build if build.with?("fop") # needs update to 2.1
+    depends_on "Links"      =>  :build if build.with?("Links")
+    depends_on "lynx"       =>  :build if build.with?("lynx")
+    depends_on "w3m"        =>  :build if build.with?("w3m")
   end
 
 # libxcb: required dependencies
@@ -30,14 +43,14 @@ class Xorg < Formula
 # depends_on "xcbproto"    # built as a resource here
 
 # libxcb: optional dependencies
-  depends_on "doxygen"    =>  :optional if build.with?("doxygen") # to build API docs
-  depends_on "check"      =>  :optional if build.with?("check-libxcb") # to run tests
+  depends_on "doxygen"    =>  :build if build.with?("doxygen") # to build API docs
+  depends_on "check"      =>  :build if build.with?("check-libxcb") # to run tests
   depends_on "libxslt"    =>  :optional # no explanation given
 
 
 # xcbproto: required dependencies
   depends_on :python          # 
-  depends_on "libxml2"    =>  :optional if build.with?("check-xcbproto") # to run tests
+  depends_on "libxml2"    =>  :build if build.with?("check-xcbproto") # to run tests
  #depends_on "libXdmcp"   => [:optional, :recommended] # built as a resource here
   depends_on "pkg-config" => :build
 
@@ -430,7 +443,10 @@ class Xorg < Formula
     end
 
 ### libpthread-stubs
-### see inreplace below 
+###
+### see inreplace below ###
+### http://www.linuxfromscratch.org/blfs/view/svn/x/libxcb.html
+###
 ##    resource("libpthread-stubs").stage do
 ##      system "./configure", "--prefix=#{prefix}"
 ##      system "make"
@@ -464,7 +480,7 @@ class Xorg < Formula
 
         system "make"
         system "make", "install"
-        system "ldconfig"
+        # system "ldconfig"  ### https://github.com/Linuxbrew/linuxbrew/pull/892#discussion_r55162757
       end
     end
   end
