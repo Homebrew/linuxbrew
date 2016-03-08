@@ -8,7 +8,8 @@ class Rust < Formula
 
     resource "cargo" do
       # git required because of submodules
-      url "https://github.com/rust-lang/cargo.git", :tag => "0.8.0", :revision => "28a0cbb2212c295264a7a3031a4be0113a17aa91"
+      url "https://github.com/rust-lang/cargo.git", :revision => "c8fcec3658cdce4f915c3ac350f5701e35941c4f" 
+
     end
 
     # name includes date to satisfy cache
