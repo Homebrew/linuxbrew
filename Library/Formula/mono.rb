@@ -60,6 +60,7 @@ class Mono < Formula
         ENV.prepend_path "PATH", bin
         ENV.prepend_path "PKG_CONFIG_PATH", lib/"pkgconfig"
         system "./autogen.sh", "--prefix=#{prefix}"
+        system "mozroots", "--import", "--sync" unless OS.mac?
         system "make"
         system "make", "install"
       end
