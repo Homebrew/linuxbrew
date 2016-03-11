@@ -28,7 +28,7 @@ class Nettle < Formula
     # Move lib64/* to lib/ on Linuxbrew
     lib64 = Pathname.new "#{lib}64"
     if lib64.directory?
-      lib.mkdir
+      lib.mkdir if !lib.directory?
       system "mv #{lib64}/* #{lib}/"
       rmdir lib64
       inreplace Dir[lib/"pkgconfig/*"], "/lib64", "/lib"
