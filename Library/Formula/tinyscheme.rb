@@ -11,11 +11,11 @@ class Tinyscheme < Formula
   end
 
   # Modify compile flags for Mac OS X per instructions
-  patch :DATA
+  patch :DATA if OS.mac?
 
   def install
     system "make", "INITDEST=#{share}"
-    lib.install("libtinyscheme.dylib")
+    lib.install("libtinyscheme.#{OS.mac? ? "dylib" : "so"}")
     share.install("init.scm")
     bin.install("scheme")
   end
