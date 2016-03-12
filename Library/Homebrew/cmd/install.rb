@@ -194,7 +194,8 @@ module Homebrew
     ld_so = HOMEBREW_PREFIX/"lib/ld.so"
     return if ld_so.readable?
     glibc = Formula["glibc"]
-    interpreter = glibc && glibc.installed? ? glibc.lib/"ld-linux-x86-64.so.2" : "/lib64/ld-linux-x86-64.so.2"
+    sys_interpreter = File.exist?("/lib64/ld-linux-x86-64.so.2") ? "/lib64/ld-linux-x86-64.so.2" : "/lib/ld-linux.so.3"
+    interpreter = glibc && glibc.installed? ? glibc.lib/"ld-linux-x86-64.so.2" : sys_interpreter
     mkdir_p HOMEBREW_PREFIX/"lib"
     FileUtils.ln_sf interpreter, ld_so
   rescue FormulaUnavailableError
