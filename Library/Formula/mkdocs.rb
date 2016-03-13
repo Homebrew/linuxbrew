@@ -13,6 +13,11 @@ class Mkdocs < Formula
 
   depends_on :python if MacOS.version <= :snow_leopard
 
+  resource "setuptools" do
+    url "https://pypi.python.org/packages/source/s/setuptools/setuptools-20.2.2.tar.gz"
+    sha256 "24fcfc15364a9fe09a220f37d2dcedc849795e3de3e4b393ee988e66a9cbd85a"
+  end
+
   resource "tornado" do
     url "https://pypi.python.org/packages/source/t/tornado/tornado-4.3.tar.gz"
     sha256 "c9c2d32593d16eedf2cec1b6a41893626a2649b40b21ca9c4cac4243bde2efbf"
