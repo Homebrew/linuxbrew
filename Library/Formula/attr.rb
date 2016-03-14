@@ -5,6 +5,8 @@ class Attr < Formula
   sha256 "25772f653ac5b2e3ceeb89df50e4688891e21f723c460636548971652af0a859"
   # tag "linuxbrew"
 
+  depends_on "gettext" => :build
+
   def install
     # Fix No rule to make target `../libattr/libattr.la', needed by `attr'
     ENV.deparallelize
