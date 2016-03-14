@@ -1,3 +1,4 @@
+# xxx Test openssl for Linuxbrew
 class Curl < Formula
   desc "Get a file from an HTTP, HTTPS or FTP server"
   homepage "https://curl.haxx.se/"
