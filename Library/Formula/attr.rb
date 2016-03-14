@@ -14,7 +14,7 @@ class Attr < Formula
       "--disable-dependency-tracking",
       "--disable-silent-rules",
       "--prefix=#{prefix}"
-    system "make", "install", "install-lib"
+    system "make", "install", "install-lib", "install-dev"
   end
 
   test do
