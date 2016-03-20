@@ -16,6 +16,8 @@ class Glibc < Formula
   # binutils 2.20 or later is required
   depends_on "binutils" => [:build, :recommended]
 
+  depends_on "gawk" => :build
+
   # Linux kernel headers 2.6.19 or later are required
   depends_on "linux-headers" => [:build, :recommended]
 
