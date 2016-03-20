@@ -26,6 +26,7 @@ class Fontconfig < Formula
   option :universal
 
   depends_on "pkg-config" => :build
+  depends_on "expat" unless OS.mac?
   depends_on "freetype"
 
   # Reverts commit http://cgit.freedesktop.org/fontconfig/commit/?id=7a6622f25cdfab5ab775324bef1833b67109801b,
