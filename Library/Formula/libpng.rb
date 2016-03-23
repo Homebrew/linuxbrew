@@ -24,6 +24,8 @@ class Libpng < Formula
 
   option :universal
 
+  depends_on "zlib" unless OS.mac?
+
   def install
     ENV.universal_binary if build.universal?
     system "./configure", "--disable-dependency-tracking",
