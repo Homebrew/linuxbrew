@@ -16,6 +16,7 @@ class Opam < Formula
 
   depends_on "ocaml" => :recommended
   depends_on "camlp4" => :recommended if build.with? "ocaml"
+  depends_on "homebrew/dupes/unzip" unless OS.mac?
 
   # aspcud has a fairly large buildtime dep tree, and uses gringo,
   # which requires C++11 and is inconvenient to install pre-10.8
