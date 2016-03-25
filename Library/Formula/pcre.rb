@@ -29,6 +29,7 @@ class Pcre < Formula
   end
 
   depends_on "bzip2" unless OS.mac?
+  depends_on "zlib" unless OS.mac?
 
   def install
     ENV.universal_binary if build.universal?
