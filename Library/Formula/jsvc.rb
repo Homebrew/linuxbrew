@@ -11,15 +11,17 @@ class Jsvc < Formula
   depends_on :java
 
   def install
-    ENV.append "CFLAGS", "-arch #{MacOS.preferred_arch}"
-    ENV.append "LDFLAGS", "-arch #{MacOS.preferred_arch}"
-    ENV.append "CPPFLAGS", "-I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
+    if OS.mac?
+      ENV.append "CFLAGS", "-arch #{MacOS.preferred_arch}"
+      ENV.append "LDFLAGS", "-arch #{MacOS.preferred_arch}"
+      ENV.append "CPPFLAGS", "-I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers"
+    end
 
     prefix.install %w[NOTICE.txt LICENSE.txt RELEASE-NOTES.txt]
 
     cd "unix"
-    system "./configure", "--with-java=/System/Library/Frameworks/JavaVM.framework",
-                          "--with-os-type=Headers"
+    system "./configure", ("--with-java=/System/Library/Frameworks/JavaVM.framework" if OS.mac?),
+                          ("--with-os-type=Headers" if OS.mac?)
     system "make"
     bin.install "jsvc"
   end
