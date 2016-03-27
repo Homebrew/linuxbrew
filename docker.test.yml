@@ -9,6 +9,7 @@ sut:
     && git fetch origin
     && (test "$GIT_BRANCH" = master || git checkout origin/master);
     exit_status=0;
+    brew tap homebrew/dupes;
     brew test-bot --keep-old || exit_status=1;
     brew test-bot --keep-old --ci-upload || exit_status=1;
     exit $exit_status'
