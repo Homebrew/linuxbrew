@@ -1,3 +1,4 @@
+# xxx Build a bottle for Linuxbrew. Do not commit.
 class Node < Formula
   desc "Platform built on the V8 JavaScript runtime to build network applications"
   homepage "https://nodejs.org/"
