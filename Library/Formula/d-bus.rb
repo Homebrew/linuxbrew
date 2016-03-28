@@ -21,6 +21,8 @@ class DBus < Formula
     sha256 "a8aa6fe3f2d8f873ad3f683013491f5362d551bf5d4c3b469f1efbc5459a20dc"
   end
 
+  depends_on "expat" unless OS.mac?
+
   def install
     # Fix the TMPDIR to one D-Bus doesn't reject due to odd symbols
     ENV["TMPDIR"] = "/tmp"
@@ -31,8 +33,8 @@ class DBus < Formula
                           "--sysconfdir=#{etc}",
                           "--disable-xml-docs",
                           "--disable-doxygen-docs",
-                          "--enable-launchd",
-                          "--with-launchd-agent-dir=#{prefix}",
+                          ("--enable-launchd" if OS.mac?),
+                          ("--with-launchd-agent-dir=#{prefix}" if OS.mac?),
                           "--without-x",
                           "--disable-tests"
     system "make"
