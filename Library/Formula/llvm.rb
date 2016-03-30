@@ -131,6 +131,7 @@ class Llvm < Formula
   end
   # llvm requires <histedit.h>
   depends_on "homebrew/dupes/libedit" unless OS.mac?
+  depends_on "libxml2" unless OS.mac?
 
   # Apple's libstdc++ is too old to build LLVM
   fails_with :gcc
