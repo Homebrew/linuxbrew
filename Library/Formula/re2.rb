@@ -16,11 +16,15 @@ class Re2 < Formula
     sha256 "941571b08e34921134c2fc15b5e855f7c2da5a882fd262766fa01dac988990f3" => :mavericks
   end
 
+  needs :cxx11 unless OS.mac?
+
   def install
+    ENV.cxx11 unless OS.mac?
     system "make", "install", "prefix=#{prefix}"
-    system "install_name_tool", "-id", "#{lib}/libre2.0.dylib", "#{lib}/libre2.0.0.0.dylib"
-    lib.install_symlink "libre2.0.0.0.dylib" => "libre2.0.dylib"
-    lib.install_symlink "libre2.0.0.0.dylib" => "libre2.dylib"
+    system "install_name_tool", "-id", "#{lib}/libre2.0.dylib", "#{lib}/libre2.0.0.0.dylib" if OS.mac?
+    ext = OS.mac? ? "dylib" : "so"
+    lib.install_symlink "libre2.0.0.0.#{ext}" => "libre2.0.#{ext}"
+    lib.install_symlink "libre2.0.0.0.#{ext}" => "libre2.#{ext}"
   end
 
   test do
