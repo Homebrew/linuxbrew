@@ -495,6 +495,14 @@ module Homebrew
         end
       end
 
+      # Do not remove the dependencies of essential formula.
+      essential_formula = OS.linux? ? ["curl", "gcc", "git"] : []
+      essential_dependencies = essential_formula.flat_map do |formula|
+        Dependency.expand(Formula[formula]) do |dependent, dep|
+          Dependency.prune if dep.optional? || dep.build?
+        end
+      end.map(&:name).uniq
+
       dependencies -= installed
       unchanged_dependencies = dependencies - @formulae
       changed_dependences = dependencies - unchanged_dependencies
@@ -572,8 +580,9 @@ module Homebrew
             test "brew", "uninstall", "--force", formula_name
             FileUtils.ln bottle_filename, HOMEBREW_CACHE/bottle_filename, :force => true
             @formulae.delete(formula_name)
-            if unchanged_build_dependencies.any?
-              test "brew", "uninstall", "--force", *unchanged_build_dependencies
+            uninstall_build_dependencies = unchanged_build_dependencies - essential_dependencies
+            if uninstall_build_dependencies.any?
+              test "brew", "uninstall", "--force", *uninstall_build_dependencies
               unchanged_dependencies -= unchanged_build_dependencies
             end
             test "brew", "install", bottle_filename
@@ -612,7 +621,8 @@ module Homebrew
           test "brew", "uninstall", "--devel", "--force", formula_name
         end
       end
-      test "brew", "uninstall", "--force", *unchanged_dependencies if unchanged_dependencies.any?
+      uninstall_dependencies = unchanged_dependencies - essential_dependencies
+      test "brew", "uninstall", "--force", *uninstall_dependencies if uninstall_dependencies.any?
     end
 
     def homebrew
