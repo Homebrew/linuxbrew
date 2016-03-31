@@ -12,7 +12,11 @@ class Postgresql < Formula
 
   option "32-bit"
   option "without-perl", "Build without Perl support"
-  option "without-tcl", "Build without Tcl support"
+  if OS.linux?
+    option "with-tcl", "Build with Tcl support"
+  else
+    option "without-tcl", "Build without Tcl support"
+  end
   option "with-dtrace", "Build with DTrace support"
 
   deprecated_option "no-perl" => "without-perl"
@@ -23,6 +27,9 @@ class Postgresql < Formula
   depends_on "readline"
   depends_on "libxml2" if MacOS.version <= :leopard # Leopard libxml is too old
   depends_on :python => :optional
+  depends_on "libxslt" unless OS.mac?
+  depends_on "util-linux" if OS.linux? # for libuuid
+  depends_on "homebrew/dupes/tcl-tk" if build.with?("tcl") && !OS.mac?
 
   conflicts_with "postgres-xc",
     :because => "postgresql and postgres-xc install the same binaries."
