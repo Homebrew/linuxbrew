@@ -69,8 +69,7 @@ class Libxml2 < Formula
         return 0;
       }
     EOS
-    args = `#{bin}/xml2-config --cflags --libs`.split
-    args += %w[test.c -o test]
+    args = %w[test.c -o test] + `#{bin}/xml2-config --cflags --libs`.split
     system ENV.cc, *args
     system "./test"
   end
