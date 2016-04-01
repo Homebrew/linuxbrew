@@ -1,3 +1,4 @@
+# Do not merge. Build a bottle for Linuxbrew.
 class Sqlite < Formula
   desc "Command-line interface for SQLite"
   homepage "https://sqlite.org/"
