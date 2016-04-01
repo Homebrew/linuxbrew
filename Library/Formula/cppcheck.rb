@@ -1,3 +1,4 @@
+# Test a formula that requires C++ 11. Do not merge.
 class Cppcheck < Formula
   desc "Static analysis of C and C++ code"
   homepage "https://sourceforge.net/projects/cppcheck/"
