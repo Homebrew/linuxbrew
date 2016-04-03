@@ -15,6 +15,7 @@ class Megatools < Formula
   depends_on "glib"
   depends_on "glib-networking"
   depends_on "openssl"
+  depends_on "XML::Parser" => :perl unless OS.mac?
 
   def install
     system "./configure", "--disable-debug",
