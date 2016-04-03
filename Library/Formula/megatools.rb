@@ -1,8 +1,8 @@
 class Megatools < Formula
   desc "Command-line client for Mega.co.nz"
   homepage "https://megatools.megous.com/"
-  url "https://megatools.megous.com/builds/megatools-1.9.97.tar.gz"
-  sha256 "3316c56ee55adef0ab113aad41ef95eb28fc15218639f69b1e04362b1c725af3"
+  url "https://megatools.megous.com/builds/megatools-1.9.96.tar.gz"
+  sha256 "c657a0988223aada021a7a6ed408227fc66435de7248f23952ad7adf9e1242f0"
 
   bottle do
     cellar :any
@@ -28,7 +28,7 @@ class Megatools < Formula
   test do
     # Downloads a publicly hosted file and verifies its contents.
     system "#{bin}/megadl",
-      "https://mega.nz/#!3Q5CnDCb!PivMgZPyf6aFnCxJhgFLX1h9uUTy9ehoGrEcAkGZSaI",
+      "https://mega.co.nz/#!3Q5CnDCb!PivMgZPyf6aFnCxJhgFLX1h9uUTy9ehoGrEcAkGZSaI",
       "--path", "testfile.txt"
     assert_equal File.read("testfile.txt"), "Hello Homebrew!\n"
   end
