@@ -26,6 +26,7 @@ class Swift < Formula
   bottle do
     sha256 "c0b8bed3990381cda9d84142f1eac4ef4f378d20e88e59fb7c0878bce0e89bab" => :el_capitan
     sha256 "ebb1b44f3fb466deec1e7b5b198a4ec31388e47fc8e452124e2ae65d7c03884f" => :yosemite
+    sha256 "bd1fecb956b0b92020e6964f62783e20cb272b384bd1a5c736d04ea811b1d10a" => :x86_64_linux
   end
 
   head do
@@ -50,6 +51,7 @@ class Swift < Formula
   depends_on "ninja" => :build
   depends_on :xcode => ["7.0", :build]
   depends_on "icu4c" unless OS.mac?
+  depends_on "llvm" => ["with-clang", :build] unless OS.mac?
 
   # According to the official llvm readme, GCC 4.7+ is required
   fails_with :gcc_4_0
