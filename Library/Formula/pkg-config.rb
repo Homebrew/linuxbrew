@@ -1,3 +1,4 @@
+# Do not merge. Build a bottle for Linuxbrew.
 class PkgConfig < Formula
   desc "Manage compile and link flags for libraries"
   homepage "https://freedesktop.org/wiki/Software/pkg-config/"
