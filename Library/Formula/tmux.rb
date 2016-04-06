@@ -39,6 +39,7 @@ class Tmux < Formula
 
   depends_on "pkg-config" => :build
   depends_on "libevent"
+  depends_on "homebrew/dupes/ncurses" unless OS.mac?
 
   def install
     system "sh", "autogen.sh" if build.head?
