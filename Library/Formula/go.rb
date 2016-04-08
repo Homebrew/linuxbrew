@@ -46,6 +46,10 @@ class Go < Formula
   end
 
   def install
+    # Fix error: unknown relocation type 42; compiled without -fpic?
+    # See https://github.com/Linuxbrew/linuxbrew/issues/1057
+    ENV["CGO_ENABLED"] = "0" if OS.linux?
+
     # GOROOT_FINAL must be overidden later on real Go install
     ENV["GOROOT_FINAL"] = buildpath/"gobootstrap"
 
