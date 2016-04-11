@@ -1,6 +1,7 @@
 require "requirement"
+require "requirements/x11_requirement"
 
-class XorgRequirement < Requirement
+class XorgRequirement < X11Requirement
   fatal true
   default_formula "linuxbrew/xorg/xorg"
 
@@ -16,8 +17,6 @@ class XorgRequirement < Requirement
   end
 
   def message
-    s = "X.Org is required to install this formula."
-    s += super
-    s
+    "X.Org is required to install this formula."
   end
 end

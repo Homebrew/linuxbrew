@@ -1,5 +1,4 @@
 require "requirement"
-require "requirements/xorg_requirement" unless OS.mac?
 
 class X11Requirement < Requirement
   include Comparable
