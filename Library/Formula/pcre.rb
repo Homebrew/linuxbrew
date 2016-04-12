@@ -22,6 +22,7 @@ class Pcre < Formula
   end
 
   option "without-check", "Skip build-time tests (not recommended)"
+  option :cxx11 unless OS.mac?
   option :universal
 
   fails_with :llvm do
@@ -33,6 +34,7 @@ class Pcre < Formula
   depends_on "zlib" unless OS.mac?
 
   def install
+    ENV.cxx11 if build.cxx11?
     ENV.universal_binary if build.universal?
 
     system "./autogen.sh" if build.head?

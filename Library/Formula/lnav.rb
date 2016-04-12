@@ -19,7 +19,7 @@ class Lnav < Formula
   end
 
   depends_on "readline"
-  depends_on "pcre"
+  depends_on "pcre" => [("cxx11" unless OS.mac?)].compact
   depends_on "curl" => ["with-libssh2", :optional]
 
   def install
