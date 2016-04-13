@@ -155,9 +155,7 @@ class Git < Formula
     if pod != nil
       # Remove perllocal.pod, which conflicts with the perl formula.
       # I don't know why this issue doesn't affect Mac.
-      pod = Pathname.new pod
-      rm pod
-      rmdir [pod.dirname, pod.dirname.dirname]
+      rm_r Pathname.new(pod).dirname.dirname
     end
   end
 
