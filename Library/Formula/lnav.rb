@@ -21,6 +21,7 @@ class Lnav < Formula
   depends_on "readline"
   depends_on "pcre" => [("cxx11" unless OS.mac?)].compact
   depends_on "curl" => ["with-libssh2", :optional]
+  depends_on "libgpm" unless OS.mac?
 
   def install
     system "./autogen.sh" if build.head?
