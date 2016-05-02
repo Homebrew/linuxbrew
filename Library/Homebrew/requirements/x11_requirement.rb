@@ -23,10 +23,15 @@ class X11Requirement < Requirement
   end
 
   satisfy :build_env => false do
-    MacOS::XQuartz.installed? && min_version <= Version.new(MacOS::XQuartz.version)
+    if OS.mac?
+      MacOS::XQuartz.installed? && min_version <= Version.new(MacOS::XQuartz.version)
+    else
+      XorgRequirement.new.satisfied?
+    end
   end
 
   def message
+    return XorgRequirement.new.message unless OS.mac?
     s = "XQuartz#{@min_version_string} is required to install this formula."
     s += super
     s
