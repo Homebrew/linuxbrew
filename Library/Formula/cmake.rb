@@ -4,6 +4,7 @@ class Cmake < Formula
   url "https://cmake.org/files/v3.5/cmake-3.5.1.tar.gz"
   sha256 "93d651a754bcf6f0124669646391dd5774c0fc4d407c384e3ae76ef9a60477e8"
   head "https://cmake.org/cmake.git"
+  revision 1
 
   bottle do
     cellar :any_skip_relocation
@@ -37,7 +38,7 @@ class Cmake < Formula
     ]
 
     # https://github.com/Homebrew/homebrew/issues/45989
-    if MacOS.version <= :lion
+    if OS.mac? and MacOS.version <= :lion
       args << "--no-system-curl"
     else
       args << "--system-curl"
