@@ -17,6 +17,7 @@ class Fish < Formula
     depends_on "autoconf" => :build
     depends_on "doxygen" => :build
     depends_on "pcre2"
+    depends_on "homebrew/dupes/ncurses" unless OS.mac?
   end
 
   def install
