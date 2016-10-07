@@ -14,7 +14,7 @@ class Makedepend < Formula
     sha256 "e7ae8c4fe818e7fd841caac2d8f8178057aeb554afde1c74bd21a0876ac61a25" => :x86_64_linux
   end
 
-  depends_on "pkg-config" => :build
+  depends_on "pkg-config"
 
   resource "xproto" do
     url "http://xorg.freedesktop.org/releases/individual/proto/xproto-7.0.25.tar.bz2"
