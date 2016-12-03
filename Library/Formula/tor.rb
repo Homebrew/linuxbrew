@@ -30,6 +30,7 @@ class Tor < Formula
       --prefix=#{prefix}
       --sysconfdir=#{etc}
       --with-openssl-dir=#{Formula["openssl"].opt_prefix}
+      --with-libevent-dir=#{Formula["libevent"].opt_prefix}
     ]
 
     args << "--with-libnatpmp-dir=#{Formula["libnatpmp"].opt_prefix}" if build.with? "libnatpmp"
