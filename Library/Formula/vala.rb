@@ -16,6 +16,7 @@ class Vala < Formula
   end
 
   depends_on "pkg-config" => :run
+  depends_on "flex" => :build unless OS.mac?
   depends_on "gettext"
   depends_on "glib"
   depends_on "flex" => :build unless OS.mac?
