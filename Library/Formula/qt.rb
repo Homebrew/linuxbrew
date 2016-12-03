@@ -43,6 +43,7 @@ class Qt < Formula
 
   def install
     ENV.universal_binary if build.universal?
+    ENV["LD_LIBRARY_PATH"] = buildpath/"lib" if OS.linux?
 
     # Fix this error:
     # /bin/ld: warning: libQtCLucene.so.4, needed by libQtHelp.so, not found
