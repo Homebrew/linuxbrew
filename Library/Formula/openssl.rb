@@ -27,7 +27,7 @@ class Openssl < Formula
   deprecated_option "without-check" => "without-test"
 
   depends_on "makedepend" => :build
-  depends_on "zlib" unless OS.mac?
+  depends_on "homebrew/dupes/zlib" unless OS.mac?
 
   # Replace with upstream url if they merge the more robust fix
   # https://github.com/openssl/openssl/pull/597
