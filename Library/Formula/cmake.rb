@@ -1,3 +1,4 @@
+# Update bottle for Linuxbrew. Do not merge.
 class Cmake < Formula
   desc "Cross-platform make"
   homepage "https://www.cmake.org/"
