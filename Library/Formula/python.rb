@@ -139,16 +139,23 @@ class Python < Formula
     end
 
     # Avoid linking to libgcc https://code.activestate.com/lists/python-dev/112195/
-    args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}"
+    args << "MACOSX_DEPLOYMENT_TARGET=#{MacOS.version}" if OS.mac?
 
     # We want our readline and openssl! This is just to outsmart the detection code,
     # superenv handles that cc finds includes/libs!
     inreplace "setup.py" do |s|
       s.gsub! "do_readline = self.compiler.find_library_file(lib_dirs, 'readline')",
-              "do_readline = '#{Formula["readline"].opt_lib}/libhistory.dylib'"
+              "do_readline = '#{Formula["readline"].opt_lib}/libhistory.dylib'" if OS.mac?
       s.gsub! "/usr/local/ssl", Formula["openssl"].opt_prefix
       s.gsub! "/usr/include/db4", Formula["berkeley-db4"].opt_include
     end
+
+    inreplace "Modules/Setup.dist" do |s|
+      s.gsub! "#SSL=/usr/local/ssl", "SSL='#{Formula["openssl"].opt_prefix}'"
+      s.gsub! "#_ssl", "_ssl"
+      s.gsub! "#	-DUSE_SSL", "	-DUSE_SSL"
+      s.gsub! "#	-L$(SSL)/lib", "	-L$(SSL)/lib"
+    end if OS.linux?
 
     if build.universal?
       ENV.universal_binary
@@ -167,7 +174,7 @@ class Python < Formula
     inreplace "./Lib/ctypes/macholib/dyld.py" do |f|
       f.gsub! "DEFAULT_LIBRARY_FALLBACK = [", "DEFAULT_LIBRARY_FALLBACK = [ '#{HOMEBREW_PREFIX}/lib',"
       f.gsub! "DEFAULT_FRAMEWORK_FALLBACK = [", "DEFAULT_FRAMEWORK_FALLBACK = [ '#{HOMEBREW_PREFIX}/Frameworks',"
-    end
+    end if OS.mac?
 
     if build.with? "tcl-tk"
       tcl_tk = Formula["homebrew/dupes/tcl-tk"].opt_prefix
@@ -198,7 +205,7 @@ class Python < Formula
     system "make", "quicktest" if build.with? "quicktest"
 
     # Symlink the pkgconfig files into HOMEBREW_PREFIX so they're accessible.
-    (lib/"pkgconfig").install_symlink Dir["#{frameworks}/Python.framework/Versions/Current/lib/pkgconfig/*"]
+    (lib/"pkgconfig").install_symlink Dir["#{frameworks}/Python.framework/Versions/Current/lib/pkgconfig/*"] if OS.mac?
 
     # Fixes setting Python build flags for certain software
     # See: https://github.com/Homebrew/homebrew/pull/20182
