@@ -26,6 +26,7 @@ class Fontconfig < Formula
   option :universal
 
   depends_on "pkg-config" => :build
+  depends_on "expat" unless OS.mac?
   depends_on "freetype"
   depends_on "expat" unless OS.mac?
 
