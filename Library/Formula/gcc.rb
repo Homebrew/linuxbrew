@@ -125,6 +125,7 @@ class Gcc < Formula
     args += [
       "--prefix=#{prefix}",
       ("--libdir=#{lib}/gcc/#{version_suffix}" if OS.mac?),
+      "--with-boot-ldflags=-static-libstdc++ -static-libgcc #{ENV["LDFLAGS"]}",
       "--enable-languages=#{languages.join(",")}",
       # Make most executables versioned to avoid conflicts.
       "--program-suffix=-#{version_suffix}",
