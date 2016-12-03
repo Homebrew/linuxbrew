@@ -25,6 +25,7 @@ class Glibc < Formula
         "--disable-debug",
         "--disable-dependency-tracking",
         "--disable-silent-rules",
+        "--enable-obsolete-rpc",
         "--prefix=#{prefix}",
         "--enable-obsolete-rpc",
         "--without-selinux"] # Fix error: selinux/selinux.h: No such file or directory
