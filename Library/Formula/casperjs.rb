@@ -8,9 +8,16 @@ class Casperjs < Formula
 
     # https://github.com/Homebrew/homebrew/pull/38632
     # Once 1.1.x is stable combine all the PhantomJS resource into one.
-    resource "phantomjs" do
-      url "https://phantomjs.googlecode.com/files/phantomjs-1.8.2-macosx.zip"
-      sha256 "7d19c1cce6c66bb3153d335522b4effe68ddd249f427776b82f2662fb5ed81cf"
+    if OS.mac?
+      resource "phantomjs" do
+        url "https://phantomjs.googlecode.com/files/phantomjs-1.8.2-macosx.zip"
+        sha256 "7d19c1cce6c66bb3153d335522b4effe68ddd249f427776b82f2662fb5ed81cf"
+      end
+    else
+      resource "phantomjs" do
+        url "https://phantomjs.googlecode.com/files/phantomjs-1.8.2-linux-x86_64.tar.bz2"
+        sha256 "d86651b9f94267d9d4c4e46c937d83a5c1a0a912ffd3bdbc8c1dca03b5a5fd4d"
+      end
     end
   end
 
@@ -28,18 +35,32 @@ class Casperjs < Formula
     sha256 "144e9a32d8ca677419924f6183aad26e0061d2c08d79abdb998796c010553654"
     version "1.1-beta4"
 
-    resource "phantomjs" do
-      url "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-macosx.zip"
-      sha256 "8f15043ae3031815dc5f884ea6ffa053d365491b1bc0dc3a0862d5ff1ac20a48"
+    if OS.mac?
+      resource "phantomjs" do
+        url "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-macosx.zip"
+        sha256 "8f15043ae3031815dc5f884ea6ffa053d365491b1bc0dc3a0862d5ff1ac20a48"
+      end
+    else
+      resource "phantomjs" do
+        url "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2"
+        sha256 "a1d9628118e270f26c4ddd1d7f3502a93b48ede334b8585d11c1c3ae7bc7163a"
+      end
     end
   end
 
   head do
     url "https://github.com/n1k0/casperjs.git"
 
-    resource "phantomjs" do
-      url "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-macosx.zip"
-      sha256 "8f15043ae3031815dc5f884ea6ffa053d365491b1bc0dc3a0862d5ff1ac20a48"
+    if OS.mac?
+      resource "phantomjs" do
+        url "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-macosx.zip"
+        sha256 "8f15043ae3031815dc5f884ea6ffa053d365491b1bc0dc3a0862d5ff1ac20a48"
+      end
+    else
+      resource "phantomjs" do
+        url "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-x86_64.tar.bz2"
+        sha256 "a1d9628118e270f26c4ddd1d7f3502a93b48ede334b8585d11c1c3ae7bc7163a"
+      end
     end
   end
 
