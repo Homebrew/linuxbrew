@@ -14,6 +14,7 @@ class Libssh < Formula
 
   depends_on "cmake" => :build
   depends_on "openssl"
+  depends_on "krb5" => :build unless OS.mac?
 
   def install
     mkdir "build" do
