@@ -54,6 +54,8 @@ class Curl < Formula
   # Can be removed on the next release.
   patch :DATA
 
+  depends_on "Homebrew/dupes/openldap" => :optional unless OS.mac?
+
   def install
     # Throw an error if someone actually tries to rock both SSL choices.
     # Long-term, make this singular-ssl-option-only a requirement.
