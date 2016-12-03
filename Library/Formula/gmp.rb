@@ -26,6 +26,9 @@ class Gmp < Formula
 
     # https://github.com/Homebrew/homebrew/issues/20693
     args << "--disable-assembly" if build.build_32_bit? || build.bottle?
+    
+    # For compiling on a Raspberry Pi
+    args << "--build=arm" if Hardware::CPU.type == :arm
 
     system "./configure", *args
     system "make"
