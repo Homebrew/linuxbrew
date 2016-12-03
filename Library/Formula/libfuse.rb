@@ -10,6 +10,9 @@ class Libfuse < Formula
   depends_on "automake" => :build
   depends_on "libtool" => :build
   depends_on "gettext"
+  depends_on "autoconf" => :build
+  depends_on "automake" => :build
+  depends_on "libtool" => :build
 
   def install
     cp Formula["gettext"].pkgshare/"config.rpath", "."
