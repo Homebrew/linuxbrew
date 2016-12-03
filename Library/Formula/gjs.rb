@@ -42,6 +42,8 @@ class Gjs < Formula
         rm Dir["#{bin}/*"]
       end
       ENV.append_path "PKG_CONFIG_PATH", "#{lib}/pkgconfig"
+      # Fix error while loading shared libraries: libmozjs-24.so
+      ENV.prepend_path "LD_LIBRARY_PATH", lib if OS.linux?
     end
     system "./configure", "--disable-debug",
                           "--disable-dependency-tracking",
