@@ -37,6 +37,8 @@ class Fontconfig < Formula
 
   def install
     ENV.universal_binary if build.universal?
+    ENV["POSIXLY_CORRECT"] = "1" if OS.linux?
+
     system "./configure", "--disable-dependency-tracking",
                           "--disable-silent-rules",
                           "--enable-static",
