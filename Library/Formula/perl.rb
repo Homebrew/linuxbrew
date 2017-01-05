@@ -13,6 +13,8 @@ class Perl < Formula
     sha256 "b6c3b4aa11cd78191840029502763b9249c74e63d58412a82854fec4350ac5a3" => :mavericks
   end
 
+  depends_on "db" => :build
+
   keg_only :provided_by_osx,
     "OS X ships Perl and overriding that can cause unintended issues"
 
