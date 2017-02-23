@@ -22,6 +22,8 @@ class Cgdb < Formula
   depends_on "help2man" => :build
   depends_on "readline"
 
+  patch :DATA
+
   def install
     system "sh", "autogen.sh" if build.head?
     system "./configure", "--disable-dependency-tracking",
@@ -30,3 +32,15 @@ class Cgdb < Formula
     system "make", "install"
   end
 end
+__END__
+--- a/configure	2014-11-13 19:59:03.000000000 +0000
++++ b/configure	2015-05-27 13:04:58.815408757 +0000
+@@ -5443,7 +5443,7 @@ else
+   ac_cv_prog_HAS_HELP2MAN="$HAS_HELP2MAN" # Let the user override the test.
+ else
+ as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+-for as_dir in path =$PATH
++for as_dir in $PATH
+ do
+   IFS=$as_save_IFS
+   test -z "$as_dir" && as_dir=.
