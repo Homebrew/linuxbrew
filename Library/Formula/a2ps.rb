@@ -7,6 +7,8 @@ class A2ps < Formula
 
   depends_on "homebrew/dupes/gperf" unless OS.mac?
 
+  depends_on "homebrew/dupes/gperf" unless OS.mac?
+
   bottle do
     cellar :any_skip_relocation
     revision 2
