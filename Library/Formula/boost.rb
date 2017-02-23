@@ -108,6 +108,12 @@ class Boost < Formula
             "--user-config=user-config.jam",
             "install"]
 
+    if OS.linux?
+      args += ["include=#{HOMEBREW_PREFIX}/include",
+               "cflags=-L#{HOMEBREW_PREFIX}/lib",
+               "cxxflags=-L#{HOMEBREW_PREFIX}/lib"]
+    end
+
     if build.with? "single"
       args << "threading=multi,single"
     else
