@@ -159,8 +159,11 @@ class Python < Formula
     # https://docs.python.org/library/sqlite3.html#f1
     if build.with? "sqlite"
       inreplace("setup.py", 'sqlite_defines.append(("SQLITE_OMIT_LOAD_EXTENSION", "1"))', "")
+      if Formula['sqlite'].installed?
+        inreplace("setup.py", /if host_platform == 'darwin':\s*# This should work on any unixy platform ;-\)/,
+                  "if host_platform == 'darwin' or 'linux' in host_platform:")
+      end
     end
-
     # Allow python modules to use ctypes.find_library to find homebrew's stuff
     # even if homebrew is not a /usr/local/lib. Try this with:
     # `brew install enchant && pip install pyenchant`
