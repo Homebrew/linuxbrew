@@ -31,6 +31,8 @@ class Lua < Formula
 
   depends_on "readline" unless OS.mac?
 
+  depends_on "readline" unless OS.mac?
+
   # Be sure to build a dylib, or else runtime modules will pull in another static copy of liblua = crashy
   # See: https://github.com/Homebrew/homebrew/pull/5043
   patch :DATA if OS.mac?
