@@ -21,6 +21,8 @@ class Pcre < Formula
     depends_on "libtool" => :build
   end
 
+  depends_on "bzip2"
+
   option "without-check", "Skip build-time tests (not recommended)"
   option :universal
 
