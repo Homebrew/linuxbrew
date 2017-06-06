@@ -66,7 +66,7 @@ class Ruby < Formula
     args << "--program-suffix=#{program_suffix}" if build.with? "suffix"
     args << "--with-out-ext=tk" if build.without? "tcltk"
     args << "--disable-install-doc" if build.without? "doc"
-    args << "--disable-dtrace" unless MacOS::CLT.installed?
+    args << "--disable-dtrace" unless (OS.mac? and MacOS::CLT.installed?)
     args << "--without-gmp" if build.without? "gmp"
 
     # Reported upstream: https://bugs.ruby-lang.org/issues/10272
